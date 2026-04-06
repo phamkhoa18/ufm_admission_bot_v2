@@ -108,7 +108,18 @@ def extract_all(query: str) -> dict:
     Trích xuất tất cả metadata từ câu hỏi trong 1 lần gọi.
     Returns: {"program_level": str|None, "program_name": str|None}
     """
+    # Chuẩn hóa để tránh false positive từ tên trường
+    q = query.lower()
+    school_terms = [
+        "đại học tài chính - marketing", "đại học tài chính marketing",
+        "đh tài chính - marketing", "đh tài chính marketing",
+        "tài chính - marketing", "tài chính marketing",
+        "đại học ufm", "đh ufm", "ufm", "trường đại học"
+    ]
+    for term in school_terms:
+        q = q.replace(term, " ")
+    
     return {
-        "program_level": extract_program_level(query),
-        "program_name": extract_program_name(query),
+        "program_level": extract_program_level(q),
+        "program_name": extract_program_name(q),
     }

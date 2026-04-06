@@ -1,22 +1,31 @@
+import time
 import uuid
-from cachetools import TTLCache
 
-# Cache lưu trữ dữ liệu tài liệu mỗi session. (TTLCache max 500 items, TTL 300s = 5 phút)
-document_cache = TTLCache(maxsize=500, ttl=300)
+# Lưu trữ tĩnh tạm thời (không dùng cachetools để tránh lỗi thư viện chưa cài trong Docker)
+document_cache = {}
 
 def create_document_session(document_data: dict, session_id: str = None) -> str:
-    """
-    Tạo session cho nội dung tài liệu (tồn tại 5 phút).
-    Nếu session_id được truyền vào (vd: chunk_id) → dùng luôn, không random.
-    """
     if not session_id:
         session_id = str(uuid.uuid4())
-    # Lưu toàn bộ dữ liệu (bao gồm nội dung 'content' và metadata) vào cache
-    document_cache[session_id] = document_data
+    
+    # Simple manual clear if it grows too large
+    if len(document_cache) > 1000:
+        document_cache.clear()
+
+    document_cache[session_id] = {
+        "timestamp": time.time(),
+        "data": document_data
+    }
     return session_id
 
 def get_document_session(session_id: str) -> dict:
-    """
-    Lấy thông tin tài liệu từ cache bằng session_id.
-    """
-    return document_cache.get(session_id)
+    item = document_cache.get(session_id)
+    if not item:
+        return None
+    
+    # TTL 5 phút
+    if time.time() - item["timestamp"] > 300:
+        del document_cache[session_id]
+        return None
+        
+    return item["data"]

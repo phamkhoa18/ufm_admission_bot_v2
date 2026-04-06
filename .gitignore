@@ -39,8 +39,8 @@ junit.xml
 docker-compose.override.yml
 
 # Database backups (chứa .sql dump — không push lên Git)
-database/backups/*.sql
-database/backups/*.gz
+# database/backups/*.sql
+# database/backups/*.gz
 
 # Chunk exports (JSON preview — không push lên Git)
 data/exports/

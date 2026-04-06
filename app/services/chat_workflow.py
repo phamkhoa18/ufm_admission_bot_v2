@@ -40,6 +40,7 @@ def _create_initial_state(
         # ── Input ──
         "user_query": query,
         "chat_history": chat_history,
+        "chat_history_text": "",
 
         # ── Fast-Scan output ──
         "original_query": "",

@@ -212,28 +212,45 @@ def context_node(state: GraphState) -> GraphState:
     chat_history = state.get("chat_history", [])
     config = query_flow_config.query_reformulation
     start_time = time.time()
+    
+    # Chuẩn bị history_text dùng chung cho state
+    max_turns = query_flow_config.memory.max_history_turns
+    history_text = _build_history_prompt(chat_history, max_turns)
 
     # Reformulation bị tắt
     if not config.enabled:
-        return {**state, "standalone_query": user_query}
+        return {**state, "standalone_query": user_query, "chat_history_text": history_text}
 
     # Không có lịch sử → skip
     if config.skip_if_no_history and not chat_history:
         elapsed = time.time() - start_time
         logger.info("Context Node [%.3fs] Khong co history -> giu nguyen", elapsed)
-        return {**state, "standalone_query": user_query}
+        return {**state, "standalone_query": user_query, "chat_history_text": history_text}
 
     # Có lịch sử → reformulate
     try:
-        standalone = _reformulate_query(user_query, chat_history)
+        # Vẫn cần truyền vào _reformulate_query nếu nó được gọi bằng chuỗi
+        # (Ở đây ta tối ưu: Truyền trực tiếp history_text thay vì build lại)
+        user_content = prompt_manager.render_user(
+            "context_node",
+            chat_history_text=history_text,
+            user_query=user_query,
+        )
+
+        standalone = _call_gemini_api(
+            system_prompt=prompt_manager.get_system("context_node"),
+            user_content=user_content,
+            config_section=config,
+        )
+        
         elapsed = time.time() - start_time
         logger.info(
             "Context Node [%.3fs] Reformulated: '%s' -> '%s'",
             elapsed, user_query[:50], standalone[:80]
         )
-        return {**state, "standalone_query": standalone}
+        return {**state, "standalone_query": standalone, "chat_history_text": history_text}
 
     except Exception as e:
         elapsed = time.time() - start_time
         logger.error("Context Node [%.3fs] Error: %s -> Fallback", elapsed, e, exc_info=True)
-        return {**state, "standalone_query": user_query}
+        return {**state, "standalone_query": user_query, "chat_history_text": history_text}

@@ -93,6 +93,7 @@ class GraphState(TypedDict, total=False):
     # ════════════════════════════════════════════════════════
     chat_history: list                 # 10 cặp (user + assistant) gần nhất
                                        # Format: [{"role": "user", "content": "..."}, ...]
+    chat_history_text: str             # Text lịch sử đã được render/tóm tắt để dùng làm memory cho prompt
 
     # ════════════════════════════════════════════════════════
     # 3. INPUT — Câu hỏi qua 4 giai đoạn biến đổi

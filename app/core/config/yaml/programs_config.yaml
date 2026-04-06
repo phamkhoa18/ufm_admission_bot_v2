@@ -26,7 +26,7 @@ program_levels:
     - "ch[uư][oơ]ng\\s*trình\\s*th[aạ]c"  # chương trình thạc sĩ
 
   dai_hoc:
-    - "đ[aạ]i\\s*h[oọ]c"            # đại học
+    - "(?<!sau\\s)(?<!trường\\s)đ[aạ]i\\s*h[oọ]c(?!\\s*ufm)" # đại học (loại trừ 'sau đại học', 'trường đại học', 'đại học ufm')
     - "c[uử]\\s*nhân"               # cử nhân
     - "k[ỹy]\\s*sư"
     - "\\bđh\\b"                     # ĐH

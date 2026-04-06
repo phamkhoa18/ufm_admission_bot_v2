@@ -38,13 +38,11 @@ def rag_node(state: GraphState) -> GraphState:
     query_embeddings = state.get("query_embeddings", [])
     start_time = time.time()
 
-    # Không có embedding → skip
+    # Không có embedding -> Vẫn tiếp tục thực hiện BM25 Search (Fallback)
+    primary_embedding = query_embeddings[0] if query_embeddings else []
+    
     if not query_embeddings:
-        elapsed = time.time() - start_time
-        logger.warning("RAG Node [%.3fs] Khong co embeddings -> skip", elapsed)
-        return {**state, **_EMPTY_RAG}
-
-    primary_embedding = query_embeddings[0]
+        logger.warning("RAG Node - Embedding API lỗi, tự động Fallback sang BM25-only Search.")
 
     try:
         program_level = state.get("program_level_filter")

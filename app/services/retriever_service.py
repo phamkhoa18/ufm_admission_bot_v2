@@ -117,7 +117,7 @@ def search_vector(
     Hỗ trợ metadata filter: program_level + program_name.
     """
     vs_cfg = cfg.vector_search
-    if not vs_cfg.enabled:
+    if not vs_cfg.enabled or not query_embedding:
         return []
 
     conn = _get_connection(cfg)

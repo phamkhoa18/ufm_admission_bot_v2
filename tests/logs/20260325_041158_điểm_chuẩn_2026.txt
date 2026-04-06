@@ -1,0 +1,515 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-25 04:11:58                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_041158_điểm_chuẩn_2026.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/qwen/qwen3.5-flash-02-23             │
+  │ ⓫ Form Extract       │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓫ Form Draft         │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : điểm chuẩn 2026
+  💬 Chat History : Trống (lượt đầu tiên)
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.011s)
+                                        Message  │  [Fast-Scan PASS — 0.001s] Sạch, cho qua Context Node
+                             normalized_query  │  điểm chuẩn 2026
+                                                      >(15 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.001s] Sạch, cho qua Context Node
+                                                      >(52 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.002s)
+                                        Message  │  Reformulated → 'điểm chuẩn 2026'
+                             standalone_query  │  điểm chuẩn 2026
+                                                      >(15 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a+2b)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.283s)
+                                        Message  │  [Contextual-Guard PASS — 1.281s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.281s] standalone_query an toàn
+                                                      >(57 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [4] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.774s)
+                                        Message  │  intent='THONG_TIN_TUYEN_SINH' → action='PROCEED_RAG_UFM_SEARCH' → next='rag_search'
+                                       intent  │  THONG_TIN_TUYEN_SINH
+                                                      >(20 chars)
+                               intent_summary  │  điểm chuẩn 2026
+                                                      >(15 chars)
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                                                      >(22 chars)
+                         program_level_filter  │  null
+                          program_name_filter  │  null
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+                              response_source  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🔀 [5] MULTI-QUERY NODE (Sinh biến thể)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.470s)
+                                        Message  │  Sinh 3 biến thể
+                                multi_queries  │  [3 items]
+                                                         [0] "Điểm trúng tuyển đại học UFM năm 2026"
+                                                         [1] "Ngưỡng điểm xét tuyển vào UFM 2026"
+                                                         [2] "Điểm sàn UFM 2026"
+
+──────────────────────────────────────────────────────────────────────────
+  📊 [6] EMBEDDING NODE (BGE-M3 batch)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.764s)
+                                        Message  │  Nhúng 4 vectors × 1024D
+                             query_embeddings  │  [4 vectors × 1024D]
+
+──────────────────────────────────────────────────────────────────────────
+  🗄️ [7] RAG NODE (Hybrid Search DB)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (11.783s)
+                                        Message  │  Chunks=22, Context=8498 chars
+                                  rag_context  │  [Nguồn 1 — Tài liệu: tuyensinh-trinhdo-thacsi-dot1-2026.md | Số: 186/TB-ĐHTCM | 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 7. **ĐIỀU KIỆN DỰ TUYỂN; HỒ SƠ DỰ TUYỂN (Xem chi tiết Phụ lục 1)** | Mục: 7. **ĐIỀU KIỆN DỰ TUYỂN; HỒ SƠ DỰ TUYỂN (Xem chi tiết Phụ lục 1)** | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026
+[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]
+[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 7. **ĐIỀU KIỆN DỰ TUYỂN; HỒ SƠ DỰ TUYỂN (Xem chi tiết Phụ lục 1)**]
+
+Đường dẫn xem chi tiết: https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?LoaiTin=v1UjoAIA40d2Nl0tc5EwAA
+
+---
+
+[Nguồn 2 — Tài liệu: dieukien-ngoaingu-xettuyen-ths-ts-sdh.md | Giới thiệu | Mục: Giới thiệu | Năm: 2026]
+**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**
+*(Ban hành kèm theo Quyết định số 537/QĐ-ĐHTCM ngày 24 tháng 02 năm 2026 của Hiệu trưởng Trường Đại học Tài chính – Marketing)*
+[Nguồn: dieukien-ngoaingu-xettuyen-ths-ts-sdh.md]
+[Mục: Giới thiệu]
+
+**Điều 1. Phạm vi điều chỉnh và đối tượng áp dụng**
+Văn bản này hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ đối với các khóa tuyển sinh từ năm 2026 và điều kiện tốt nghiệp đối với học viên cao học các khóa đang học tại Trường Đại học Tài chính – Marketing (sau đây gọi tắt là Trường).
+
+**Điều 2. Quy định chung**
+1. Thời hạn giá trị của các chứng chỉ tiếng Anh quốc tế là 2 năm tính từ ngày thi đến ngày học viên nộp chứng chỉ theo thông báo của Nhà trường.
+2. Các chứng chỉ tiếng Anh được quy định tại Điều 4 chỉ xuất trình và nộp một lần để được xét công nhận đạt chuẩn đầu ra.
+3. Hằng năm, Trường ban hành thông báo thể hiện các mốc thời gian xét đạt chuẩn đầu ra về năng lực ngoại ngữ. Sau khi học viên nộp văn bằng, chứng chỉ theo thông báo và được Nhà trường kiểm tra tính xác thực, Hiệu trưởng ra quyết định công nhận đạt chuẩn đầu ra về năng lực ngoại ngữ cho học viên, đáp ứng.
+
+**Điều 3. Văn bằng, chứng chỉ ngoại ngữ đủ điều kiện xét tuyển sinh đầu vào tiến sĩ**
+1. Học viên có các văn bằng, chứng chỉ đạt mức điểm được quy định tại các Khoản 2, 3, 4, 5 Điều này đủ điều kiện ngoại ngữ xét tuyển sinh đầu vào theo quy định.
+2. Bằng tốt nghiệp trình độ đại học trở lên do một cơ sở đào tạo nước ngoài, phân hiệu của cơ sở đào tạo nước ngoài ở Việt Nam hoặc cơ sở đào tạo của Việt Nam cấp cho người học toàn thời gian bằng tiếng nước ngoài;
+3. Bằng tốt nghiệp trình độ đại học ngành ngôn ngữ tiếng nước ngoài do các cơ sở đào tạo của Việt Nam cấp;
+4. Các chứng chỉ ngoại ngữ khác tương đương trình độ bậc 4 (theo khung năng ngoại ngữ 6 bậc dùng cho Việt Nam) do Bộ Giáo dục và Đào tạo công bố.
+5. Có một trong các chứng chỉ ngoại ngữ còn hiệu lực tính đến ngày đăng ký dự tuyển theo Phụ lục 1.
+
+**Điều 4. Văn bằng, chứng chỉ ngoại ngữ đủ điều kiện xét tuyển sinh đầu vào thạc sĩ**
+1. Học viên có các văn bằng, chứng chỉ đạt mức điểm được quy định tại các Khoản 2, 3, 4, 5 Điều này đủ điều kiện ngoại ngữ xét tuyển sinh đầu vào theo quy định.
+2. Bằng tốt nghiệp trình độ đại học trở lên ngành ngôn ngữ nước ngoài; hoặc bằng tốt nghiệp trình độ đại học trở lên mà chương trình được thực hiện chủ yếu bằng ngôn ngữ nước ngoài;
+
+3. Bằng tốt nghiệp trình độ đại học trở lên do Trường Đại học Tài chính – Marketing cấp trong thời gian không quá 02 năm mà chuẩn đầu ra của chương trình đã đáp ứng yêu cầu ngoại ngữ đạt trình độ Bậc 3 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam;
+
+4. Có một trong các chứng chỉ ngoại ngữ còn hiệu lực tính đến ngày đăng ký dự tuyển theo Phụ lục 2.
+
+5. Các chứng chỉ ngoại ngữ khác tương đương trình độ bậc 3 (theo khung năng ngoại ngữ 6 bậc dùng cho Việt Nam) do Bộ Giáo dục và Đào tạo công bố.
+
+---
+
+[Nguồn 3 — Tài liệu: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md | Số: /185/TB-ĐHTCM | 5. Hồ sơ dự tuyển | Mục: 5. Hồ sơ dự tuyển | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026
+[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]
+[Mục: 5. Hồ sơ dự tuyển]
+
+a) Đơn xin dự tuyển *(theo mẫu do Trường quy định)*.
+b) Lý lịch khoa học *(theo mẫu do Trường quy định)*.
+c) Bản sao có chứng thực văn bằng thạc sĩ, hoặc đại học (loại giỏi) và bảng điểm thạc sĩ hoặc bản sao kèm theo bản chính để đối chiếu (trong trường hợp nộp hồ sơ trực tiếp).
+d) Minh chứng về kinh nghiệm nghiên cứu quy định tại Khoản 3.1, Mục 3 của Thông báo này.
+đ) Đề cương nghiên cứu và dự kiến kế hoạch học tập, nghiên cứu toàn khóa *(theo mẫu do Trường quy định, 06 bộ)*.
+e) Minh chứng về trình độ ngoại ngữ theo Khoản 3.2, Mục 3 của Thông báo này.
+g) Bản sao có chứng thực Giấy chứng nhận của Cục Quản lý chất lượng về công nhận văn bằng đối với những bằng thạc sĩ, bằng đại học do cơ sở đào tạo nước ngoài cấp.
+h) 01 Bản sao Căn cước công dân/Hộ chiếu bản sao y chứng thực hoặc bản sao kèm theo bản chính để đối chiếu
+
+* Link tải Mẫu hồ sơ dự tuyển NCS: https://daotaosdh.ufm.edu.vn/vi/bieu-mau-hoc-vu/mau-ho-so-xet-tuyen-nghien-cuu-sinh
+* Link đăng ký Tuyển sinh NCS trực tuyến: https://forms.gle/Wb8j3knjWFfkQgW39
+
+---
+
+[Nguồn 4 — Tài liệu: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md | Số: /185/TB-ĐHTCM | 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ | Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026
+[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]
+[Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ]
+
+Viện Đào tạo sau đại học – Trường Đại học Tài chính - Marketing
+Phòng D.006, số 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.
+Tư vấn tuyển sinh:
+Ngành Tài chính – Ngân hàng: 0967.657.532 - tvtuan@ufm.edu.vn (Thầy Tuấn)
+Ngành Quản trị kinh doanh: 0909.581.135 - mydieu@ufm.edu.vn (Cô Diệu)
+Ngành Quản lý kinh tế: 0343.843.868 – hs.nam@ufm.edu.vn (Thầy Nam)
+Website: http://daotaosdh.ufm.edu.vn/
+Email: tuyensinhsaudaihoc@ufm.edu.vn.
+Các thông tin chi tiết khác, vui lòng tham khảo từ trang chủ Viện Đào tạo sau đại học, hoặc liên hệ trực tiếp để được tư vấn và giải đáp.
+
+---
+
+[Nguồn 5 — Tài liệu: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md | Số: /185/TB-ĐHTCM | 3. Điều kiện dự tuyển | Mục: 3. Điều kiện dự tuyển | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026
+[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]
+[Mục: 3. Điều kiện dự tuyển]
+
+Người dự tuyển đào tạo trình độ tiến sĩ phải đáp ứng các điều kiện sau:
+
+3.1.Yêu cầu chung đối với người dự tuyển:
+
+a) Đã tốt nghiệp thạc sĩ hoặc tốt nghiệp đại học hạng giỏi trở lên ngành phù hợp (quy định tại Phụ lục III của Thông báo này); nếu bằng tốt nghiệp đại học hay thạc sĩ do cơ sở giáo dục nước ngoài cấp phải được công nhận văn bằng theo quy định hiện hành tại thời điểm dự tuyển;
+
+b) Có kinh nghiệm nghiên cứu thể hiện qua luận văn thạc sĩ của chương trình đào tạo định hướng nghiên cứu; hoặc bài báo, báo cáo khoa học đã công bố; hoặc có thời gian công tác từ 02 năm (24 tháng) trở lên là giảng viên, nghiên cứu viên của các cơ sở đào tạo, tổ chức khoa học và công nghệ;
+
+c) Có dự thảo đề cương nghiên cứu và dự kiến kế hoạch học tập, nghiên cứu toàn khóa.
+
+3.2. Người dự tuyển là công dân Việt Nam phải đạt yêu cầu về năng lực ngoại ngữ được minh chứng bằng một trong những văn bằng, chứng chỉ sau:
+
+a) Bằng tốt nghiệp trình độ đại học trở lên do một cơ sở đào tạo nước ngoài, phân hiệu của cơ sở đào tạo nước ngoài ở Việt Nam hoặc cơ sở đào tạo của Việt Nam cấp cho người học toàn thời gian bằng tiếng nước ngoài; nếu bằng tốt nghiệp đại học hay thạc sĩ do cơ sở đào tạo nước ngoài cấp phải được công nhận văn bằng theo quy định hiện hành tại thời điểm dự tuyển;
+
+b) Bằng tốt nghiệp trình độ đại học ngành ngôn ngữ tiếng nước ngoài do các cơ sở đào tạo của Việt Nam cấp;
+
+c) Có một trong các chứng chỉ ngoại ngữ quy định tại Phụ lục II của Thông báo này còn hiệu lực tính đến ngày đăng ký dự tuyển hoặc các chứng chỉ ngoại ngữ khác tương đương trình độ bậc 4 (theo khung năng ngoại ngữ 6 bậc dùng cho Việt Nam) do Bộ Giáo dục Đào tạo công bố.
+
+3.3. Người dự tuyển là công dân nước ngoài nếu đăng ký theo học chương trình đào tạo trình độ tiến sĩ bằng tiếng Việt phải có chứng chỉ tiếng Việt tối thiểu từ bậc 4 trở lên theo Khung năng lực tiếng Việt dùng cho người nước ngoài và phải đáp ứng yêu cầu về ngôn ngữ thứ hai theo quy định tại Khoản 3.2, Mục 3 của Thông báo này, trừ trường hợp là người bản ngữ của ngôn ngữ được sử dụng trong chương trình đào tạo trình độ tiến sĩ.
+                                                      >(8498 chars)
+                             retrieved_chunks  │  [22 items]
+                                                         [0] {"chunk_id": "9d82c16f-09c5-41ee-8b33-7fee6962db49", "chunk_level": "parent", "parent_id": null, "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 7. **ĐIỀU KIỆN DỰ TUYỂN; HỒ SƠ DỰ TUYỂN (Xem chi tiết Phụ lục 1)**", "program_name": null, "score": 0.5843073129653931, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 7.", "source": "vector", "rrf_score": 0.01639344262295082}
+                                                         [1] {"chunk_id": "3f57efc0-566f-46df-9c29-3bca36a9b084", "chunk_level": "parent", "parent_id": null, "section_path": "Giới thiệu", "program_name": null, "score": 0.0005319149, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "bm25", "rrf_score": 0.01639344262295082}
+                                                         [2] {"chunk_id": "f092955d-1e19-4d43-b54e-35c04067f09d", "chunk_level": "parent", "parent_id": null, "section_path": "5. Hồ sơ dự tuyển", "program_name": null, "score": 0.5611939357288, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 5. Hồ sơ dự tuyển]\n\na) Đơn xin dự tuyển *(theo mẫu do Trường quy định)*.\n", "source": "vector", "rrf_score": 0.016129032258064516}
+                                                         [3] {"chunk_id": "bcedbcdc-e13c-4dca-8084-d0c56090e367", "chunk_level": "child", "parent_id": "3f57efc0-566f-46df-9c29-3bca36a9b084", "section_path": "Giới thiệu", "program_name": null, "score": 0.0005319149, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "bm25", "rrf_score": 0.016129032258064516}
+                                                         [4] {"chunk_id": "6646db5c-916d-4327-9692-b0ad5ee4ec63", "chunk_level": "parent", "parent_id": null, "section_path": "9. Địa chỉ liên hệ đăng ký và nộp hồ sơ", "program_name": null, "score": 0.554472181467545, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ]\n\nViện Đào tạo sau đại học – Trườ", "source": "vector", "rrf_score": 0.015873015873015872}
+                                                         [5] {"chunk_id": "7cbe1ebd-ab8d-444f-a697-29a3ecda2182", "chunk_level": "child", "parent_id": "6646db5c-916d-4327-9692-b0ad5ee4ec63", "section_path": "9. Địa chỉ liên hệ đăng ký và nộp hồ sơ", "program_name": null, "score": 0.554472181467545, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ]\n\nViện Đào tạo sau đại học – Trườ", "source": "vector", "rrf_score": 0.015625}
+                                                         [6] {"chunk_id": "59999003-81ef-4644-9b1d-29f6f0e5bdfa", "chunk_level": "child", "parent_id": "562f7a0f-0064-46d0-889b-beca926fefd4", "section_path": "3. Điều kiện dự tuyển", "program_name": null, "score": 0.5481774806976318, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 3. Điều kiện dự tuyển]\n\nNgười dự tuyển đào tạo trình độ tiến sĩ phải đáp ", "source": "vector", "rrf_score": 0.015384615384615385}
+                                                         [7] {"chunk_id": "562f7a0f-0064-46d0-889b-beca926fefd4", "chunk_level": "parent", "parent_id": null, "section_path": "3. Điều kiện dự tuyển", "program_name": null, "score": 0.5481774806976318, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 3. Điều kiện dự tuyển]\n\nNgười dự tuyển đào tạo trình độ tiến sĩ phải đáp ", "source": "vector", "rrf_score": 0.015151515151515152}
+                                                         [8] {"chunk_id": "6843190b-1bbe-4b67-a930-bcb9f20063a5", "chunk_level": "parent", "parent_id": null, "section_path": "2. HỒ SƠ ĐĂNG KÝ DỰ TUYỂN", "program_name": null, "score": 0.5445656776428223, "content_preview": "# PHỤ LỤC 1\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc1.md]\n[Mục: 2. HỒ SƠ ĐĂNG KÝ DỰ TUYỂN]\n\na) 01 Phiếu đăng ký dự tuyển (theo m", "source": "vector", "rrf_score": 0.014925373134328358}
+                                                         [9] {"chunk_id": "9908aae3-d0d3-4459-8d53-f1223f37d41d", "chunk_level": "parent", "parent_id": null, "section_path": "1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.1. Yêu cầu đối với người dự tuyển:", "program_name": null, "score": 0.5428617273055487, "content_preview": "# PHỤ LỤC 1\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc1.md]\n[Mục: 1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.1. Yêu cầu đối với người ", "source": "vector", "rrf_score": 0.014705882352941176}
+                                                         [10] {"chunk_id": "4fc9dfef-86e0-4d22-86a9-2028bc338a26", "chunk_level": "child", "parent_id": "9908aae3-d0d3-4459-8d53-f1223f37d41d", "section_path": "1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.1. Yêu cầu đối với người dự tuyển:", "program_name": null, "score": 0.5428617273055487, "content_preview": "# PHỤ LỤC 1\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc1.md]\n[Mục: 1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.1. Yêu cầu đối với người ", "source": "vector", "rrf_score": 0.014492753623188406}
+                                                         [11] {"chunk_id": "836727d9-7139-4eca-8956-238e7e24c773", "chunk_level": "child", "parent_id": "5d1a3abf-5cfb-47c9-8a32-72567c21d83b", "section_path": "KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH & CÁC PHỤ LỤC", "program_name": null, "score": 0.5409808320099365, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH & CÁC PHỤ LỤC]", "source": "vector", "rrf_score": 0.014285714285714285}
+                                                         [12] {"chunk_id": "f02de27d-1e68-4c15-a796-baf4c62d7b7e", "chunk_level": "parent", "parent_id": null, "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ", "program_name": null, "score": 0.5409258604049683, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9.", "source": "vector", "rrf_score": 0.014084507042253521}
+                                                         [13] {"chunk_id": "0fb4062a-765a-4f7b-a341-7c5e3c39261b", "chunk_level": "child", "parent_id": "f02de27d-1e68-4c15-a796-baf4c62d7b7e", "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ", "program_name": null, "score": 0.5409258604049683, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9.", "source": "vector", "rrf_score": 0.013888888888888888}
+                                                         [14] {"chunk_id": "1c40c487-b5b6-4bad-b9c0-4d82c99629cf", "chunk_level": "child", "parent_id": "6843190b-1bbe-4b67-a930-bcb9f20063a5", "section_path": "2. HỒ SƠ ĐĂNG KÝ DỰ TUYỂN", "program_name": null, "score": 0.5348424315452576, "content_preview": "# PHỤ LỤC 1\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc1.md]\n[Mục: 2. HỒ SƠ ĐĂNG KÝ DỰ TUYỂN]\n\ng) Đối với các văn bằng tốt nghiệp đ", "source": "vector", "rrf_score": 0.0136986301369863}
+                                                         [15] {"chunk_id": "0e0881db-1cc5-475d-9ad7-747b5f63a67a", "chunk_level": "child", "parent_id": "f092955d-1e19-4d43-b54e-35c04067f09d", "section_path": "5. Hồ sơ dự tuyển", "program_name": null, "score": 0.5320266802326856, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 5. Hồ sơ dự tuyển]\n\ng) Bản sao có chứng thực Giấy chứng nhận của Cục Quản", "source": "vector", "rrf_score": 0.013513513513513514}
+                                                         [16] {"chunk_id": "5d1a3abf-5cfb-47c9-8a32-72567c21d83b", "chunk_level": "parent", "parent_id": null, "section_path": "KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH & CÁC PHỤ LỤC", "program_name": null, "score": 0.528031675336858, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: CÁC PHỤ LỤC > KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH]", "source": "vector", "rrf_score": 0.013333333333333334}
+                                                         [17] {"chunk_id": "e2df40d4-c664-471c-bbd9-3ace5969cff3", "chunk_level": "child", "parent_id": "f092955d-1e19-4d43-b54e-35c04067f09d", "section_path": "5. Hồ sơ dự tuyển", "program_name": null, "score": 0.5253298282623291, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 5. Hồ sơ dự tuyển]\n\na) Đơn xin dự tuyển *(theo mẫu do Trường quy định)*. ", "source": "vector", "rrf_score": 0.013157894736842105}
+                                                         [18] {"chunk_id": "4dabbc7e-579f-4550-9c7a-2a6db9dc8eaf", "chunk_level": "parent", "parent_id": null, "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.1. Phương thức tuyển sinh: xét tuyển đối với trình độ đại học và văn bằng, chứng chỉ ngoại ngữ đạt trình độ tương đương Bậc 3/6 trở lên. & 2.2. Các môn xét tuyển bao gồm:", "program_name": null, "score": 0.5243953778979417, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.1. Phương thức tuyển sinh: xét tuy", "source": "vector", "rrf_score": 0.012987012987012988}
+                                                         [19] {"chunk_id": "6f22d527-e5d1-48ee-b670-50f352a64d03", "chunk_level": "child", "parent_id": "4dabbc7e-579f-4550-9c7a-2a6db9dc8eaf", "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.1. Phương thức tuyển sinh: xét tuyển đối với trình độ đại học và văn bằng, chứng chỉ ngoại ngữ đạt trình độ tương đương Bậc 3/6 trở lên. & 2.2. Các môn xét tuyển bao gồm:", "program_name": null, "score": 0.5243953778979417, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.1. Phương thức tuyển sinh: xét tuy", "source": "vector", "rrf_score": 0.01282051282051282}
+                                                         [20] {"chunk_id": "cb879016-3d5b-4cb9-a7b3-83a5ef93c92c", "chunk_level": "parent", "parent_id": null, "section_path": "1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.2. Thí sinh tốt nghiệp đại học thuộc ngành gần (cùng lĩnh vực kinh doanh và quản lý), ngành khác (khác lĩnh vực nhưng có liên quan trực tiếp đến lĩnh vực quản trị, quản lý) với ngành dự tuyển cần học Bổ sung kiến thức. Danh mục ngành đúng, ngành gần, ngành khác và môn học Bổ sung kiến thức được nêu ở Phụ lục 2. & 1.3. Các văn bằng, chứng chỉ chứng minh năng lực ngoại ngữ từ Bậc 3 trở lên:", "program_name": null, "score": 0.5229084491729736, "content_preview": "# PHỤ LỤC 1\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc1.md]\n[Mục: 1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.2. Thí sinh tốt nghiệp đạ", "source": "vector", "rrf_score": 0.012658227848101266}
+                                                         [21] {"chunk_id": "5788cef2-4004-41ed-815f-8536937468b2", "chunk_level": "child", "parent_id": "cb879016-3d5b-4cb9-a7b3-83a5ef93c92c", "section_path": "1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.2. Thí sinh tốt nghiệp đại học thuộc ngành gần (cùng lĩnh vực kinh doanh và quản lý), ngành khác (khác lĩnh vực nhưng có liên quan trực tiếp đến lĩnh vực quản trị, quản lý) với ngành dự tuyển cần học Bổ sung kiến thức. Danh mục ngành đúng, ngành gần, ngành khác và môn học Bổ sung kiến thức được nêu ở Phụ lục 2. & 1.3. Các văn bằng, chứng chỉ chứng minh năng lực ngoại ngữ từ Bậc 3 trở lên:", "program_name": null, "score": 0.5216289758682251, "content_preview": "# PHỤ LỤC 1\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc1.md]\n[Mục: 1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.2. Thí sinh tốt nghiệp đạ", "source": "vector", "rrf_score": 0.0125}
+
+──────────────────────────────────────────────────────────────────────────
+  🌐 [8] RAG SEARCH PIPELINE (Evaluator + Web Search)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (15.506s)
+                                        Message  │  cache=MISS, citations=4
+                           ufm_search_queries  │  [2 items]
+                                                         [0] "Điểm chuẩn tuyển sinh 2026"
+                                                         [1] "Thông báo điểm trúng tuyển 2026"
+                              pr_search_query  │  null
+                           web_search_results  │  Hiện tại, Trường Đại học Tài chính - Marketing (UFM) đã công bố thông tin tuyển sinh đại học chính quy năm 2026, bao gồm các phương thức xét tuyển, chỉ tiêu, tổ hợp xét tuyển và ngưỡng đầu vào. Tuy nhiên, điểm chuẩn tuyển sinh chính thức và thông báo điểm trúng tuyển cụ thể cho từng ngành năm 2026 vẫn chưa được công bố.
+
+Các thông tin đã được công bố cho kỳ tuyển sinh 2026 bao gồm:
+*   **Phương thức xét tuyển**: Trường tổ chức 05 phương thức xét tuyển, bao gồm: xét tuyển thẳng theo quy định của Bộ Giáo dục và Đào tạo; xét tuyển dựa trên kết quả học tập cấp THPT (học bạ); xét tuyển dựa vào kết quả kỳ thi Đánh giá năng lực của Đại học Quốc gia Thành phố Hồ Chí Minh năm 2026; xét tuyển dựa vào kết quả kỳ thi Đánh giá đầu vào đại học trên máy tính (Kỳ thi V-SAT) năm 2026; và xét tuyển dựa vào kết quả kỳ thi tốt nghiệp THPT năm 2026.
+*   **Tổ hợp xét tuyển và ngưỡng đầu vào**: Xét tuyển theo tổ hợp 3 môn (trong số các môn: Toán, Ngữ văn, Vật lí, Hóa học, Lịch sử, Địa lí, Giáo dục kinh tế và pháp luật, Tiếng Anh), trong đó có môn bắt buộc là Toán. Ngưỡng đầu vào là 16 điểm theo thang điểm 30 cho tất cả các phương thức xét tuyển (ngoài ra điểm ngưỡng đầu vào ngành Luật Kinh tế thực hiện theo quy định hiện hành của Bộ Giáo dục và Đào tạo). Tổng điểm 03 môn thi kỳ thi tốt nghiệp THPT các năm theo tổ hợp xét tuyển đạt tối thiểu 15 điểm theo thang điểm 30, áp dụng đối với thí sinh thi tốt nghiệp năm 2026.
+*   **Chỉ tiêu và điểm môn Toán**: UFM dự kiến tuyển khoảng 6.500 sinh viên năm 2026. Tất cả các tổ hợp tuyển sinh năm 2026 của trường đều có môn Toán, và điểm môn Toán được nhân hệ số 2, thang điểm xét tuyển chuyển sang 40 thay vì 30 như những năm trước. Riêng ngành Luật kinh tế, thí sinh phải có điểm môn Toán (chưa nhân hệ số) đạt từ 6 trở lên.
+*   **Ngành mới**: Năm 2026, UFM dự kiến mở 7 ngành mới: Trí tuệ nhân tạo, Khoa học dữ liệu, Kiểm toán, Quản lý kinh tế, Luật kinh tế, Toán kinh tế và Kinh tế chính trị.
+
+**Lưu ý**: Dữ liệu điểm chuẩn năm 2026 đang được cập nhật và chưa có thông báo chính thức về điểm trúng tuyển cụ thể cho từng ngành.
+                                                      >(2070 chars)
+                         web_search_citations  │  [4 items]
+                                                         [0] {"text": "ufm.edu.vn", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHOeev4qPGJ2HpHO9AVHukTBy-intInDnGm5fecGfccnuMDwV6uDNHKtgJ5hOD6obbTbWGraqTDICJmepqbR_Irvg8kUd__YLjuat_x8bhgtZ-uKDORg2n8lYpfptK5OloU4kNQC9ZjDV_mzrULUr6VSbEQ59GiXerPy2dRXOhZ-A5o8qimrBw5LpUH6AppeQekSw=="}
+                                                         [1] {"text": "tuyensinh247.com", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQENjHmgqVLtbRKJJSF5C4L7K1TAyJSg-zGe-vuPwdMxBohcErElbBHIYg4-DDcKdF1y33DbSpdTLqgmwFgfBMW6EQznlWJN29bN-EqQ1rMtCxjsdOMKjoFbkA05uRFUrXjxYbOoncbiWf3lRBAqdPALwkmyQ8X4BjzHP98mqVSN0Le-4ZuITOzmhFNqJSisHD8="}
+                                                         [2] {"text": "vnexpress.net", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGQ7uLmfj6a2XO2IQyE_MLbFtYFjDDVjLjWygDBNoa35axBfkW5TttyH0lfJde_KlxO7RKXWXZlM0jKdOHgaaNJXDvYqtJfwsh5Gb7XN_DaQtms0zNkU0T9irgj4rT8bAabLeadUtbLNbicnOp70BdimnI3EHApEqaQ_GclXry2IHjYzWp5Wb2HsCnNRNeg4gdcnunnTdb5xcvZjJwy0rjm8B593UqW7DFfpAelLwhiJPpbD2aKijMQHVeY"}
+                                                         [3] {"text": "giaphugroup.com", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFwr_cuz7gH1aqJlsdt_4S-uI59Y9WXCTv8GTfLBcoDRLftecSvEhHd24jnpvql3tTYJ3ZSYDKccNUS67BKGGsGzCJZzmH4mixqrXTpqoMd2suERjHO0s9vc-T4eded1G3pirFD38QPYb6_nLcWcJKTJmiLTCG-nrFpRwEpjKjCuJcGH5F-osbavsMCgOpHXnKb"}
+                             search_cache_hit  │  ✗ False
+                      search_cache_similarity  │  0.0000
+                               final_response  │  [DỮ LIỆU NỘI BỘ]
+[Nguồn 1 — Tài liệu: tuyensinh-trinhdo-thacsi-dot1-2026.md | Số: 186/TB-ĐHTCM | 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 7. **ĐIỀU KIỆN DỰ TUYỂN; HỒ SƠ DỰ TUYỂN (Xem chi tiết Phụ lục 1)** | Mục: 7. **ĐIỀU KIỆN DỰ TUYỂN; HỒ SƠ DỰ TUYỂN (Xem chi tiết Phụ lục 1)** | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026
+[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]
+[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 7. **ĐIỀU KIỆN DỰ TUYỂN; HỒ SƠ DỰ TUYỂN (Xem chi tiết Phụ lục 1)**]
+
+Đường dẫn xem chi tiết: https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?LoaiTin=v1UjoAIA40d2Nl0tc5EwAA
+
+---
+
+[Nguồn 2 — Tài liệu: dieukien-ngoaingu-xettuyen-ths-ts-sdh.md | Giới thiệu | Mục: Giới thiệu | Năm: 2026]
+**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**
+*(Ban hành kèm theo Quyết định số 537/QĐ-ĐHTCM ngày 24 tháng 02 năm 2026 của Hiệu trưởng Trường Đại học Tài chính – Marketing)*
+[Nguồn: dieukien-ngoaingu-xettuyen-ths-ts-sdh.md]
+[Mục: Giới thiệu]
+
+**Điều 1. Phạm vi điều chỉnh và đối tượng áp dụng**
+Văn bản này hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ đối với các khóa tuyển sinh từ năm 2026 và điều kiện tốt nghiệp đối với học viên cao học các khóa đang học tại Trường Đại học Tài chính – Marketing (sau đây gọi tắt là Trường).
+
+**Điều 2. Quy định chung**
+1. Thời hạn giá trị của các chứng chỉ tiếng Anh quốc tế là 2 năm tính từ ngày thi đến ngày học viên nộp chứng chỉ theo thông báo của Nhà trường.
+2. Các chứng chỉ tiếng Anh được quy định tại Điều 4 chỉ xuất trình và nộp một lần để được xét công nhận đạt chuẩn đầu ra.
+3. Hằng năm, Trường ban hành thông báo thể hiện các mốc thời gian xét đạt chuẩn đầu ra về năng lực ngoại ngữ. Sau khi học viên nộp văn bằng, chứng chỉ theo thông báo và được Nhà trường kiểm tra tính xác thực, Hiệu trưởng ra quyết định công nhận đạt chuẩn đầu ra về năng lực ngoại ngữ cho học viên, đáp ứng.
+
+**Điều 3. Văn bằng, chứng chỉ ngoại ngữ đủ điều kiện xét tuyển sinh đầu vào tiến sĩ**
+1. Học viên có các văn bằng, chứng chỉ đạt mức điểm được quy định tại các Khoản 2, 3, 4, 5 Điều này đủ điều kiện ngoại ngữ xét tuyển sinh đầu vào theo quy định.
+2. Bằng tốt nghiệp trình độ đại học trở lên do một cơ sở đào tạo nước ngoài, phân hiệu của cơ sở đào tạo nước ngoài ở Việt Nam hoặc cơ sở đào tạo của Việt Nam cấp cho người học toàn thời gian bằng tiếng nước ngoài;
+3. Bằng tốt nghiệp trình độ đại học ngành ngôn ngữ tiếng nước ngoài do các cơ sở đào tạo của Việt Nam cấp;
+4. Các chứng chỉ ngoại ngữ khác tương đương trình độ bậc 4 (theo khung năng ngoại ngữ 6 bậc dùng cho Việt Nam) do Bộ Giáo dục và Đào tạo công bố.
+5. Có một trong các chứng chỉ ngoại ngữ còn hiệu lực tính đến ngày đăng ký dự tuyển theo Phụ lục 1.
+
+**Điều 4. Văn bằng, chứng chỉ ngoại ngữ đủ điều kiện xét tuyển sinh đầu vào thạc sĩ**
+1. Học viên có các văn bằng, chứng chỉ đạt mức điểm được quy định tại các Khoản 2, 3, 4, 5 Điều này đủ điều kiện ngoại ngữ xét tuyển sinh đầu vào theo quy định.
+2. Bằng tốt nghiệp trình độ đại học trở lên ngành ngôn ngữ nước ngoài; hoặc bằng tốt nghiệp trình độ đại học trở lên mà chương trình được thực hiện chủ yếu bằng ngôn ngữ nước ngoài;
+
+3. Bằng tốt nghiệp trình độ đại học trở lên do Trường Đại học Tài chính – Marketing cấp trong thời gian không quá 02 năm mà chuẩn đầu ra của chương trình đã đáp ứng yêu cầu ngoại ngữ đạt trình độ Bậc 3 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam;
+
+4. Có một trong các chứng chỉ ngoại ngữ còn hiệu lực tính đến ngày đăng ký dự tuyển theo Phụ lục 2.
+
+5. Các chứng chỉ ngoại ngữ khác tương đương trình độ bậc 3 (theo khung năng ngoại ngữ 6 bậc dùng cho Việt Nam) do Bộ Giáo dục và Đào tạo công bố.
+
+---
+
+[Nguồn 3 — Tài liệu: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md | Số: /185/TB-ĐHTCM | 5. Hồ sơ dự tuyển | Mục: 5. Hồ sơ dự tuyển | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026
+[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]
+[Mục: 5. Hồ sơ dự tuyển]
+
+a) Đơn xin dự tuyển *(theo mẫu do Trường quy định)*.
+b) Lý lịch khoa học *(theo mẫu do Trường quy định)*.
+c) Bản sao có chứng thực văn bằng thạc sĩ, hoặc đại học (loại giỏi) và bảng điểm thạc sĩ hoặc bản sao kèm theo bản chính để đối chiếu (trong trường hợp nộp hồ sơ trực tiếp).
+d) Minh chứng về kinh nghiệm nghiên cứu quy định tại Khoản 3.1, Mục 3 của Thông báo này.
+đ) Đề cương nghiên cứu và dự kiến kế hoạch học tập, nghiên cứu toàn khóa *(theo mẫu do Trường quy định, 06 bộ)*.
+e) Minh chứng về trình độ ngoại ngữ theo Khoản 3.2, Mục 3 của Thông báo này.
+g) Bản sao có chứng thực Giấy chứng nhận của Cục Quản lý chất lượng về công nhận văn bằng đối với những bằng thạc sĩ, bằng đại học do cơ sở đào tạo nước ngoài cấp.
+h) 01 Bản sao Căn cước công dân/Hộ chiếu bản sao y chứng thực hoặc bản sao kèm theo bản chính để đối chiếu
+
+* Link tải Mẫu hồ sơ dự tuyển NCS: https://daotaosdh.ufm.edu.vn/vi/bieu-mau-hoc-vu/mau-ho-so-xet-tuyen-nghien-cuu-sinh
+* Link đăng ký Tuyển sinh NCS trực tuyến: https://forms.gle/Wb8j3knjWFfkQgW39
+
+---
+
+[Nguồn 4 — Tài liệu: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md | Số: /185/TB-ĐHTCM | 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ | Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026
+[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]
+[Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ]
+
+Viện Đào tạo sau đại học – Trường Đại học Tài chính - Marketing
+Phòng D.006, số 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.
+Tư vấn tuyển sinh:
+Ngành Tài chính – Ngân hàng: 0967.657.532 - tvtuan@ufm.edu.vn (Thầy Tuấn)
+Ngành Quản trị kinh doanh: 0909.581.135 - mydieu@ufm.edu.vn (Cô Diệu)
+Ngành Quản lý kinh tế: 0343.843.868 – hs.nam@ufm.edu.vn (Thầy Nam)
+Website: http://daotaosdh.ufm.edu.vn/
+Email: tuyensinhsaudaihoc@ufm.edu.vn.
+Các thông tin chi tiết khác, vui lòng tham khảo từ trang chủ Viện Đào tạo sau đại học, hoặc liên hệ trực tiếp để được tư vấn và giải đáp.
+
+---
+
+[Nguồn 5 — Tài liệu: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md | Số: /185/TB-ĐHTCM | 3. Điều kiện dự tuyển | Mục: 3. Điều kiện dự tuyển | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026
+[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]
+[Mục: 3. Điều kiện dự tuyển]
+
+Người dự tuyển đào tạo trình độ tiến sĩ phải đáp ứng các điều kiện sau:
+
+3.1.Yêu cầu chung đối với người dự tuyển:
+
+a) Đã tốt nghiệp thạc sĩ hoặc tốt nghiệp đại học hạng giỏi trở lên ngành phù hợp (quy định tại Phụ lục III của Thông báo này); nếu bằng tốt nghiệp đại học hay thạc sĩ do cơ sở giáo dục nước ngoài cấp phải được công nhận văn bằng theo quy định hiện hành tại thời điểm dự tuyển;
+
+b) Có kinh nghiệm nghiên cứu thể hiện qua luận văn thạc sĩ của chương trình đào tạo định hướng nghiên cứu; hoặc bài báo, báo cáo khoa học đã công bố; hoặc có thời gian công tác từ 02 năm (24 tháng) trở lên là giảng viên, nghiên cứu viên của các cơ sở đào tạo, tổ chức khoa học và công nghệ;
+
+c) Có dự thảo đề cương nghiên cứu và dự kiến kế hoạch học tập, nghiên cứu toàn khóa.
+
+3.2. Người dự tuyển là công dân Việt Nam phải đạt yêu cầu về năng lực ngoại ngữ được minh chứng bằng một trong những văn bằng, chứng chỉ sau:
+
+a) Bằng tốt nghiệp trình độ đại học trở lên do một cơ sở đào tạo nước ngoài, phân hiệu của cơ sở đào tạo nước ngoài ở Việt Nam hoặc cơ sở đào tạo của Việt Nam cấp cho người học toàn thời gian bằng tiếng nước ngoài; nếu bằng tốt nghiệp đại học hay thạc sĩ do cơ sở đào tạo nước ngoài cấp phải được công nhận văn bằng theo quy định hiện hành tại thời điểm dự tuyển;
+
+b) Bằng tốt nghiệp trình độ đại học ngành ngôn ngữ tiếng nước ngoài do các cơ sở đào tạo của Việt Nam cấp;
+
+c) Có một trong các chứng chỉ ngoại ngữ quy định tại Phụ lục II của Thông báo này còn hiệu lực tính đến ngày đăng ký dự tuyển hoặc các chứng chỉ ngoại ngữ khác tương đương trình độ bậc 4 (theo khung năng ngoại ngữ 6 bậc dùng cho Việt Nam) do Bộ Giáo dục Đào tạo công bố.
+
+3.3. Người dự tuyển là công dân nước ngoài nếu đăng ký theo học chương trình đào tạo trình độ tiến sĩ bằng tiếng Việt phải có chứng chỉ tiếng Việt tối thiểu từ bậc 4 trở lên theo Khung năng lực tiếng Việt dùng cho người nước ngoài và phải đáp ứng yêu cầu về ngôn ngữ thứ hai theo quy định tại Khoản 3.2, Mục 3 của Thông báo này, trừ trường hợp là người bản ngữ của ngôn ngữ được sử dụng trong chương trình đào tạo trình độ tiến sĩ.
+
+[DỮ LIỆU TỪ WEB]
+Hiện tại, Trường Đại học Tài chính - Marketing (UFM) đã công bố thông tin tuyển sinh đại học chính quy năm 2026, bao gồm các phương thức xét tuyển, chỉ tiêu, tổ hợp xét tuyển và ngưỡng đầu vào. Tuy nhiên, điểm chuẩn tuyển sinh chính thức và thông báo điểm trúng tuyển cụ thể cho từng ngành năm 2026 vẫn chưa được công bố.
+
+Các thông tin đã được công bố cho kỳ tuyển sinh 2026 bao gồm:
+*   **Phương thức xét tuyển**: Trường tổ chức 05 phương thức xét tuyển, bao gồm: xét tuyển thẳng theo quy định của Bộ Giáo dục và Đào tạo; xét tuyển dựa trên kết quả học tập cấp THPT (học bạ); xét tuyển dựa vào kết quả kỳ thi Đánh giá năng lực của Đại học Quốc gia Thành phố Hồ Chí Minh năm 2026; xét tuyển dựa vào kết quả kỳ thi Đánh giá đầu vào đại học trên máy tính (Kỳ thi V-SAT) năm 2026; và xét tuyển dựa vào kết quả kỳ thi tốt nghiệp THPT năm 2026.
+*   **Tổ hợp xét tuyển và ngưỡng đầu vào**: Xét tuyển theo tổ hợp 3 môn (trong số các môn: Toán, Ngữ văn, Vật lí, Hóa học, Lịch sử, Địa lí, Giáo dục kinh tế và pháp luật, Tiếng Anh), trong đó có môn bắt buộc là Toán. Ngưỡng đầu vào là 16 điểm theo thang điểm 30 cho tất cả các phương thức xét tuyển (ngoài ra điểm ngưỡng đầu vào ngành Luật Kinh tế thực hiện theo quy định hiện hành của Bộ Giáo dục và Đào tạo). Tổng điểm 03 môn thi kỳ thi tốt nghiệp THPT các năm theo tổ hợp xét tuyển đạt tối thiểu 15 điểm theo thang điểm 30, áp dụng đối với thí sinh thi tốt nghiệp năm 2026.
+*   **Chỉ tiêu và điểm môn Toán**: UFM dự kiến tuyển khoảng 6.500 sinh viên năm 2026. Tất cả các tổ hợp tuyển sinh năm 2026 của trường đều có môn Toán, và điểm môn Toán được nhân hệ số 2, thang điểm xét tuyển chuyển sang 40 thay vì 30 như những năm trước. Riêng ngành Luật kinh tế, thí sinh phải có điểm môn Toán (chưa nhân hệ số) đạt từ 6 trở lên.
+*   **Ngành mới**: Năm 2026, UFM dự kiến mở 7 ngành mới: Trí tuệ nhân tạo, Khoa học dữ liệu, Kiểm toán, Quản lý kinh tế, Luật kinh tế, Toán kinh tế và Kinh tế chính trị.
+
+**Lưu ý**: Dữ liệu điểm chuẩn năm 2026 đang được cập nhật và chưa có thông báo chính thức về điểm trúng tuyển cụ thể cho từng ngành.
+
+[NGUỒN TRÍCH DẪN]
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHOeev4qPGJ2HpHO9AVHukTBy-intInDnGm5fecGfccnuMDwV6uDNHKtgJ5hOD6obbTbWGraqTDICJmepqbR_Irvg8kUd__YLjuat_x8bhgtZ-uKDORg2n8lYpfptK5OloU4kNQC9ZjDV_mzrULUr6VSbEQ59GiXerPy2dRXOhZ-A5o8qimrBw5LpUH6AppeQekSw==)
+- [tuyensinh247.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQENjHmgqVLtbRKJJSF5C4L7K1TAyJSg-zGe-vuPwdMxBohcErElbBHIYg4-DDcKdF1y33DbSpdTLqgmwFgfBMW6EQznlWJN29bN-EqQ1rMtCxjsdOMKjoFbkA05uRFUrXjxYbOoncbiWf3lRBAqdPALwkmyQ8X4BjzHP98mqVSN0Le-4ZuITOzmhFNqJSisHD8=)
+- [vnexpress.net](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGQ7uLmfj6a2XO2IQyE_MLbFtYFjDDVjLjWygDBNoa35axBfkW5TttyH0lfJde_KlxO7RKXWXZlM0jKdOHgaaNJXDvYqtJfwsh5Gb7XN_DaQtms0zNkU0T9irgj4rT8bAabLeadUtbLNbicnOp70BdimnI3EHApEqaQ_GclXry2IHjYzWp5Wb2HsCnNRNeg4gdcnunnTdb5xcvZjJwy0rjm8B593UqW7DFfpAelLwhiJPpbD2aKijMQHVeY)
+- [giaphugroup.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFwr_cuz7gH1aqJlsdt_4S-uI59Y9WXCTv8GTfLBcoDRLftecSvEhHd24jnpvql3tTYJ3ZSYDKccNUS67BKGGsGzCJZzmH4mixqrXTpqoMd2suERjHO0s9vc-T4eded1G3pirFD38QPYb6_nLcWcJKTJmiLTCG-nrFpRwEpjKjCuJcGH5F-osbavsMCgOpHXnKb)
+                                                      >(11817 chars)
+                              response_source  │  rag_search_context
+                                                      >(18 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [9] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (8.693s)
+                                        Message  │  source='rag_search_context_generated', length=4627 chars
+                               final_response  │  Chào bạn nhé! Mình hiểu bạn đang rất quan tâm đến **điểm chuẩn năm 2026** của UFM để chuẩn bị tốt nhất cho kỳ thi sắp tới. 🎓
+
+Hiện tại, Trường Đại học Tài chính - Marketing (UFM) đã công bố một số thông tin quan trọng về kỳ tuyển sinh đại học chính quy năm 2026, nhưng **điểm chuẩn tuyển sinh chính thức và điểm trúng tuyển cụ thể cho từng ngành thì vẫn chưa được công bố** bạn nhé. Thông thường, điểm chuẩn sẽ được công bố sau khi kỳ thi tốt nghiệp THPT và các đợt xét tuyển kết thúc.
+
+Tuy nhiên, mình có thể cung cấp cho bạn những thông tin đáng chú ý đã được UFM công bố cho kỳ tuyển sinh 2026 để bạn có cái nhìn tổng quan và định hướng tốt hơn:
+
+*   **Phương thức xét tuyển**: UFM sẽ áp dụng **05 phương thức xét tuyển** đa dạng, giúp bạn có nhiều cơ hội hơn để vào trường:
+    *   Xét tuyển thẳng theo quy định của Bộ Giáo dục và Đào tạo.
+    *   Xét tuyển dựa trên kết quả học tập cấp THPT (học bạ).
+    *   Xét tuyển dựa vào kết quả kỳ thi Đánh giá năng lực của Đại học Quốc gia Thành phố Hồ Chí Minh năm 2026.
+    *   Xét tuyển dựa vào kết quả kỳ thi Đánh giá đầu vào đại học trên máy tính (Kỳ thi V-SAT) năm 2026.
+    *   Xét tuyển dựa vào kết quả kỳ thi tốt nghiệp THPT năm 2026.
+    *(Nguồn: ufm.edu.vn, tuyensinh247.com, vnexpress.net, giaphugroup.com)*
+
+*   **Chỉ tiêu và Ngưỡng đầu vào**:
+    *   UFM dự kiến tuyển khoảng **6.500 sinh viên** năm 2026 ([ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHOeev4qPGJ2HpHO9AVHukTBy-intInDnGm5fecGfccnuMDwV6uDNHKtgJ5hOD6obbTbGGraqTDICJmepqbQ_Irvg8kUd__YLjuat_x8bhgtZ-uKDORg2n8lYpfptK5OloU4kNQC9ZjDV_mzrULUr6VSbEQ59GiXerPy2dRXOhZ-A5o8qimrBw5LpUH6AppeQekSw==)).
+    *   Ngưỡng đầu vào chung là **16 điểm** theo thang điểm 30 cho tất cả các phương thức xét tuyển. Riêng ngành Luật Kinh tế sẽ có ngưỡng đầu vào theo quy định của Bộ Giáo dục và Đào tạo.
+    *   Tổng điểm 03 môn thi kỳ thi tốt nghiệp THPT các năm theo tổ hợp xét tuyển đạt tối thiểu **15 điểm** theo thang điểm 30, áp dụng đối với thí sinh thi tốt nghiệp năm 2026. *(Nguồn: ufm.edu.vn, tuyensinh247.com, vnexpress.net, giaphugroup.com)*
+
+*   **Tổ hợp xét tuyển và điểm môn Toán**:
+    *   UFM xét tuyển theo tổ hợp 3 môn (trong số các môn: Toán, Ngữ văn, Vật lí, Hóa học, Lịch sử, Địa lí, Giáo dục kinh tế và pháp luật, Tiếng Anh).
+    *   Điểm môn **Toán là môn bắt buộc** và được **nhân hệ số 2**, thang điểm xét tuyển chuyển sang **40** thay vì 30 như những năm trước.
+    *   Đặc biệt, riêng ngành **Luật Kinh tế**, thí sinh phải có điểm môn Toán (chưa nhân hệ số) đạt từ **6 trở lên** ([ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHOeev4qPGJ2HpHO9AVHukTBy-intInDnGm5fecGfccnuMDwV6uDNHKtgJ5hOD6obbTbWGraqTDICJmepqb_Irvg8kUd__YLjuat_x8bhgtZ-uKDORg2n8lYpfptK5OloU4kNQC9ZjDV_mzrULUr6VSbEQ59GiXerPy2dRXOhZ-A5o8qimrBw5LpUH6AppeQekSw==)). *(Nguồn: ufm.edu.vn, tuyensinh247.com, vnexpress.net, giaphugroup.com)*
+
+*   **Ngành mới**: Năm 2026, UFM dự kiến mở **07 ngành mới** cực kỳ hấp dẫn, đón đầu xu hướng thị trường: **Trí tuệ nhân tạo, Khoa học dữ liệu, Kiểm toán, Quản lý kinh tế, Luật kinh tế, Toán kinh tế và Kinh tế chính trị** ([ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHOeev4qPGJ2HpHO9AVHukTBy-intInDnGm5fecGfccnuMDwV6uDNHKtgJ5hOD6obbTbWGraqTDICJmepqb_Irvg8kUd__YLjuat_x8bhgtZ-uKDORg2n8lYpfptK5OloU4kNQC9ZjDV_mzrULUr6VSbEQ59GiXerPy2dRXOhZ-A5o8qimrBw5LpUH6AppeQekSw==)). Đây là cơ hội tuyệt vời để bạn khám phá những lĩnh vực mới mẻ và tiềm năng!
+
+**Lưu ý quan trọng:** Các thông tin trên là về tuyển sinh đại học chính quy. Ngoài ra, UFM cũng đã có thông báo về tuyển sinh trình độ **thạc sĩ và tiến sĩ đợt 1 năm 2026**, với các điều kiện dự tuyển và hồ sơ cụ thể. Bạn có thể xem chi tiết tại các link sau nếu quan tâm đến bậc học cao hơn nhé:
+*   Tuyển sinh trình độ thạc sĩ đợt 1 năm 2026: [Xem chi tiết](https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?LoaiTin=v1UjoAIA40d2Nl0tc5EwAA) *(Theo TB tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, Số: 186/TB-ĐHTCM)*
+*   Tuyển sinh trình độ tiến sĩ đợt 1 năm 2026: có thông tin về điều kiện dự tuyển, hồ sơ dự tuyển và địa chỉ liên hệ ([tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md](https://daotaosdh.ufm.edu.vn/vi/bieu-mau-hoc-vu/mau-ho-so-xet-tuyen-nghien-cuu-sinh)) *(Theo TB tuyển sinh trình độ tiến sĩ đợt 1 năm 2026, Số: /185/TB-ĐHTCM)*
+
+Để cập nhật thông tin chính xác và nhanh nhất về điểm chuẩn ngay khi có thông báo, bạn hãy thường xuyên theo dõi website chính thức của UFM hoặc trang tuyển sinh của trường nhé.
+
+Bạn có muốn mình giải thích thêm về các phương thức xét tuyển hay các ngành học mới của UFM không? Mình luôn sẵn sàng hỗ trợ bạn! 🌟
+                                                      >(4627 chars)
+                              response_source  │  rag_search_context_generated
+                                                      >(28 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : rag_search_context_generated
+  Intent          : THONG_TIN_TUYEN_SINH → PROCEED_RAG_UFM_SEARCH
+  Response Length : 4627 chars
+  Total Time      : 43.33s
+  Nodes Executed  : 9
+──────────────────────────────────────────────────────────────────────────
+
+Chào bạn nhé! Mình hiểu bạn đang rất quan tâm đến **điểm chuẩn năm 2026** của UFM để chuẩn bị tốt nhất cho kỳ thi sắp tới. 🎓
+
+Hiện tại, Trường Đại học Tài chính - Marketing (UFM) đã công bố một số thông tin quan trọng về kỳ tuyển sinh đại học chính quy năm 2026, nhưng **điểm chuẩn tuyển sinh chính thức và điểm trúng tuyển cụ thể cho từng ngành thì vẫn chưa được công bố** bạn nhé. Thông thường, điểm chuẩn sẽ được công bố sau khi kỳ thi tốt nghiệp THPT và các đợt xét tuyển kết thúc.
+
+Tuy nhiên, mình có thể cung cấp cho bạn những thông tin đáng chú ý đã được UFM công bố cho kỳ tuyển sinh 2026 để bạn có cái nhìn tổng quan và định hướng tốt hơn:
+
+*   **Phương thức xét tuyển**: UFM sẽ áp dụng **05 phương thức xét tuyển** đa dạng, giúp bạn có nhiều cơ hội hơn để vào trường:
+    *   Xét tuyển thẳng theo quy định của Bộ Giáo dục và Đào tạo.
+    *   Xét tuyển dựa trên kết quả học tập cấp THPT (học bạ).
+    *   Xét tuyển dựa vào kết quả kỳ thi Đánh giá năng lực của Đại học Quốc gia Thành phố Hồ Chí Minh năm 2026.
+    *   Xét tuyển dựa vào kết quả kỳ thi Đánh giá đầu vào đại học trên máy tính (Kỳ thi V-SAT) năm 2026.
+    *   Xét tuyển dựa vào kết quả kỳ thi tốt nghiệp THPT năm 2026.
+    *(Nguồn: ufm.edu.vn, tuyensinh247.com, vnexpress.net, giaphugroup.com)*
+
+*   **Chỉ tiêu và Ngưỡng đầu vào**:
+    *   UFM dự kiến tuyển khoảng **6.500 sinh viên** năm 2026 ([ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHOeev4qPGJ2HpHO9AVHukTBy-intInDnGm5fecGfccnuMDwV6uDNHKtgJ5hOD6obbTbGGraqTDICJmepqbQ_Irvg8kUd__YLjuat_x8bhgtZ-uKDORg2n8lYpfptK5OloU4kNQC9ZjDV_mzrULUr6VSbEQ59GiXerPy2dRXOhZ-A5o8qimrBw5LpUH6AppeQekSw==)).
+    *   Ngưỡng đầu vào chung là **16 điểm** theo thang điểm 30 cho tất cả các phương thức xét tuyển. Riêng ngành Luật Kinh tế sẽ có ngưỡng đầu vào theo quy định của Bộ Giáo dục và Đào tạo.
+    *   Tổng điểm 03 môn thi kỳ thi tốt nghiệp THPT các năm theo tổ hợp xét tuyển đạt tối thiểu **15 điểm** theo thang điểm 30, áp dụng đối với thí sinh thi tốt nghiệp năm 2026. *(Nguồn: ufm.edu.vn, tuyensinh247.com, vnexpress.net, giaphugroup.com)*
+
+*   **Tổ hợp xét tuyển và điểm môn Toán**:
+    *   UFM xét tuyển theo tổ hợp 3 môn (trong số các môn: Toán, Ngữ văn, Vật lí, Hóa học, Lịch sử, Địa lí, Giáo dục kinh tế và pháp luật, Tiếng Anh).
+    *   Điểm môn **Toán là môn bắt buộc** và được **nhân hệ số 2**, thang điểm xét tuyển chuyển sang **40** thay vì 30 như những năm trước.
+    *   Đặc biệt, riêng ngành **Luật Kinh tế**, thí sinh phải có điểm môn Toán (chưa nhân hệ số) đạt từ **6 trở lên** ([ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHOeev4qPGJ2HpHO9AVHukTBy-intInDnGm5fecGfccnuMDwV6uDNHKtgJ5hOD6obbTbWGraqTDICJmepqb_Irvg8kUd__YLjuat_x8bhgtZ-uKDORg2n8lYpfptK5OloU4kNQC9ZjDV_mzrULUr6VSbEQ59GiXerPy2dRXOhZ-A5o8qimrBw5LpUH6AppeQekSw==)). *(Nguồn: ufm.edu.vn, tuyensinh247.com, vnexpress.net, giaphugroup.com)*
+
+*   **Ngành mới**: Năm 2026, UFM dự kiến mở **07 ngành mới** cực kỳ hấp dẫn, đón đầu xu hướng thị trường: **Trí tuệ nhân tạo, Khoa học dữ liệu, Kiểm toán, Quản lý kinh tế, Luật kinh tế, Toán kinh tế và Kinh tế chính trị** ([ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHOeev4qPGJ2HpHO9AVHukTBy-intInDnGm5fecGfccnuMDwV6uDNHKtgJ5hOD6obbTbWGraqTDICJmepqb_Irvg8kUd__YLjuat_x8bhgtZ-uKDORg2n8lYpfptK5OloU4kNQC9ZjDV_mzrULUr6VSbEQ59GiXerPy2dRXOhZ-A5o8qimrBw5LpUH6AppeQekSw==)). Đây là cơ hội tuyệt vời để bạn khám phá những lĩnh vực mới mẻ và tiềm năng!
+
+**Lưu ý quan trọng:** Các thông tin trên là về tuyển sinh đại học chính quy. Ngoài ra, UFM cũng đã có thông báo về tuyển sinh trình độ **thạc sĩ và tiến sĩ đợt 1 năm 2026**, với các điều kiện dự tuyển và hồ sơ cụ thể. Bạn có thể xem chi tiết tại các link sau nếu quan tâm đến bậc học cao hơn nhé:
+*   Tuyển sinh trình độ thạc sĩ đợt 1 năm 2026: [Xem chi tiết](https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?LoaiTin=v1UjoAIA40d2Nl0tc5EwAA) *(Theo TB tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, Số: 186/TB-ĐHTCM)*
+*   Tuyển sinh trình độ tiến sĩ đợt 1 năm 2026: có thông tin về điều kiện dự tuyển, hồ sơ dự tuyển và địa chỉ liên hệ ([tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md](https://daotaosdh.ufm.edu.vn/vi/bieu-mau-hoc-vu/mau-ho-so-xet-tuyen-nghien-cuu-sinh)) *(Theo TB tuyển sinh trình độ tiến sĩ đợt 1 năm 2026, Số: /185/TB-ĐHTCM)*
+
+Để cập nhật thông tin chính xác và nhanh nhất về điểm chuẩn ngay khi có thông báo, bạn hãy thường xuyên theo dõi website chính thức của UFM hoặc trang tuyển sinh của trường nhé.
+
+Bạn có muốn mình giải thích thêm về các phương thức xét tuyển hay các ngành học mới của UFM không? Mình luôn sẵn sàng hỗ trợ bạn! 🌟
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.011s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  0.002s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a+2b)        │  1.283s  │   PASS   │
+  │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  1.774s  │   PASS   │
+  │ 🔀 MULTI-QUERY NODE (Sinh biến thể)           │  1.470s  │   PASS   │
+  │ 📊 EMBEDDING NODE (BGE-M3 batch)              │  2.764s  │   PASS   │
+  │ 🗄️ RAG NODE (Hybrid Search DB)               │ 11.783s  │   PASS   │
+  │ 🌐 RAG SEARCH PIPELINE (Evaluator + Web Searc │ 15.506s  │   PASS   │
+  │ 🎯 RESPONSE NODE (Final Answer)               │  8.693s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  43.33s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_041158_điểm_chuẩn_2026.txt
+

@@ -1,0 +1,241 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-25 18:55:49                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_185549_CHO_TÔI_CTRINH_ĐÀO_TẠO_TIẾN_SĨ_BẠN_ĐANG.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.5-flash              │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash              │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Extract       │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Draft         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : CHO TÔI CTRINH ĐÀO TẠO TIẾN SĨ BẠN ĐANG CÓ
+  💬 Chat History : 2 messages
+     👤 Điểm chuẩn 2026?
+     🤖 Chào bạn nhé! 🌟
+
+Mình hiểu là bạn đang rất quan tâm đến điểm chuẩn để chuẩn bị t
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.006s)
+                                        Message  │  [Fast-Scan PASS — 0.000s] Sạch, cho qua Context Node
+                             normalized_query  │  cho tôi ctrinh đào tạo tiến sĩ bạn đang có
+                                                      >(42 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sạch, cho qua Context Node
+                                                      >(52 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (3.305s)
+                                        Message  │  Reformulated → 'Bạn có những chương trình đào tạo tiến sĩ nào?'
+                             standalone_query  │  Bạn có những chương trình đào tạo tiến sĩ nào?
+                                                      >(46 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a Llama)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.420s)
+                                        Message  │  [Contextual-Guard PASS — 0.415s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 0.415s] standalone_query an toàn
+                                                      >(57 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [4] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.873s)
+                                        Message  │  intent='CHUONG_TRINH_DAO_TAO' → action='PROCEED_RAG_UFM_SEARCH' → next='rag_search'
+                                       intent  │  CHUONG_TRINH_DAO_TAO
+                                                      >(20 chars)
+                               intent_summary  │  hỏi về các chương trình đào tạo tiến sĩ
+                                                      >(39 chars)
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                                                      >(22 chars)
+                         program_level_filter  │  tien_si
+                                                      >(7 chars)
+                          program_name_filter  │  null
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+                              response_source  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🔀 [5] MULTI-QUERY NODE (Sinh biến thể)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.134s)
+                                        Message  │  Sinh 3 biến thể
+                                multi_queries  │  [3 items]
+                                                         [0] "UFM hiện có các chương trình đào tạo trình độ tiến sĩ nào?"
+                                                         [1] "Các ngành đào tạo bậc tiến sĩ tại trường là gì?"
+                                                         [2] "Danh sách các chương trình đào tạo sau đại học cấp tiến sĩ của UFM?"
+
+──────────────────────────────────────────────────────────────────────────
+  📊 [6] EMBEDDING NODE (BGE-M3 batch)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.841s)
+                                        Message  │  Nhúng 4 vectors × 1024D
+                             query_embeddings  │  [4 vectors × 1024D]
+
+──────────────────────────────────────────────────────────────────────────
+  🗄️ [7] RAG NODE (Hybrid Search DB)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.394s)
+                                        Message  │  Chunks=20, Context=295 chars
+                                  rag_context  │  Các chương trình đào tạo tiến sĩ của trường bao gồm: Tài chính – Ngân hàng (mã ngành 9340201), Quản trị kinh doanh (mã ngành 9340101), và Quản lý kinh tế (mã ngành 9310110). Thời gian đào tạo là 03 năm đối với nghiên cứu sinh đã có bằng thạc sĩ và 04 năm đối với nghiên cứu sinh có bằng đại học.
+                                                      >(295 chars)
+                             retrieved_chunks  │  [20 items]
+                                                         [0] {"chunk_id": "5d1a3abf-5cfb-47c9-8a32-72567c21d83b", "chunk_level": "parent", "parent_id": null, "section_path": "KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH & CÁC PHỤ LỤC", "program_name": null, "score": 0.6029511926799312, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: CÁC PHỤ LỤC > KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH]", "source": "vector", "rrf_score": 0.01639344262295082}
+                                                         [1] {"chunk_id": "f1e80370-e8b4-461e-bd1c-087f43ad51d3", "chunk_level": "parent", "parent_id": null, "section_path": "1. Ngành tuyển sinh:", "program_name": null, "score": 0.5943557620048523, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 1. Ngành tuyển sinh:]\n\n|STT|Ngành|Mã ngành|Chỉ tiêu|\n|-|-|-|-|\n|1.|Tài ch", "source": "vector", "rrf_score": 0.016129032258064516}
+                                                         [2] {"chunk_id": "836727d9-7139-4eca-8956-238e7e24c773", "chunk_level": "child", "parent_id": "5d1a3abf-5cfb-47c9-8a32-72567c21d83b", "section_path": "KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH & CÁC PHỤ LỤC", "program_name": null, "score": 0.5889376577418347, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH & CÁC PHỤ LỤC]", "source": "vector", "rrf_score": 0.015873015873015872}
+                                                         [3] {"chunk_id": "6646db5c-916d-4327-9692-b0ad5ee4ec63", "chunk_level": "parent", "parent_id": null, "section_path": "9. Địa chỉ liên hệ đăng ký và nộp hồ sơ", "program_name": null, "score": 0.588293229835823, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ]\n\nViện Đào tạo sau đại học – Trườ", "source": "vector", "rrf_score": 0.015625}
+                                                         [4] {"chunk_id": "7cbe1ebd-ab8d-444f-a697-29a3ecda2182", "chunk_level": "child", "parent_id": "6646db5c-916d-4327-9692-b0ad5ee4ec63", "section_path": "9. Địa chỉ liên hệ đăng ký và nộp hồ sơ", "program_name": null, "score": 0.588293229835823, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ]\n\nViện Đào tạo sau đại học – Trườ", "source": "vector", "rrf_score": 0.015384615384615385}
+                                                         [5] {"chunk_id": "a4091a57-1b3a-4aef-bc7a-5bde82608f25", "chunk_level": "parent", "parent_id": null, "section_path": "4. Thời gian đào tạo", "program_name": null, "score": 0.5773375538185216, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 4. Thời gian đào tạo]\n\n03 (ba) năm đối với nghiên cứu sinh (NCS) đã có bằ", "source": "vector", "rrf_score": 0.015151515151515152}
+                                                         [6] {"chunk_id": "d322e119-fc71-438f-832b-d1b336f82dd7", "chunk_level": "child", "parent_id": "87e26df1-d52e-4cb8-9d35-4b4ca546f016", "section_path": "Tiến sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.574256862744281, "content_preview": "[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101] — CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nChương trình đào tạo Tiến sĩ ngành Quản trị kinh doa", "source": "vector", "rrf_score": 0.014925373134328358}
+                                                         [7] {"chunk_id": "87e26df1-d52e-4cb8-9d35-4b4ca546f016", "chunk_level": "parent", "parent_id": null, "section_path": "Tiến sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.5713649988174438, "content_preview": "[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101]\nCHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nChương trình đào tạo Tiến sĩ ngành Quản trị kinh doanh", "source": "vector", "rrf_score": 0.014705882352941176}
+                                                         [8] {"chunk_id": "05138bdf-626b-4230-a310-544a56958005", "chunk_level": "parent", "parent_id": null, "section_path": "Tiến sĩ Tài Chính – Ngân Hàng > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH TÀI CHÍNH – NGÂN HÀNG", "program_name": "Tài Chính – Ngân Hàng", "score": 0.5704187494765977, "content_preview": "[Chương trình: Tiến sĩ Tài Chính – Ngân Hàng (TC-NH, TCNH, tc-nh, tcnh, Tài chính Ngân hàng) | Mã ngành: 9340201]\nCHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH TÀI CHÍNH – NGÂN HÀNG\n\nChương trình đào tạo Tiến sĩ", "source": "vector", "rrf_score": 0.014492753623188406}
+                                                         [9] {"chunk_id": "02bd89fd-72b2-4dbe-aa0a-45b9aca70365", "chunk_level": "child", "parent_id": "05138bdf-626b-4230-a310-544a56958005", "section_path": "Tiến sĩ Tài Chính – Ngân Hàng > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH TÀI CHÍNH – NGÂN HÀNG", "program_name": "Tài Chính – Ngân Hàng", "score": 0.5686235427856445, "content_preview": "[Chương trình: Tiến sĩ Tài Chính – Ngân Hàng (TC-NH, TCNH, tc-nh, tcnh, Tài chính Ngân hàng) | Mã ngành: 9340201] — CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH TÀI CHÍNH – NGÂN HÀNG\n\nChương trình đào tạo Tiến ", "source": "vector", "rrf_score": 0.014285714285714285}
+                                                         [10] {"chunk_id": "308ab7f5-dcb3-4852-b5e4-7c586775a38d", "chunk_level": "child", "parent_id": "033f39cc-7b10-40e8-b1a4-f9c72401a03e", "section_path": "Tiến sĩ Quản Trị Kinh Doanh > CƠ HỘI NGHỀ NGHIỆP", "program_name": "Quản Trị Kinh Doanh", "score": 0.5649415422958598, "content_preview": "[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101] — CƠ HỘI NGHỀ NGHIỆP\n\nSau khi tốt nghiệp, Tiến sĩ ngành Quản trị kinh doanh có thể đảm nhiệm các vị trí lãnh đ", "source": "vector", "rrf_score": 0.014084507042253521}
+                                                         [11] {"chunk_id": "021b1608-405d-4af4-9a29-033ca74c4c1d", "chunk_level": "child", "parent_id": "aacbf25a-3306-4835-bff4-ab304485b1fb", "section_path": "Tiến sĩ Quản Lý Kinh Tế > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN LÝ KINH TẾ", "program_name": "Quản Lý Kinh Tế", "score": 0.5620854235938454, "content_preview": "[Chương trình: Tiến sĩ Quản Lý Kinh Tế (QLKT, qlkt, Quản lý KT) | Mã ngành: 9310110] — CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN LÝ KINH TẾ\n\nChương trình đào tạo Tiến sĩ ngành Quản lý kinh tế tại Trường", "source": "vector", "rrf_score": 0.013888888888888888}
+                                                         [12] {"chunk_id": "aacbf25a-3306-4835-bff4-ab304485b1fb", "chunk_level": "parent", "parent_id": null, "section_path": "Tiến sĩ Quản Lý Kinh Tế > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN LÝ KINH TẾ", "program_name": "Quản Lý Kinh Tế", "score": 0.5619674921035767, "content_preview": "[Chương trình: Tiến sĩ Quản Lý Kinh Tế (QLKT, qlkt, Quản lý KT) | Mã ngành: 9310110]\nCHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN LÝ KINH TẾ\n\nChương trình đào tạo Tiến sĩ ngành Quản lý kinh tế tại Trường Đ", "source": "vector", "rrf_score": 0.0136986301369863}
+                                                         [13] {"chunk_id": "033f39cc-7b10-40e8-b1a4-f9c72401a03e", "chunk_level": "parent", "parent_id": null, "section_path": "Tiến sĩ Quản Trị Kinh Doanh > CƠ HỘI NGHỀ NGHIỆP", "program_name": "Quản Trị Kinh Doanh", "score": 0.5616047382354736, "content_preview": "[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101]\nCƠ HỘI NGHỀ NGHIỆP\n\nSau khi tốt nghiệp, Tiến sĩ ngành Quản trị kinh doanh có thể đảm nhiệm các vị trí lãnh đạo", "source": "vector", "rrf_score": 0.013513513513513514}
+                                                         [14] {"chunk_id": "392f56b9-7455-42a0-a6f0-6df3c3008e0a", "chunk_level": "parent", "parent_id": null, "section_path": "2. Hình thức tuyển sinh", "program_name": null, "score": 0.5564076040034068, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 2. Hình thức tuyển sinh]\n\nxét tuyển, kiểm tra và đánh giá thí sinh (thí s", "source": "vector", "rrf_score": 0.013333333333333334}
+                                                         [15] {"chunk_id": "59999003-81ef-4644-9b1d-29f6f0e5bdfa", "chunk_level": "child", "parent_id": "562f7a0f-0064-46d0-889b-beca926fefd4", "section_path": "3. Điều kiện dự tuyển", "program_name": null, "score": 0.554846465587616, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 3. Điều kiện dự tuyển]\n\nNgười dự tuyển đào tạo trình độ tiến sĩ phải đáp ", "source": "vector", "rrf_score": 0.013157894736842105}
+                                                         [16] {"chunk_id": "562f7a0f-0064-46d0-889b-beca926fefd4", "chunk_level": "parent", "parent_id": null, "section_path": "3. Điều kiện dự tuyển", "program_name": null, "score": 0.554846465587616, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 3. Điều kiện dự tuyển]\n\nNgười dự tuyển đào tạo trình độ tiến sĩ phải đáp ", "source": "vector", "rrf_score": 0.012987012987012988}
+                                                         [17] {"chunk_id": "725d15aa-039c-46a6-acdd-19538215193a", "chunk_level": "parent", "parent_id": null, "section_path": "6. Lịch trình xét tuyển dự kiến", "program_name": null, "score": 0.5453362193904063, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 6. Lịch trình xét tuyển dự kiến]\n\n* Phát và nhận hồ sơ: từ ngày có Thông ", "source": "vector", "rrf_score": 0.01282051282051282}
+                                                         [18] {"chunk_id": "e2df40d4-c664-471c-bbd9-3ace5969cff3", "chunk_level": "child", "parent_id": "f092955d-1e19-4d43-b54e-35c04067f09d", "section_path": "5. Hồ sơ dự tuyển", "program_name": null, "score": 0.5436598062515259, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 5. Hồ sơ dự tuyển]\n\na) Đơn xin dự tuyển *(theo mẫu do Trường quy định)*. ", "source": "vector", "rrf_score": 0.012658227848101266}
+                                                         [19] {"chunk_id": "f092955d-1e19-4d43-b54e-35c04067f09d", "chunk_level": "parent", "parent_id": null, "section_path": "5. Hồ sơ dự tuyển", "program_name": null, "score": 0.5411695192850248, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 5. Hồ sơ dự tuyển]\n\na) Đơn xin dự tuyển *(theo mẫu do Trường quy định)*.\n", "source": "vector", "rrf_score": 0.0125}
+
+──────────────────────────────────────────────────────────────────────────
+  🌐 [8] RAG SEARCH PIPELINE (Evaluator + Web Search)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.003s)
+                                        Message  │  cache=MISS, citations=0
+                           ufm_search_queries  │  null
+                              pr_search_query  │  null
+                           web_search_results  │  null
+                         web_search_citations  │  null
+                             search_cache_hit  │  ✗ False
+                      search_cache_similarity  │  0.0000
+                               final_response  │  Các chương trình đào tạo tiến sĩ của trường bao gồm: Tài chính – Ngân hàng (mã ngành 9340201), Quản trị kinh doanh (mã ngành 9340101), và Quản lý kinh tế (mã ngành 9310110). Thời gian đào tạo là 03 năm đối với nghiên cứu sinh đã có bằng thạc sĩ và 04 năm đối với nghiên cứu sinh có bằng đại học.
+                                                      >(295 chars)
+                              response_source  │  rag_db_only
+                                                      >(11 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [9] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.940s)
+                                        Message  │  source='rag_db_only_generated', length=1033 chars
+                               final_response  │  Chào bạn nhé! 🎓 Mình là Trợ lý Tuyển sinh UFM đây, rất vui được tư vấn cho bạn về các chương trình đào tạo tiến sĩ của trường mình!
+
+UFM tự hào có các chương trình đào tạo tiến sĩ chất lượng cao, giúp bạn nâng tầm kiến thức và kỹ năng nghiên cứu chuyên sâu. Hiện tại, trường mình đang đào tạo 3 ngành tiến sĩ cực kỳ hấp dẫn đó:
+
+*   **Tài chính – Ngân hàng** (mã ngành **9340201**)
+*   **Quản trị kinh doanh** (mã ngành **9340101**)
+*   **Quản lý kinh tế** (mã ngành **9310110**)
+
+Về thời gian đào tạo, bạn có thể tham khảo thông tin sau:
+
+*   Nếu bạn đã có bằng thạc sĩ, thời gian đào tạo tiến sĩ là **03 năm**.
+*   Nếu bạn có bằng đại học, thời gian đào tạo sẽ là **04 năm**.
+
+Các chương trình này được thiết kế để trang bị cho nghiên cứu sinh những kiến thức chuyên sâu và kỹ năng nghiên cứu đỉnh cao, giúp bạn trở thành chuyên gia hàng đầu trong lĩnh vực của mình.
+
+Bạn có muốn mình giải thích thêm về một ngành cụ thể nào không? Hoặc bạn có thắc mắc gì về quy trình tuyển sinh tiến sĩ không? Mình luôn sẵn lòng hỗ trợ bạn nhé! 🌟
+                                                      >(1033 chars)
+                              response_source  │  rag_db_only_generated
+                                                      >(21 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : rag_db_only_generated
+  Intent          : CHUONG_TRINH_DAO_TAO → PROCEED_RAG_UFM_SEARCH
+  Response Length : 1033 chars
+  Total Time      : 15.94s
+  Nodes Executed  : 9
+──────────────────────────────────────────────────────────────────────────
+
+Chào bạn nhé! 🎓 Mình là Trợ lý Tuyển sinh UFM đây, rất vui được tư vấn cho bạn về các chương trình đào tạo tiến sĩ của trường mình!
+
+UFM tự hào có các chương trình đào tạo tiến sĩ chất lượng cao, giúp bạn nâng tầm kiến thức và kỹ năng nghiên cứu chuyên sâu. Hiện tại, trường mình đang đào tạo 3 ngành tiến sĩ cực kỳ hấp dẫn đó:
+
+*   **Tài chính – Ngân hàng** (mã ngành **9340201**)
+*   **Quản trị kinh doanh** (mã ngành **9340101**)
+*   **Quản lý kinh tế** (mã ngành **9310110**)
+
+Về thời gian đào tạo, bạn có thể tham khảo thông tin sau:
+
+*   Nếu bạn đã có bằng thạc sĩ, thời gian đào tạo tiến sĩ là **03 năm**.
+*   Nếu bạn có bằng đại học, thời gian đào tạo sẽ là **04 năm**.
+
+Các chương trình này được thiết kế để trang bị cho nghiên cứu sinh những kiến thức chuyên sâu và kỹ năng nghiên cứu đỉnh cao, giúp bạn trở thành chuyên gia hàng đầu trong lĩnh vực của mình.
+
+Bạn có muốn mình giải thích thêm về một ngành cụ thể nào không? Hoặc bạn có thắc mắc gì về quy trình tuyển sinh tiến sĩ không? Mình luôn sẵn lòng hỗ trợ bạn nhé! 🌟
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.006s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  3.305s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a Llama)     │  0.420s  │   PASS   │
+  │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  1.873s  │   PASS   │
+  │ 🔀 MULTI-QUERY NODE (Sinh biến thể)           │  2.134s  │   PASS   │
+  │ 📊 EMBEDDING NODE (BGE-M3 batch)              │  2.841s  │   PASS   │
+  │ 🗄️ RAG NODE (Hybrid Search DB)               │  2.394s  │   PASS   │
+  │ 🌐 RAG SEARCH PIPELINE (Evaluator + Web Searc │  0.003s  │   PASS   │
+  │ 🎯 RESPONSE NODE (Final Answer)               │  2.940s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  15.94s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_185549_CHO_TÔI_CTRINH_ĐÀO_TẠO_TIẾN_SĨ_BẠN_ĐANG.txt
+

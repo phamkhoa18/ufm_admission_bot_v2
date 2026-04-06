@@ -1,0 +1,223 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test Runner                        ║
+║    2026-03-23 00:38:39                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260323_003839_Em_muốn_làm_mẫu_đơn_giấy_cam_đoan_với_tê.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❷ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❹ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❺ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❻ Guard (Deep)       │ openrouter/qwen/qwen3.5-flash-02-23             │
+  │ ❼ Multi-Query        │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❽ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❾a Vector Router     │ openrouter/baai/bge-m3                          │
+  │ ❾b Semantic Rtr      │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫c Web Search        │ openrouter/openai/gpt-4o-mini-search-preview    │
+  │ ⓫d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Care               │ openrouter/qwen/qwen3.5-flash-02-23             │
+  │ ⓭ Form Extract       │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓭ Form Draft         │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓮ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  📝 Input Query  : Em muốn làm mẫu đơn giấy cam đoan với tên là Trần Quốc Giăng ngành học thạc sĩ QTKD sdt 0896370564 địa chỉ 75 tân lập dĩ an
+  💬 Chat History : 2 messages
+     👤 Em muốn làm mẫu đơn giấy cam đoan với tên là Trần Quốc Giăng ngành học thạc sĩ Q
+     🤖 Chào bạn! Mình đã tạo mẫu đơn dựa trên thông tin bạn cung cấp. Bạn có thể tham k
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.005s)
+                                        Message  │  [Fast-Scan PASS — 0.005s] Sạch, cho qua Context Node
+                             normalized_query  │  em muốn làm mẫu đơn giấy cam đoan với tên là trần quốc giăng ngành học thạc sĩ qtkd sdt 0896370564 địa chỉ 75 tân lập dĩ an
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.005s] Sạch, cho qua Context Node
+                                    next_node  │  context
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.693s)
+                                        Message  │  Reformulated: 'Em muốn làm mẫu đơn giấy cam đoan với tê' → 'Tôi muốn tạo lại mẫu đơn giấy cam đoan với tên là Trần Quốc '
+                             standalone_query  │  Tôi muốn tạo lại mẫu đơn giấy cam đoan với tên là Trần Quốc Giăng, ngành học thạc sĩ QTKD, số điện thoại 0896370564, địa chỉ 75 tân lập dĩ an.
+                                    next_node  │  contextual_guard
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a+2b)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (12.118s)
+                                        Message  │  [Contextual-Guard PASS — 12.118s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 12.118s] standalone_query an toàn
+                                    next_node  │  multi_query
+
+──────────────────────────────────────────────────────────────────────────
+  🔀 [4] MULTI-QUERY NODE (Sinh biến thể)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.775s)
+                                multi_queries  │  ["Cần tạo lại giấy cam đoan cho Trần Quốc Giăng, học thạc sĩ Q", "Xin cấp lại mẫu giấy cam đoan cho học viên cao học QTKD Trần", "Tôi muốn làm lại giấy tờ cam kết với thông tin: Trần Quốc Gi"]
+                                    next_node  │  embedding
+
+──────────────────────────────────────────────────────────────────────────
+  📊 [5] EMBEDDING NODE (BGE-M3 batch)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.643s)
+                                        Message  │  Nhúng 4 vectors × 1024D thành công
+                             query_embeddings  │  [4 vectors × 1024D]
+                                    next_node  │  cache
+
+──────────────────────────────────────────────────────────────────────────
+  🗄️ [6] RAG NODE (Hybrid Search DB)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.160s)
+                                        Message  │  Chunks=20, Top1Cosine=0.6148, Context=6458 chars ⚠️ CONFIDENCE FAILED
+                                  rag_context  │  [Nguồn 1 — 3. Hình thức đăng ký, 3.2. Đăng ký trực tiếp & 3.3. Thời hạn đăng ký: đến hết ngày 06/3/2026. | 3.2. Đăng ký trực tiếp & 3.3. Thời hạn đăng ký: đến hết ngày 06/3/2026.]
+# PHỤ LỤC 3
+# HỌC ÔN THI ANH VĂN
+*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHT... (6458 chars)
+                             retrieved_chunks  │  [20 items]
+                        rag_confidence_failed  │  ✓ True
+                            top1_cosine_score  │  0.6148
+                                    next_node  │  intent
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [7] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.427s)
+                                        Message  │  intent='TAO_MAU_DON' → action='PROCEED_FORM' | summary='Tạo mẫu đơn giấy cam đoan với tên Trần Quốc Giăng, ngành học'
+                                       intent  │  TAO_MAU_DON
+                               intent_summary  │  Tạo mẫu đơn giấy cam đoan với tên Trần Quốc Giăng, ngành học thạc sĩ QTKD, số điện thoại 0896370564, địa chỉ 75 tân lập dĩ an
+                                intent_action  │  PROCEED_FORM
+                         program_level_filter  │  thac_si
+                          program_name_filter  │  Quản Trị Kinh Doanh
+                                    next_node  │  form
+                              response_source  │  ""
+
+  🚦 Routing Decision: next_node='form' | intent_action='PROCEED_FORM'
+
+──────────────────────────────────────────────────────────────────────────
+  📝 [8] FORM NODE (Agent Mẫu đơn)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (23.993s)
+                                        Message  │  Response=1661 chars
+                               final_response  │  # CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM  
+## Độc lập - Tự do - Hạnh phúc  
+
+---
+
+**ĐƠN HÀNH CHÍNH CHUNG**  
+
+Kính gửi: **Hội đồng tuyển sinh Đại học Tài chính - Marketing (UFM)**  
+
+Tôi tên là: **Trần Quốc Giăng**  
+Số CCCD/CMND: [Điền số CCCD/CMND]  
+Ngày sinh: [Điền ngày sinh]  
+Email: [Điền email]  ... (1661 chars)
+                              response_source  │  form_template
+                                    next_node  │  response
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [9] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (3.329s)
+                                        Message  │  source='form_template_generated', length=1793 chars
+                               final_response  │  Chào bạn, mình đã tạo lại mẫu đơn giấy cam đoan với các thông tin bạn cung cấp như sau:
+
+# CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM  
+## Độc lập - Tự do - Hạnh phúc  
+
+---
+
+**ĐƠN HÀNH CHÍNH CHUNG**  
+
+Kính gửi: **Hội đồng tuyển sinh Đại học Tài chính - Marketing (UFM)**  
+
+Tôi tên là: **Trần Quốc Giăng** ... (1793 chars)
+                              response_source  │  form_template_generated
+                                    next_node  │  end
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : form_template_generated
+  Intent          : TAO_MAU_DON → PROCEED_FORM
+  Response Length : 1793 chars
+  Total Time      : 47.15s
+  Nodes Executed  : 9
+──────────────────────────────────────────────────────────────────────────
+
+Chào bạn, mình đã tạo lại mẫu đơn giấy cam đoan với các thông tin bạn cung cấp như sau:
+
+# CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM  
+## Độc lập - Tự do - Hạnh phúc  
+
+---
+
+**ĐƠN HÀNH CHÍNH CHUNG**  
+
+Kính gửi: **Hội đồng tuyển sinh Đại học Tài chính - Marketing (UFM)**  
+
+Tôi tên là: **Trần Quốc Giăng**  
+Số CCCD/CMND: [Điền số CCCD/CMND]  
+Ngày sinh: [Điền ngày sinh]  
+Email: [Điền email]  
+Số điện thoại: **0896370564**  
+Địa chỉ liên hệ: **75 tân lập dĩ an**  
+Cơ quan công tác: [Điền nơi đang công tác hoặc học tập]  
+
+**Ngành học / Nguyện vọng**: **Thạc sĩ Quản trị Kinh doanh (QTKD)**  
+
+**Lý do / Mong muốn**: (Nội dung tham khảo)  
+Tôi xin gửi đơn này để bày tỏ nguyện vọng tham gia chương trình đào tạo **Thạc sĩ Quản trị Kinh doanh** tại **Đại học Tài chính - Marketing (UFM)**. Với mong muốn nâng cao kiến thức chuyên môn, kỹ năng quản lý và phát triển năng lực nghề nghiệp, tôi hy vọng sẽ được học tập và rèn luyện trong môi trường giáo dục chất lượng cao của nhà trường. Tôi tin rằng, việc theo học chương trình này sẽ giúp tôi đóng góp nhiều hơn nữa cho sự phát triển của doanh nghiệp và xã hội.  
+
+**Thông tin bổ sung**: (Nội dung tham khảo)  
+Tôi hiện đang công tác tại [điền nơi công tác] với kinh nghiệm [điền kinh nghiệm, nếu có]. Trong quá trình làm việc, tôi đã tích lũy được nhiều kỹ năng thực tế về quản trị, kinh doanh và có định hướng phát triển chuyên sâu trong lĩnh vực quản trị kinh doanh. Tôi mong muốn được học tập tại UFM để mở rộng tầm nhìn và nâng cao năng lực chuyên môn.  
+
+Tôi xin chân thành cảm ơn và mong nhận được sự xem xét, hỗ trợ từ Hội đồng tuyển sinh.  
+
+**Kính thư**  
+
+**Người làm đơn**  
+**Trần Quốc Giăng**  
+
+---  
+*Lưu ý: Các thông tin trong dấu [ ] là placeholder, vui lòng điền đầy đủ trước khi nộp.*
+
+Bạn còn muốn tìm hiểu thêm điều gì không?
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ FAST SCAN NODE (Guard Layer 0-1)             │  0.005s  │   PASS   │
+  │ CONTEXT NODE (Query Reformulation)           │  1.693s  │   PASS   │
+  │ CONTEXTUAL GUARD NODE (Layer 2a+2b)          │ 12.118s  │   PASS   │
+  │ MULTI-QUERY NODE (Sinh biến thể)             │  1.775s  │   PASS   │
+  │ EMBEDDING NODE (BGE-M3 batch)                │  2.643s  │   PASS   │
+  │ RAG NODE (Hybrid Search DB)                  │  0.160s  │   PASS   │
+  │ INTENT NODE (Router Phân Loại Ý Định)        │  1.427s  │   PASS   │
+  │ FORM NODE (Agent Mẫu đơn)                    │ 23.993s  │   PASS   │
+  │ RESPONSE NODE (Final Answer)                 │  3.329s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  47.15s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260323_003839_Em_muốn_làm_mẫu_đơn_giấy_cam_đoan_với_tê.txt
+

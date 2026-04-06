@@ -1,0 +1,488 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-30 01:59:17                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260330_015917_cao_học_qtkd.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.5-flash              │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash              │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Extract       │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ⓫ Form Draft         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : cao học qtkd
+  💬 Chat History : Trống (lượt đầu tiên)
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.016s)
+                                        Message  │  [Fast-Scan PASS — 0.002s] Sach, cho qua Context Node
+                                 chat_history  │  []
+                                   user_query  │  cao học qtkd
+                                                      >(12 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  cao học qtkd
+                                                      >(12 chars)
+                             standalone_query  │  ""
+                                multi_queries  │  []
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.002s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  null
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  ""
+                             query_embeddings  │  []
+                                       intent  │  ""
+                               intent_summary  │  ""
+                                intent_action  │  ""
+                         program_level_filter  │  null
+                          program_name_filter  │  null
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                               final_response  │  ""
+                              response_source  │  ""
+                                    next_node  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.001s)
+                                        Message  │  Reformulated → 'cao học qtkd'
+                                 chat_history  │  []
+                                   user_query  │  cao học qtkd
+                                                      >(12 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  cao học qtkd
+                                                      >(12 chars)
+                             standalone_query  │  cao học qtkd
+                                                      >(12 chars)
+                                multi_queries  │  []
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.002s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  null
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  ""
+                             query_embeddings  │  []
+                                       intent  │  ""
+                               intent_summary  │  ""
+                                intent_action  │  ""
+                         program_level_filter  │  null
+                          program_name_filter  │  null
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                               final_response  │  ""
+                              response_source  │  ""
+                                    next_node  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a Llama)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.340s)
+                                        Message  │  [Contextual-Guard PASS — 1.340s] standalone_query an toan
+                                 chat_history  │  []
+                                   user_query  │  cao học qtkd
+                                                      >(12 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  cao học qtkd
+                                                      >(12 chars)
+                             standalone_query  │  cao học qtkd
+                                                      >(12 chars)
+                                multi_queries  │  []
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.002s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.340s] standalone_query an toan
+                                                      >(57 chars)
+                             query_embeddings  │  []
+                                       intent  │  ""
+                               intent_summary  │  ""
+                                intent_action  │  ""
+                         program_level_filter  │  null
+                          program_name_filter  │  null
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                               final_response  │  ""
+                              response_source  │  ""
+                                    next_node  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [4] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.734s)
+                                        Message  │  intent='CHUONG_TRINH_DAO_TAO' → action='PROCEED_RAG_UFM_SEARCH' → next='rag_search'
+                                 chat_history  │  []
+                                   user_query  │  cao học qtkd
+                                                      >(12 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  cao học qtkd
+                                                      >(12 chars)
+                             standalone_query  │  cao học qtkd
+                                                      >(12 chars)
+                                multi_queries  │  []
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.002s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.340s] standalone_query an toan
+                                                      >(57 chars)
+                             query_embeddings  │  []
+                                       intent  │  CHUONG_TRINH_DAO_TAO
+                                                      >(20 chars)
+                               intent_summary  │  ""
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                                                      >(22 chars)
+                         program_level_filter  │  thac_si
+                                                      >(7 chars)
+                          program_name_filter  │  Quản Trị Kinh Doanh
+                                                      >(19 chars)
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                               final_response  │  ""
+                              response_source  │  ""
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔀 [5] MULTI-QUERY NODE (Sinh biến thể)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.468s)
+                                        Message  │  Sinh 2 biến thể
+                                 chat_history  │  []
+                                   user_query  │  cao học qtkd
+                                                      >(12 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  cao học qtkd
+                                                      >(12 chars)
+                             standalone_query  │  cao học qtkd
+                                                      >(12 chars)
+                                multi_queries  │  [2 items]
+                                                         [0] "Chương trình thạc sĩ quản trị kinh doanh tại UFM"
+                                                         [1] "Thông tin về khóa học cao học ngành Quản trị kinh doanh UFM"
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.002s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.340s] standalone_query an toan
+                                                      >(57 chars)
+                             query_embeddings  │  []
+                                       intent  │  CHUONG_TRINH_DAO_TAO
+                                                      >(20 chars)
+                               intent_summary  │  ""
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                                                      >(22 chars)
+                         program_level_filter  │  thac_si
+                                                      >(7 chars)
+                          program_name_filter  │  Quản Trị Kinh Doanh
+                                                      >(19 chars)
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                               final_response  │  ""
+                              response_source  │  ""
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  📊 [6] EMBEDDING NODE (BGE-M3 batch)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.738s)
+                                        Message  │  Nhúng 3 vectors × 1024D
+                                 chat_history  │  []
+                                   user_query  │  cao học qtkd
+                                                      >(12 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  cao học qtkd
+                                                      >(12 chars)
+                             standalone_query  │  cao học qtkd
+                                                      >(12 chars)
+                                multi_queries  │  [2 items]
+                                                         [0] "Chương trình thạc sĩ quản trị kinh doanh tại UFM"
+                                                         [1] "Thông tin về khóa học cao học ngành Quản trị kinh doanh UFM"
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.002s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.340s] standalone_query an toan
+                                                      >(57 chars)
+                             query_embeddings  │  [3 vectors × 1024D]
+                                       intent  │  CHUONG_TRINH_DAO_TAO
+                                                      >(20 chars)
+                               intent_summary  │  ""
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                                                      >(22 chars)
+                         program_level_filter  │  thac_si
+                                                      >(7 chars)
+                          program_name_filter  │  Quản Trị Kinh Doanh
+                                                      >(19 chars)
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                               final_response  │  ""
+                              response_source  │  ""
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🗄️ [7] RAG NODE (Hybrid Search DB)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.125s)
+                                        Message  │  Chunks=0, Context=0 chars
+                                 chat_history  │  []
+                                   user_query  │  cao học qtkd
+                                                      >(12 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  cao học qtkd
+                                                      >(12 chars)
+                             standalone_query  │  cao học qtkd
+                                                      >(12 chars)
+                                multi_queries  │  [2 items]
+                                                         [0] "Chương trình thạc sĩ quản trị kinh doanh tại UFM"
+                                                         [1] "Thông tin về khóa học cao học ngành Quản trị kinh doanh UFM"
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.002s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.340s] standalone_query an toan
+                                                      >(57 chars)
+                             query_embeddings  │  [3 vectors × 1024D]
+                                       intent  │  CHUONG_TRINH_DAO_TAO
+                                                      >(20 chars)
+                               intent_summary  │  ""
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                                                      >(22 chars)
+                         program_level_filter  │  thac_si
+                                                      >(7 chars)
+                          program_name_filter  │  Quản Trị Kinh Doanh
+                                                      >(19 chars)
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                               final_response  │  ""
+                              response_source  │  ""
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🌐 [8] RAG SEARCH PIPELINE (Evaluator + Web Search)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.001s)
+                                        Message  │  cache=MISS, citations=0
+                                 chat_history  │  []
+                                   user_query  │  cao học qtkd
+                                                      >(12 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  cao học qtkd
+                                                      >(12 chars)
+                             standalone_query  │  cao học qtkd
+                                                      >(12 chars)
+                                multi_queries  │  [2 items]
+                                                         [0] "Chương trình thạc sĩ quản trị kinh doanh tại UFM"
+                                                         [1] "Thông tin về khóa học cao học ngành Quản trị kinh doanh UFM"
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.002s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.340s] standalone_query an toan
+                                                      >(57 chars)
+                             query_embeddings  │  [3 vectors × 1024D]
+                                       intent  │  CHUONG_TRINH_DAO_TAO
+                                                      >(20 chars)
+                               intent_summary  │  ""
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                                                      >(22 chars)
+                         program_level_filter  │  thac_si
+                                                      >(7 chars)
+                          program_name_filter  │  Quản Trị Kinh Doanh
+                                                      >(19 chars)
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                               final_response  │  ""
+                              response_source  │  rag_db_only
+                                                      >(11 chars)
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+                           ufm_search_queries  │  null
+                              pr_search_query  │  null
+                           web_search_results  │  null
+                         web_search_citations  │  null
+                             search_cache_hit  │  ✗ False
+                      search_cache_similarity  │  0.0000
+                         sanitizer_loop_count  │  0
+                           sanitizer_critique  │  null
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [9] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (3.098s)
+                                        Message  │  source='rag_db_only_generated', length=1449 chars
+                                 chat_history  │  []
+                                   user_query  │  cao học qtkd
+                                                      >(12 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  cao học qtkd
+                                                      >(12 chars)
+                             standalone_query  │  cao học qtkd
+                                                      >(12 chars)
+                                multi_queries  │  [2 items]
+                                                         [0] "Chương trình thạc sĩ quản trị kinh doanh tại UFM"
+                                                         [1] "Thông tin về khóa học cao học ngành Quản trị kinh doanh UFM"
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.002s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.340s] standalone_query an toan
+                                                      >(57 chars)
+                             query_embeddings  │  [3 vectors × 1024D]
+                                       intent  │  CHUONG_TRINH_DAO_TAO
+                                                      >(20 chars)
+                               intent_summary  │  ""
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                                                      >(22 chars)
+                         program_level_filter  │  thac_si
+                                                      >(7 chars)
+                          program_name_filter  │  Quản Trị Kinh Doanh
+                                                      >(19 chars)
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                           ufm_search_queries  │  null
+                              pr_search_query  │  null
+                           web_search_results  │  null
+                         web_search_citations  │  null
+                           sanitizer_critique  │  null
+                         sanitizer_loop_count  │  0
+                             search_cache_hit  │  ✗ False
+                      search_cache_similarity  │  0.0000
+                               final_response  │  Chào bạn, mình là Trợ lý Tuyển sinh Đại học Tài chính - Marketing (UFM) đây! Rất vui được hỗ trợ bạn.
+
+Hiện tại, mình chưa có thông tin cụ thể về chương trình **Cao học Quản trị Kinh doanh** tại UFM trong dữ liệu được cung cấp. Tuy nhiên, mình có thể chia sẻ một số thông tin chung về các chương trình đào tạo sau đại học tại UFM và định hướng cho bạn nhé.
+
+UFM là một trường đại học uy tín trong lĩnh vực tài chính, marketing và kinh doanh, nên việc có các chương trình đào tạo sau đại học chất lượng cao, trong đó có thể có Quản trị Kinh doanh, là rất khả thi. Các chương trình cao học thường được thiết kế để nâng cao kiến thức chuyên sâu, kỹ năng quản lý và lãnh đạo cho học viên, giúp họ phát triển sự nghiệp trong môi trường kinh doanh đầy cạnh tranh.
+
+Để có thông tin chính xác và cập nhật nhất về chương trình Cao học Quản trị Kinh doanh (nếu có), bao gồm:
+*   **Mục tiêu đào tạo**
+*   **Chương trình học**
+*   **Điều kiện tuyển sinh**
+*   **Học phí**
+*   **Thời gian đào tạo**
+*   **Cơ hội nghề nghiệp sau khi tốt nghiệp**
+
+Mình khuyến khích bạn liên hệ trực tiếp với Phòng Đào tạo Sau Đại học của UFM hoặc truy cập website chính thức của trường để tìm hiểu chi tiết. Thường thì các thông tin này sẽ được cập nhật đầy đủ trên cổng thông tin tuyển sinh sau đại học của trường.
+
+Bạn có muốn mình tìm kiếm thêm thông tin về các chương trình đào tạo khác của UFM không? Hoặc bạn có câu hỏi nào khác về trường không? Mình luôn sẵn lòng hỗ trợ! 🎓
+                                                      >(1449 chars)
+                              response_source  │  rag_db_only_generated
+                                                      >(21 chars)
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : rag_db_only_generated
+  Intent          : CHUONG_TRINH_DAO_TAO → PROCEED_RAG_UFM_SEARCH
+  Response Length : 1449 chars
+  Total Time      : 8.55s
+  Nodes Executed  : 9
+──────────────────────────────────────────────────────────────────────────
+
+Chào bạn, mình là Trợ lý Tuyển sinh Đại học Tài chính - Marketing (UFM) đây! Rất vui được hỗ trợ bạn.
+
+Hiện tại, mình chưa có thông tin cụ thể về chương trình **Cao học Quản trị Kinh doanh** tại UFM trong dữ liệu được cung cấp. Tuy nhiên, mình có thể chia sẻ một số thông tin chung về các chương trình đào tạo sau đại học tại UFM và định hướng cho bạn nhé.
+
+UFM là một trường đại học uy tín trong lĩnh vực tài chính, marketing và kinh doanh, nên việc có các chương trình đào tạo sau đại học chất lượng cao, trong đó có thể có Quản trị Kinh doanh, là rất khả thi. Các chương trình cao học thường được thiết kế để nâng cao kiến thức chuyên sâu, kỹ năng quản lý và lãnh đạo cho học viên, giúp họ phát triển sự nghiệp trong môi trường kinh doanh đầy cạnh tranh.
+
+Để có thông tin chính xác và cập nhật nhất về chương trình Cao học Quản trị Kinh doanh (nếu có), bao gồm:
+*   **Mục tiêu đào tạo**
+*   **Chương trình học**
+*   **Điều kiện tuyển sinh**
+*   **Học phí**
+*   **Thời gian đào tạo**
+*   **Cơ hội nghề nghiệp sau khi tốt nghiệp**
+
+Mình khuyến khích bạn liên hệ trực tiếp với Phòng Đào tạo Sau Đại học của UFM hoặc truy cập website chính thức của trường để tìm hiểu chi tiết. Thường thì các thông tin này sẽ được cập nhật đầy đủ trên cổng thông tin tuyển sinh sau đại học của trường.
+
+Bạn có muốn mình tìm kiếm thêm thông tin về các chương trình đào tạo khác của UFM không? Hoặc bạn có câu hỏi nào khác về trường không? Mình luôn sẵn lòng hỗ trợ! 🎓
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.016s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  0.001s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a Llama)     │  1.340s  │   PASS   │
+  │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  0.734s  │   PASS   │
+  │ 🔀 MULTI-QUERY NODE (Sinh biến thể)           │  1.468s  │   PASS   │
+  │ 📊 EMBEDDING NODE (BGE-M3 batch)              │  1.738s  │   PASS   │
+  │ 🗄️ RAG NODE (Hybrid Search DB)               │  0.125s  │   PASS   │
+  │ 🌐 RAG SEARCH PIPELINE (Evaluator + Web Searc │  0.001s  │   PASS   │
+  │ 🎯 RESPONSE NODE (Final Answer)               │  3.098s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │   8.55s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260330_015917_cao_học_qtkd.txt
+

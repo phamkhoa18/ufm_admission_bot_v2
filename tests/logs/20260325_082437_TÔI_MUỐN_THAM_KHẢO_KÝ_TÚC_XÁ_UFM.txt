@@ -1,0 +1,185 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-25 08:24:37                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_082437_TÔI_MUỐN_THAM_KHẢO_KÝ_TÚC_XÁ_UFM.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/qwen/qwen3.5-flash-02-23             │
+  │ ⓫ Form Extract       │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Draft         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : TÔI MUỐN THAM KHẢO KÝ TÚC XÁ UFM
+  💬 Chat History : Trống (lượt đầu tiên)
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.010s)
+                                        Message  │  [Fast-Scan PASS — 0.002s] Sạch, cho qua Context Node
+                             normalized_query  │  tôi muốn tham khảo ký túc xá ufm
+                                                      >(32 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.002s] Sạch, cho qua Context Node
+                                                      >(52 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.000s)
+                                        Message  │  Reformulated → 'TÔI MUỐN THAM KHẢO KÝ TÚC XÁ UFM'
+                             standalone_query  │  TÔI MUỐN THAM KHẢO KÝ TÚC XÁ UFM
+                                                      >(32 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a+2b)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.504s)
+                                        Message  │  [Contextual-Guard PASS — 1.501s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.501s] standalone_query an toàn
+                                                      >(57 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [4] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.112s)
+                                        Message  │  intent='DOI_SONG_SINH_VIEN' → action='PROCEED_RAG_UFM_SEARCH' → next='rag_search'
+                                       intent  │  DOI_SONG_SINH_VIEN
+                                                      >(18 chars)
+                               intent_summary  │  tham khảo ký túc xá UFM
+                                                      >(23 chars)
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                                                      >(22 chars)
+                         program_level_filter  │  null
+                          program_name_filter  │  null
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+                              response_source  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🔀 [5] MULTI-QUERY NODE (Sinh biến thể)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.523s)
+                                        Message  │  Sinh 3 biến thể
+                                multi_queries  │  [3 items]
+                                                         [0] "Thông tin về ký túc xá Đại học UFM"
+                                                         [1] "Cần tìm hiểu về khu nội trú UFM"
+                                                         [2] "Xin tư vấn về chỗ ở ký túc xá trường UFM"
+
+──────────────────────────────────────────────────────────────────────────
+  📊 [6] EMBEDDING NODE (BGE-M3 batch)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.527s)
+                                        Message  │  Không có embeddings
+                             query_embeddings  │  []
+
+──────────────────────────────────────────────────────────────────────────
+  🗄️ [7] RAG NODE (Hybrid Search DB)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.002s)
+                                        Message  │  Chunks=0, Context=0 chars
+                                  rag_context  │  ""
+                             retrieved_chunks  │  []
+
+──────────────────────────────────────────────────────────────────────────
+  🌐 [8] RAG SEARCH PIPELINE (Evaluator + Web Search)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.656s)
+                                        Message  │  cache=MISS, citations=0
+                           ufm_search_queries  │  null
+                              pr_search_query  │  null
+                           web_search_results  │  null
+                         web_search_citations  │  null
+                             search_cache_hit  │  ✗ False
+                      search_cache_similarity  │  0.0000
+                               final_response  │  - UFM không có ký túc xá riêng
+                                                      >(30 chars)
+                              response_source  │  rag_search_synthesized
+                                                      >(22 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [9] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.002s)
+                                        Message  │  source='rag_search_synthesized', length=30 chars
+                               final_response  │  - UFM không có ký túc xá riêng
+                                                      >(30 chars)
+                              response_source  │  rag_search_synthesized
+                                                      >(22 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : rag_search_synthesized
+  Intent          : DOI_SONG_SINH_VIEN → PROCEED_RAG_UFM_SEARCH
+  Response Length : 30 chars
+  Total Time      : 9.35s
+  Nodes Executed  : 9
+──────────────────────────────────────────────────────────────────────────
+
+- UFM không có ký túc xá riêng
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.010s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  0.000s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a+2b)        │  1.504s  │   PASS   │
+  │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  2.112s  │   PASS   │
+  │ 🔀 MULTI-QUERY NODE (Sinh biến thể)           │  1.523s  │   PASS   │
+  │ 📊 EMBEDDING NODE (BGE-M3 batch)              │  1.527s  │   PASS   │
+  │ 🗄️ RAG NODE (Hybrid Search DB)               │  0.002s  │   PASS   │
+  │ 🌐 RAG SEARCH PIPELINE (Evaluator + Web Searc │  2.656s  │   PASS   │
+  │ 🎯 RESPONSE NODE (Final Answer)               │  0.002s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │   9.35s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_082437_TÔI_MUỐN_THAM_KHẢO_KÝ_TÚC_XÁ_UFM.txt
+

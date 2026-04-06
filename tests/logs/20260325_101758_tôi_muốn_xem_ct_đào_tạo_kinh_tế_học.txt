@@ -1,0 +1,209 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-25 10:17:58                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_101758_tôi_muốn_xem_ct_đào_tạo_kinh_tế_học.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.5-flash              │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash              │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Extract       │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Draft         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : tôi muốn xem ct đào tạo kinh tế học
+  💬 Chat History : 2 messages
+     👤 ct đào tạo kinh tế học
+     🤖 - ThS Kinh te hoc.txt, Chương trình đào tạo Thạc sĩ Kinh tế học
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.003s)
+                                        Message  │  [Fast-Scan PASS — 0.001s] Sạch, cho qua Context Node
+                             normalized_query  │  tôi muốn xem ct đào tạo kinh tế học
+                                                      >(35 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.001s] Sạch, cho qua Context Node
+                                                      >(52 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.909s)
+                                        Message  │  Reformulated → 'Tôi muốn xem chương trình đào tạo Kinh tế học'
+                             standalone_query  │  Tôi muốn xem chương trình đào tạo Kinh tế học
+                                                      >(45 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a+2b)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.425s)
+                                        Message  │  [Contextual-Guard PASS — 1.424s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.424s] standalone_query an toàn
+                                                      >(57 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [4] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.088s)
+                                        Message  │  intent='CHUONG_TRINH_DAO_TAO' → action='PROCEED_RAG_UFM_SEARCH' → next='rag_search'
+                                       intent  │  CHUONG_TRINH_DAO_TAO
+                                                      >(20 chars)
+                               intent_summary  │  Chương trình đào tạo ngành Kinh tế học
+                                                      >(38 chars)
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                                                      >(22 chars)
+                         program_level_filter  │  null
+                          program_name_filter  │  Kinh Tế
+                                                      >(7 chars)
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+                              response_source  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🔀 [5] MULTI-QUERY NODE (Sinh biến thể)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.410s)
+                                        Message  │  Sinh 3 biến thể
+                                multi_queries  │  [3 items]
+                                                         [0] "Cho tôi biết về nội dung học ngành Kinh tế học"
+                                                         [1] "Chương trình học của ngành Kinh tế học gồm những gì"
+                                                         [2] "Thông tin về khóa học Kinh tế học"
+
+──────────────────────────────────────────────────────────────────────────
+  📊 [6] EMBEDDING NODE (BGE-M3 batch)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.755s)
+                                        Message  │  Nhúng 4 vectors × 1024D
+                             query_embeddings  │  [4 vectors × 1024D]
+
+──────────────────────────────────────────────────────────────────────────
+  🗄️ [7] RAG NODE (Hybrid Search DB)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.114s)
+                                        Message  │  Chunks=20, Context=50 chars
+                                  rag_context  │  [Nguồn 1 — Tài liệu: ThS Kinh te hoc.txt | Thạc sĩ
+                                                      >(50 chars)
+                             retrieved_chunks  │  [20 items]
+                                                         [0] {"chunk_id": "f3c241fc-7938-456d-a0c5-31caaa8689e1", "chunk_level": "child", "parent_id": "ae0f5c99-2df3-40d5-95f0-cdd5bbff2298", "section_path": "Thạc sĩ Kinh Tế Học > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC", "program_name": "Kinh Tế Học", "score": 0.7170138786443412, "content_preview": "[Chương trình: Thạc sĩ Kinh Tế Học (KTH, kth, Kinh tế) | Mã ngành: 8310101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC\n\nThông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/Chi", "source": "vector", "rrf_score": 0.01639344262295082}
+                                                         [1] {"chunk_id": "ae0f5c99-2df3-40d5-95f0-cdd5bbff2298", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Kinh Tế Học > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC", "program_name": "Kinh Tế Học", "score": 0.7079795635920376, "content_preview": "[Chương trình: Thạc sĩ Kinh Tế Học (KTH, kth, Kinh tế) | Mã ngành: 8310101]\nCHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC\n\nChương trình đào tạo Thạc sĩ ngành Kinh tế học tại Trường Đại học Tài chính ", "source": "vector", "rrf_score": 0.016129032258064516}
+                                                         [2] {"chunk_id": "c16af4c1-5d30-42c4-9412-3de793007683", "chunk_level": "child", "parent_id": "ae0f5c99-2df3-40d5-95f0-cdd5bbff2298", "section_path": "Thạc sĩ Kinh Tế Học > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC", "program_name": "Kinh Tế Học", "score": 0.6969672856907431, "content_preview": "[Chương trình: Thạc sĩ Kinh Tế Học (KTH, kth, Kinh tế) | Mã ngành: 8310101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC\n\nChương trình đào tạo Thạc sĩ ngành Kinh tế học tại Trường Đại học Tài chín", "source": "vector", "rrf_score": 0.015873015873015872}
+                                                         [3] {"chunk_id": "b0f10dc0-ac8d-4f09-96f7-624e2338decb", "chunk_level": "child", "parent_id": "ae0f5c99-2df3-40d5-95f0-cdd5bbff2298", "section_path": "Thạc sĩ Kinh Tế Học > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC", "program_name": "Kinh Tế Học", "score": 0.6891775131225586, "content_preview": "[Chương trình: Thạc sĩ Kinh Tế Học (KTH, kth, Kinh tế) | Mã ngành: 8310101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC\n\n* Định hướng Nghiên cứu: Tập trung phát triển tư duy hàn lâm, năng lực ngh", "source": "vector", "rrf_score": 0.015625}
+                                                         [4] {"chunk_id": "454b5ee8-ee08-462f-b3db-d0931ce798b2", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Kinh Tế Học > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Kinh Tế Học", "score": 0.6809195470261856, "content_preview": "[Chương trình: Thạc sĩ Kinh Tế Học (KTH, kth, Kinh tế) | Mã ngành: 8310101]\nĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:\n\n* Về văn bằng: Đã tốt nghiệp đại học ngành", "source": "vector", "rrf_score": 0.015384615384615385}
+                                                         [5] {"chunk_id": "94e1b0e8-9078-4ebf-884a-d9520433daf2", "chunk_level": "child", "parent_id": "454b5ee8-ee08-462f-b3db-d0931ce798b2", "section_path": "Thạc sĩ Kinh Tế Học > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Kinh Tế Học", "score": 0.6787068843841553, "content_preview": "[Chương trình: Thạc sĩ Kinh Tế Học (KTH, kth, Kinh tế) | Mã ngành: 8310101] — ĐIỀU KIỆN XÉT TUYỂN\n\n* Ngành gần (Nhóm 2): Bổ sung 02 môn (5 tín chỉ), gồm: Quản trị học (2 TC) và Kinh tế học (3 TC).\n* N", "source": "vector", "rrf_score": 0.015151515151515152}
+                                                         [6] {"chunk_id": "78ffd34d-d27e-4edb-8550-ce561fd3eca7", "chunk_level": "child", "parent_id": "7f26f8a1-67a8-4118-8ef1-b7716b614a20", "section_path": "Thạc sĩ Luật Kinh Tế > GIỚI THIỆU CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH LUẬT KINH TẾ", "program_name": "Luật Kinh Tế", "score": 0.6774352596661616, "content_preview": "[Chương trình: Thạc sĩ Luật Kinh Tế (LKT, lkt, Luật KT) | Mã ngành: 8380107] — GIỚI THIỆU CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH LUẬT KINH TẾ\n\nThông tin chi tiết chương trình đào tạo: <https://daotaosdh.u", "source": "vector", "rrf_score": 0.014925373134328358}
+                                                         [7] {"chunk_id": "8abe090b-d590-4c6e-b2f0-20b8cb3dec4c", "chunk_level": "child", "parent_id": "2aa88d6c-ef0d-44a0-809a-8ea26b595599", "section_path": "Thạc sĩ Luật Kinh Tế > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Luật Kinh Tế", "score": 0.6770973801612854, "content_preview": "[Chương trình: Thạc sĩ Luật Kinh Tế (LKT, lkt, Luật KT) | Mã ngành: 8380107] — ĐIỀU KIỆN XÉT TUYỂN\n\n* Ngành gần (Nhóm 2): Bổ sung 02 môn (5 tín chỉ), gồm: Luật đầu tư (2 TC) và Pháp luật về thương mại", "source": "vector", "rrf_score": 0.014705882352941176}
+                                                         [8] {"chunk_id": "1b70a4c6-7164-44d9-bb4f-2881fc52f77c", "chunk_level": "child", "parent_id": "29916fb7-5780-4c02-888d-5c65fdad70cd", "section_path": "1. Đối tượng", "program_name": null, "score": 0.6768028937817485, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng]\n\n[Phần 2/3]\n| STT | Môn học | Số tín chỉ | Lịch họ", "source": "vector", "rrf_score": 0.014492753623188406}
+                                                         [9] {"chunk_id": "29916fb7-5780-4c02-888d-5c65fdad70cd", "chunk_level": "parent", "parent_id": null, "section_path": "1. Đối tượng", "program_name": null, "score": 0.6768028937817485, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng]\n\n[Phần 2/3]\n| STT | Môn học            | Số tín ch", "source": "vector", "rrf_score": 0.014285714285714285}
+                                                         [10] {"chunk_id": "7e6a63e3-bc67-440d-ab96-9d6cca825950", "chunk_level": "child", "parent_id": "7f26f8a1-67a8-4118-8ef1-b7716b614a20", "section_path": "Thạc sĩ Luật Kinh Tế > GIỚI THIỆU CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH LUẬT KINH TẾ", "program_name": "Luật Kinh Tế", "score": 0.6767723560333252, "content_preview": "[Chương trình: Thạc sĩ Luật Kinh Tế (LKT, lkt, Luật KT) | Mã ngành: 8380107] — GIỚI THIỆU CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH LUẬT KINH TẾ\n\n* Định hướng Nghiên cứu: Tập trung cung cấp phương pháp luận ", "source": "vector", "rrf_score": 0.014084507042253521}
+                                                         [11] {"chunk_id": "db49875b-e830-4746-83bc-3d3a3917c3f9", "chunk_level": "child", "parent_id": "ae0f5c99-2df3-40d5-95f0-cdd5bbff2298", "section_path": "Thạc sĩ Kinh Tế Học > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC", "program_name": "Kinh Tế Học", "score": 0.6681195101880444, "content_preview": "[Chương trình: Thạc sĩ Kinh Tế Học (KTH, kth, Kinh tế) | Mã ngành: 8310101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC\n\nThời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng", "source": "vector", "rrf_score": 0.013888888888888888}
+                                                         [12] {"chunk_id": "24ecf4d2-1b29-480c-b201-32163a77b8a0", "chunk_level": "child", "parent_id": "909af947-ad0f-4dd1-b6ee-26639c1fbb00", "section_path": "Thạc sĩ Quản Lý Kinh Tế > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN LÝ KINH TẾ", "program_name": "Quản Lý Kinh Tế", "score": 0.6663380861282396, "content_preview": "[Chương trình: Thạc sĩ Quản Lý Kinh Tế (QLKT, qlkt, Quản lý KT) | Mã ngành: 8310110] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN LÝ KINH TẾ\n\nThông tin chi tiết chương trình đào tạo: <https://daotaosdh.u", "source": "vector", "rrf_score": 0.0136986301369863}
+                                                         [13] {"chunk_id": "8a464e92-dcd8-4718-b038-6970426a58ad", "chunk_level": "child", "parent_id": "fb2e1c18-f79f-42f4-8d47-2a7a97951099", "section_path": "Thạc sĩ Quản Lý Kinh Tế > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Lý Kinh Tế", "score": 0.6663235425949097, "content_preview": "[Chương trình: Thạc sĩ Quản Lý Kinh Tế (QLKT, qlkt, Quản lý KT) | Mã ngành: 8310110] — ĐIỀU KIỆN XÉT TUYỂN\n\n* Ngành gần: Bổ sung 02 môn (5 tín chỉ): Quản trị học (2 TC) và Kinh tế học (3 TC).\n* Ngành ", "source": "vector", "rrf_score": 0.013513513513513514}
+                                                         [14] {"chunk_id": "510abfe0-b2b3-4df0-9005-cd5217ed0d7d", "chunk_level": "child", "parent_id": "a9a61395-f9d5-41ff-a823-ad424190e575", "section_path": "Thạc sĩ Toán Kinh Tế > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Toán Kinh Tế", "score": 0.6661112507018823, "content_preview": "[Chương trình: Thạc sĩ Toán Kinh Tế (TKT, tkt, Toán KT) | Mã ngành: 8310108] — ĐIỀU KIỆN XÉT TUYỂN\n\n* Ngành gần (Nhóm 2): Bổ sung 02 môn (5 tín chỉ), gồm: Kinh tế học (3 TC) và Toán kinh tế (2 TC).\n* ", "source": "vector", "rrf_score": 0.013333333333333334}
+                                                         [15] {"chunk_id": "145442e0-0b03-401f-ae48-d34fade02fc5", "chunk_level": "child", "parent_id": "454b5ee8-ee08-462f-b3db-d0931ce798b2", "section_path": "Thạc sĩ Kinh Tế Học > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Kinh Tế Học", "score": 0.6636280417442322, "content_preview": "[Chương trình: Thạc sĩ Kinh Tế Học (KTH, kth, Kinh tế) | Mã ngành: 8310101] — ĐIỀU KIỆN XÉT TUYỂN\n\n* Về văn bằng: Đã tốt nghiệp đại học ngành Kinh tế học hoặc các ngành phù hợp/ngành gần/ngành khác (c", "source": "vector", "rrf_score": 0.013157894736842105}
+                                                         [16] {"chunk_id": "be3198c5-d57e-4b74-a6c6-ced6fa571c9e", "chunk_level": "child", "parent_id": "454b5ee8-ee08-462f-b3db-d0931ce798b2", "section_path": "Thạc sĩ Kinh Tế Học > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Kinh Tế Học", "score": 0.663606921649393, "content_preview": "[Chương trình: Thạc sĩ Kinh Tế Học (KTH, kth, Kinh tế) | Mã ngành: 8310101] — ĐIỀU KIỆN XÉT TUYỂN\n\nĐối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Kinh tế học, Nhà trường tổ chức học bổ su", "source": "vector", "rrf_score": 0.012987012987012988}
+                                                         [17] {"chunk_id": "b441638b-1864-478f-b011-15af3af694f9", "chunk_level": "child", "parent_id": "7a5853df-1fc4-4cc4-b699-6cd10852af5e", "section_path": "Thạc sĩ Kinh Tế Học > CƠ HỘI NGHỀ NGHIỆP", "program_name": "Kinh Tế Học", "score": 0.6632198691368103, "content_preview": "[Chương trình: Thạc sĩ Kinh Tế Học (KTH, kth, Kinh tế) | Mã ngành: 8310101] — CƠ HỘI NGHỀ NGHIỆP\n\nSau khi tốt nghiệp, Thạc sĩ Kinh tế học có thể đảm nhiệm các vị trí:\n\n* Khu vực công & Tổ chức phi chí", "source": "vector", "rrf_score": 0.01282051282051282}
+                                                         [18] {"chunk_id": "2aa88d6c-ef0d-44a0-809a-8ea26b595599", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Luật Kinh Tế > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Luật Kinh Tế", "score": 0.6623030304908752, "content_preview": "[Chương trình: Thạc sĩ Luật Kinh Tế (LKT, lkt, Luật KT) | Mã ngành: 8380107]\nĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:\n\n* Về văn bằng: Đã tốt nghiệp đại học ngàn", "source": "vector", "rrf_score": 0.012658227848101266}
+                                                         [19] {"chunk_id": "7a5853df-1fc4-4cc4-b699-6cd10852af5e", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Kinh Tế Học > CƠ HỘI NGHỀ NGHIỆP", "program_name": "Kinh Tế Học", "score": 0.6616203381562683, "content_preview": "[Chương trình: Thạc sĩ Kinh Tế Học (KTH, kth, Kinh tế) | Mã ngành: 8310101]\nCƠ HỘI NGHỀ NGHIỆP\n\nSau khi tốt nghiệp, Thạc sĩ Kinh tế học có thể đảm nhiệm các vị trí:\n\n* Khu vực công & Tổ chức phi chính", "source": "vector", "rrf_score": 0.0125}
+
+──────────────────────────────────────────────────────────────────────────
+  🌐 [8] RAG SEARCH PIPELINE (Evaluator + Web Search)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (3.758s)
+                                        Message  │  cache=MISS, citations=0
+                           ufm_search_queries  │  null
+                              pr_search_query  │  null
+                           web_search_results  │  null
+                         web_search_citations  │  null
+                             search_cache_hit  │  ✗ False
+                      search_cache_similarity  │  0.0000
+                               final_response  │  - Theo [ThS Kinh te hoc.txt](ThS Kinh te hoc.txt), chương trình đào tạo Thạc sĩ Kinh tế học
+                                                      >(91 chars)
+                              response_source  │  rag_search_synthesized
+                                                      >(22 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [9] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.004s)
+                                        Message  │  source='rag_search_synthesized', length=91 chars
+                               final_response  │  - Theo [ThS Kinh te hoc.txt](ThS Kinh te hoc.txt), chương trình đào tạo Thạc sĩ Kinh tế học
+                                                      >(91 chars)
+                              response_source  │  rag_search_synthesized
+                                                      >(22 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : rag_search_synthesized
+  Intent          : CHUONG_TRINH_DAO_TAO → PROCEED_RAG_UFM_SEARCH
+  Response Length : 91 chars
+  Total Time      : 16.49s
+  Nodes Executed  : 9
+──────────────────────────────────────────────────────────────────────────
+
+- Theo [ThS Kinh te hoc.txt](ThS Kinh te hoc.txt), chương trình đào tạo Thạc sĩ Kinh tế học
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.003s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  2.909s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a+2b)        │  1.425s  │   PASS   │
+  │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  2.088s  │   PASS   │
+  │ 🔀 MULTI-QUERY NODE (Sinh biến thể)           │  1.410s  │   PASS   │
+  │ 📊 EMBEDDING NODE (BGE-M3 batch)              │  2.755s  │   PASS   │
+  │ 🗄️ RAG NODE (Hybrid Search DB)               │  2.114s  │   PASS   │
+  │ 🌐 RAG SEARCH PIPELINE (Evaluator + Web Searc │  3.758s  │   PASS   │
+  │ 🎯 RESPONSE NODE (Final Answer)               │  0.004s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  16.49s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_101758_tôi_muốn_xem_ct_đào_tạo_kinh_tế_học.txt
+

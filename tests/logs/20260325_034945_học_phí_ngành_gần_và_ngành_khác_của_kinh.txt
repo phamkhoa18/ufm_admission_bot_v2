@@ -1,0 +1,258 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-25 03:49:45                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_034945_học_phí_ngành_gần_và_ngành_khác_của_kinh.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/qwen/qwen3.5-flash-02-23             │
+  │ ⓫ Form Extract       │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓫ Form Draft         │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : học phí ngành gần và ngành khác của kinh doanh quốc tế thạc sĩ
+  💬 Chat History : Trống (lượt đầu tiên)
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.009s)
+                                        Message  │  [Fast-Scan PASS — 0.001s] Sạch, cho qua Context Node
+                             normalized_query  │  học phí ngành gần và ngành khác của kinh doanh quốc tế thạc sĩ
+                                                      >(62 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.001s] Sạch, cho qua Context Node
+                                                      >(52 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.001s)
+                                        Message  │  Reformulated → 'học phí ngành gần và ngành khác của kinh doanh quốc tế thạc sĩ'
+                             standalone_query  │  học phí ngành gần và ngành khác của kinh doanh quốc tế thạc sĩ
+                                                      >(62 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a+2b)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.333s)
+                                        Message  │  [Contextual-Guard PASS — 2.331s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 2.331s] standalone_query an toàn
+                                                      >(57 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [4] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.236s)
+                                        Message  │  intent='HOC_PHI_HOC_BONG' → action='PROCEED_RAG' → next='response'
+                                       intent  │  HOC_PHI_HOC_BONG
+                                                      >(16 chars)
+                               intent_summary  │  học phí ngành gần và ngành khác của kinh doanh quốc tế thạc sĩ
+                                                      >(62 chars)
+                                intent_action  │  PROCEED_RAG
+                                                      >(11 chars)
+                         program_level_filter  │  thac_si
+                                                      >(7 chars)
+                          program_name_filter  │  Kinh Doanh Quốc Tế
+                                                      >(18 chars)
+                                    next_node  │  response
+                                                      >(8 chars)
+                              response_source  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🔀 [5] MULTI-QUERY NODE (Sinh biến thể)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.272s)
+                                        Message  │  Sinh 3 biến thể
+                                multi_queries  │  [3 items]
+                                                         [0] "Học phí chương trình thạc sĩ Kinh doanh quốc tế và các ngành liên quan tại UFM"
+                                                         [1] "Chi phí đào tạo thạc sĩ ngành Kinh doanh quốc tế và các ngành tương tự ở UFM"
+                                                         [2] "Mức học phí cho bậc thạc sĩ ngành Kinh doanh quốc tế và các ngành gần gũi tại UFM"
+
+──────────────────────────────────────────────────────────────────────────
+  📊 [6] EMBEDDING NODE (BGE-M3 batch)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.097s)
+                                        Message  │  Nhúng 4 vectors × 1024D
+                             query_embeddings  │  [4 vectors × 1024D]
+
+──────────────────────────────────────────────────────────────────────────
+  🗄️ [7] RAG NODE (Hybrid Search DB)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (5.977s)
+                                        Message  │  Chunks=20, Context=1617 chars
+                                  rag_context  │  [Nguồn 1 — Tài liệu: phuluc2.md | 1. Đối tượng | Mục: 1. Đối tượng | Năm: 2026]
+# PHỤ LỤC 2
+*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*
+[Nguồn: phuluc2.md]
+[Mục: 1. Đối tượng]
+
+[Phần 2/3]
+| STT | Môn học            | Số tín chỉ | Lịch học(dự kiến)                         | Học phí(500.000đ/TC) |
+| --- | ------------------ | ---------- | ----------------------------------------- | -------------------- |
+| 1   | Kinh tế học        | 3          | Các buổi tối trong tuần và ngày cuối tuần | 1.500.000 đ          |
+| 2   | Kinh doanh quốc tế | 2          |                                           | 1.000.000 đ          |
+
+- **Ngành khác:** các ngành đào tạo trình độ đại học khác không phải ngành đúng, ngành gần, nhưng có cùng lĩnh vực đào tạo theo phân loại danh mục đào tạo cấp II. Môn học bổ sung kiến thức gồm **4 môn (9 tín chỉ)**, cụ thể:
+
+| STT | Môn học                      | Số tín chỉ | Lịch học(dự kiến)                         | Học phí(500.000đ/TC) |
+| --- | ------------------           | ---------- | ----------------------------------------- | -------------------- |
+| 1   | Kinh tế học                  | 3          | Các buổi tối trong tuần và ngày cuối tuần | 1.500.000 đ          |
+| 2   | Kinh doanh quốc tế           | 2          |                                           | 1.000.000 đ          |
+| 3   | Quản trị logistics           | 2          |                                           | 1.000.000 đ          |
+| 4   | Giao dịch thương mại quốc tế | 2          |                                           | 1.000.000 đ          |
+                                                      >(1617 chars)
+                             retrieved_chunks  │  [20 items]
+                                                         [0] {"chunk_id": "29916fb7-5780-4c02-888d-5c65fdad70cd", "chunk_level": "parent", "parent_id": null, "section_path": "1. Đối tượng", "program_name": null, "score": 0.7051901431438372, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng]\n\n[Phần 2/3]\n| STT | Môn học            | Số tín ch", "source": "vector", "rrf_score": 0.032266458495966696}
+                                                         [1] {"chunk_id": "1b70a4c6-7164-44d9-bb4f-2881fc52f77c", "chunk_level": "child", "parent_id": "29916fb7-5780-4c02-888d-5c65fdad70cd", "section_path": "1. Đối tượng", "program_name": null, "score": 0.7051901431438372, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng]\n\n[Phần 2/3]\n| STT | Môn học | Số tín chỉ | Lịch họ", "source": "vector", "rrf_score": 0.03225806451612903}
+                                                         [2] {"chunk_id": "573e8531-8d1a-4c43-b90c-9701ed776991", "chunk_level": "parent", "parent_id": null, "section_path": "1. Đối tượng", "program_name": null, "score": 0.6448443320300788, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng]\n\n[Phần 1/3]\n- Người học bổ sung kiến thức có bằng ", "source": "vector", "rrf_score": 0.029030910609857977}
+                                                         [3] {"chunk_id": "97a68148-db8b-424b-88e8-e726ab1b945f", "chunk_level": "child", "parent_id": "573e8531-8d1a-4c43-b90c-9701ed776991", "section_path": "1. Đối tượng", "program_name": null, "score": 0.6448443320300788, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng]\n\n[Phần 1/3]\n- Người học bổ sung kiến thức có bằng ", "source": "vector", "rrf_score": 0.028958333333333336}
+                                                         [4] {"chunk_id": "7bd3def2-e18a-41b0-911c-d0ecd1197bdc", "chunk_level": "child", "parent_id": "eda72bd9-7b82-4ff5-b7d1-41718461d2e3", "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Kinh Doanh Quốc Tế", "score": 0.7312599260365932, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120] — ĐIỀU KIỆN XÉT TUYỂN\n\n* Ngành gần: Bổ sung 02 môn (5 tín chỉ), gồm: Kinh tế học (3 TC) và Kinh doanh quốc tế (2", "source": "vector", "rrf_score": 0.01639344262295082}
+                                                         [5] {"chunk_id": "b12558ae-a6fe-469d-9bc4-c9ad4c32eb69", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > CHÍNH SÁCH ƯU ĐÃI HỌC PHÍ", "program_name": "Kinh Doanh Quốc Tế", "score": 0.6960367741562871, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120]\nCHÍNH SÁCH ƯU ĐÃI HỌC PHÍ\n\n* Giảm 10% học phí đối với học viên là cựu sinh viên của Trường.\n* Giảm 5% học phí đố", "source": "vector", "rrf_score": 0.015625}
+                                                         [6] {"chunk_id": "0922d4db-eee3-4f37-ac3b-b5f2e79a6741", "chunk_level": "child", "parent_id": "7a16c309-a7f3-4c5f-8557-17fc3dd77f5c", "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ", "program_name": "Kinh Doanh Quốc Tế", "score": 0.6946351942202564, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ\n\nThông tin chi tiết chương trình đào tạo: <https://daota", "source": "vector", "rrf_score": 0.015384615384615385}
+                                                         [7] {"chunk_id": "4c7c4024-043b-4ef7-99b9-a20d4f83f7c1", "chunk_level": "child", "parent_id": "b12558ae-a6fe-469d-9bc4-c9ad4c32eb69", "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > CHÍNH SÁCH ƯU ĐÃI HỌC PHÍ", "program_name": "Kinh Doanh Quốc Tế", "score": 0.6918241381645203, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120] — CHÍNH SÁCH ƯU ĐÃI HỌC PHÍ\n\n* Giảm 10% học phí đối với học viên là cựu sinh viên của Trường.\n* Giảm 5% học phí ", "source": "vector", "rrf_score": 0.015151515151515152}
+                                                         [8] {"chunk_id": "4206fd8d-0e48-47bc-9d4c-b22d7b8e7ccf", "chunk_level": "child", "parent_id": "eb4549aa-55aa-4978-8730-edde1346077d", "section_path": "1. Đối tượng > **❖ Đối với ngành Marketing:**", "program_name": null, "score": 0.6893203258514404, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng > **❖ Đối với ngành Marketing:**]\n\n- Ngành gần: các", "source": "vector", "rrf_score": 0.014925373134328358}
+                                                         [9] {"chunk_id": "eb4549aa-55aa-4978-8730-edde1346077d", "chunk_level": "parent", "parent_id": null, "section_path": "1. Đối tượng > **❖ Đối với ngành Marketing:**", "program_name": null, "score": 0.6893203258514404, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng > **❖ Đối với ngành Marketing:**]\n\n- Ngành gần: các", "source": "vector", "rrf_score": 0.014705882352941176}
+                                                         [10] {"chunk_id": "82b313b1-e62c-40df-9b38-bb95af403128", "chunk_level": "child", "parent_id": "7a16c309-a7f3-4c5f-8557-17fc3dd77f5c", "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ", "program_name": "Kinh Doanh Quốc Tế", "score": 0.6881460938410162, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ\n\nChương trình đào tạo Thạc sĩ ngành Kinh doanh quốc tế t", "source": "vector", "rrf_score": 0.014492753623188406}
+                                                         [11] {"chunk_id": "3363eb52-12f1-419c-817c-07ff5d55dcfa", "chunk_level": "parent", "parent_id": null, "section_path": "1. Đối tượng", "program_name": null, "score": 0.6793154669216009, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng]\n\n[Phần 3/3]\n| STT | Môn học           | Số tín chỉ", "source": "vector", "rrf_score": 0.014285714285714285}
+                                                         [12] {"chunk_id": "eb187809-228f-49a6-8930-36f5939ddc22", "chunk_level": "child", "parent_id": "3363eb52-12f1-419c-817c-07ff5d55dcfa", "section_path": "1. Đối tượng", "program_name": null, "score": 0.6793154669216009, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng]\n\n[Phần 3/3]\n| STT | Môn học | Số tín chỉ | Lịch họ", "source": "vector", "rrf_score": 0.014084507042253521}
+                                                         [13] {"chunk_id": "7a16c309-a7f3-4c5f-8557-17fc3dd77f5c", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ", "program_name": "Kinh Doanh Quốc Tế", "score": 0.6762012444794552, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120]\nCHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ\n\nChương trình đào tạo Thạc sĩ ngành Kinh doanh quốc tế tại", "source": "vector", "rrf_score": 0.013888888888888888}
+                                                         [14] {"chunk_id": "eda72bd9-7b82-4ff5-b7d1-41718461d2e3", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Kinh Doanh Quốc Tế", "score": 0.6508292943733521, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120]\nĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:\n\n* Về văn bằng: Đã tốt nghiệp đ", "source": "vector", "rrf_score": 0.0136986301369863}
+                                                         [15] {"chunk_id": "fc729636-3644-42ee-a9a9-33ee70caa1f5", "chunk_level": "child", "parent_id": "7a16c309-a7f3-4c5f-8557-17fc3dd77f5c", "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ", "program_name": "Kinh Doanh Quốc Tế", "score": 0.6457836205701387, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ\n\nThời gian đào tạo trung bình là 02 năm (tối đa 04 năm) ", "source": "vector", "rrf_score": 0.013513513513513514}
+                                                         [16] {"chunk_id": "aa4c847c-7871-46bc-8c6e-ee68ae1d382e", "chunk_level": "child", "parent_id": "7a16c309-a7f3-4c5f-8557-17fc3dd77f5c", "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ", "program_name": "Kinh Doanh Quốc Tế", "score": 0.6404441595077515, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ\n\n* Định hướng Nghiên cứu: Tập trung phát triển tư duy hà", "source": "vector", "rrf_score": 0.012987012987012988}
+                                                         [17] {"chunk_id": "6706c047-2e25-43c8-b0a0-de45df569e2a", "chunk_level": "child", "parent_id": "eda72bd9-7b82-4ff5-b7d1-41718461d2e3", "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Kinh Doanh Quốc Tế", "score": 0.6379050992670714, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120] — ĐIỀU KIỆN XÉT TUYỂN\n\n* Về văn bằng: Đã tốt nghiệp đại học ngành Kinh doanh quốc tế hoặc các ngành phù hợp/ngàn", "source": "vector", "rrf_score": 0.01282051282051282}
+                                                         [18] {"chunk_id": "96a58195-e18f-4e64-88cf-6366fbb871c2", "chunk_level": "child", "parent_id": "eda72bd9-7b82-4ff5-b7d1-41718461d2e3", "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Kinh Doanh Quốc Tế", "score": 0.6366593837738037, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120] — ĐIỀU KIỆN XÉT TUYỂN\n\nĐối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Kinh doanh quốc tế, Nhà trườn", "source": "vector", "rrf_score": 0.012658227848101266}
+                                                         [19] {"chunk_id": "20268560-f17c-4b7f-9d83-2bb358e8f6cf", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > CƠ HỘI NGHỀ NGHIỆP", "program_name": "Kinh Doanh Quốc Tế", "score": 0.6334904621091626, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120]\nCƠ HỘI NGHỀ NGHIỆP\n\nSau khi tốt nghiệp, Thạc sĩ Kinh doanh quốc tế có thể đảm nhiệm các vị trí:\n\n* Nhóm Quản lý ", "source": "vector", "rrf_score": 0.0125}
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [8] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (5.285s)
+                                        Message  │  source='_generated', length=1825 chars
+                               final_response  │  Chào bạn nhé! Mình rất vui được hỗ trợ bạn tìm hiểu về chương trình thạc sĩ tại UFM, đặc biệt là ngành **Kinh doanh quốc tế** đang rất "hot" này! 🎓
+
+Về học phí cho ngành **Kinh doanh quốc tế** bậc thạc sĩ, mình xin chia sẻ thông tin chi tiết như sau:
+
+Đầu tiên, bạn cần biết rằng học phí các môn học bổ sung kiến thức được tính theo tín chỉ, với mức **500.000đ/tín chỉ**.
+
+*   **Đối với các bạn thuộc diện "ngành khác"**:
+    *   Bạn sẽ cần học bổ sung kiến thức **4 môn** với tổng cộng **9 tín chỉ**.
+    *   Tổng học phí cho phần bổ sung kiến thức này sẽ là: **9 tín chỉ x 500.000đ/tín chỉ = 4.500.000đ**.
+    *   Cụ thể các môn học bổ sung kiến thức bao gồm:
+        *   **Kinh tế học**: 3 tín chỉ (1.500.000đ)
+        *   **Kinh doanh quốc tế**: 2 tín chỉ (1.000.000đ)
+        *   **Quản trị logistics**: 2 tín chỉ (1.000.000đ)
+        *   **Giao dịch thương mại quốc tế**: 2 tín chỉ (1.000.000đ)
+    *   Lịch học dự kiến cho các môn này thường vào các buổi tối trong tuần và ngày cuối tuần, rất thuận tiện cho các bạn đang đi làm.
+
+*   **Đối với các bạn thuộc diện "ngành gần" (hoặc "ngành đúng")**:
+    *   Theo thông tin mình có, các bạn thuộc diện này sẽ **không cần học các môn bổ sung kiến thức** như trên. Điều này có nghĩa là bạn sẽ không phải chi trả khoản học phí bổ sung này. Bạn sẽ trực tiếp vào học các môn chuyên ngành của chương trình thạc sĩ.
+
+Để biết chính xác mình thuộc diện "ngành đúng", "ngành gần" hay "ngành khác", bạn có thể tham khảo thêm trong [Phụ lục 2](phuluc2.md) của Thông báo tuyển sinh thạc sĩ đợt 1 năm 2026.
+
+Hy vọng những thông tin này hữu ích cho bạn! Bạn có muốn mình giải thích thêm về chương trình học hay quy trình tuyển sinh không?
+
+📎 **Nguồn tham khảo:**
+*   [PHỤ LỤC 2](phuluc2.md) (Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)
+                                                      >(1825 chars)
+                              response_source  │  _generated
+                                                      >(10 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : _generated
+  Intent          : HOC_PHI_HOC_BONG → PROCEED_RAG
+  Response Length : 1825 chars
+  Total Time      : 18.22s
+  Nodes Executed  : 8
+──────────────────────────────────────────────────────────────────────────
+
+Chào bạn nhé! Mình rất vui được hỗ trợ bạn tìm hiểu về chương trình thạc sĩ tại UFM, đặc biệt là ngành **Kinh doanh quốc tế** đang rất "hot" này! 🎓
+
+Về học phí cho ngành **Kinh doanh quốc tế** bậc thạc sĩ, mình xin chia sẻ thông tin chi tiết như sau:
+
+Đầu tiên, bạn cần biết rằng học phí các môn học bổ sung kiến thức được tính theo tín chỉ, với mức **500.000đ/tín chỉ**.
+
+*   **Đối với các bạn thuộc diện "ngành khác"**:
+    *   Bạn sẽ cần học bổ sung kiến thức **4 môn** với tổng cộng **9 tín chỉ**.
+    *   Tổng học phí cho phần bổ sung kiến thức này sẽ là: **9 tín chỉ x 500.000đ/tín chỉ = 4.500.000đ**.
+    *   Cụ thể các môn học bổ sung kiến thức bao gồm:
+        *   **Kinh tế học**: 3 tín chỉ (1.500.000đ)
+        *   **Kinh doanh quốc tế**: 2 tín chỉ (1.000.000đ)
+        *   **Quản trị logistics**: 2 tín chỉ (1.000.000đ)
+        *   **Giao dịch thương mại quốc tế**: 2 tín chỉ (1.000.000đ)
+    *   Lịch học dự kiến cho các môn này thường vào các buổi tối trong tuần và ngày cuối tuần, rất thuận tiện cho các bạn đang đi làm.
+
+*   **Đối với các bạn thuộc diện "ngành gần" (hoặc "ngành đúng")**:
+    *   Theo thông tin mình có, các bạn thuộc diện này sẽ **không cần học các môn bổ sung kiến thức** như trên. Điều này có nghĩa là bạn sẽ không phải chi trả khoản học phí bổ sung này. Bạn sẽ trực tiếp vào học các môn chuyên ngành của chương trình thạc sĩ.
+
+Để biết chính xác mình thuộc diện "ngành đúng", "ngành gần" hay "ngành khác", bạn có thể tham khảo thêm trong [Phụ lục 2](phuluc2.md) của Thông báo tuyển sinh thạc sĩ đợt 1 năm 2026.
+
+Hy vọng những thông tin này hữu ích cho bạn! Bạn có muốn mình giải thích thêm về chương trình học hay quy trình tuyển sinh không?
+
+📎 **Nguồn tham khảo:**
+*   [PHỤ LỤC 2](phuluc2.md) (Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.009s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  0.001s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a+2b)        │  2.333s  │   PASS   │
+  │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  1.236s  │   PASS   │
+  │ 🔀 MULTI-QUERY NODE (Sinh biến thể)           │  1.272s  │   PASS   │
+  │ 📊 EMBEDDING NODE (BGE-M3 batch)              │  2.097s  │   PASS   │
+  │ 🗄️ RAG NODE (Hybrid Search DB)               │  5.977s  │   PASS   │
+  │ 🎯 RESPONSE NODE (Final Answer)               │  5.285s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  18.22s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_034945_học_phí_ngành_gần_và_ngành_khác_của_kinh.txt
+

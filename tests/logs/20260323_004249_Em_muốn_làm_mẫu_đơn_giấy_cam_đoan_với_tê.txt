@@ -1,0 +1,56 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test Runner                        ║
+║    2026-03-23 00:42:49                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260323_004249_Em_muốn_làm_mẫu_đơn_giấy_cam_đoan_với_tê.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❷ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❹ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❺ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❻ Guard (Deep)       │ openrouter/qwen/qwen3.5-flash-02-23             │
+  │ ❼ Multi-Query        │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❽ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❾a Vector Router     │ openrouter/baai/bge-m3                          │
+  │ ❾b Semantic Rtr      │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫c Web Search        │ openrouter/openai/gpt-4o-mini-search-preview    │
+  │ ⓫d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Care               │ openrouter/qwen/qwen3.5-flash-02-23             │
+  │ ⓭ Form Extract       │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓭ Form Draft         │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓮ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  📝 Input Query  : Em muốn làm mẫu đơn giấy cam đoan với tên là Trần Quốc Giăng ngành học thạc sĩ QTKD sdt 0896370564 địa chỉ 75 tân lập dĩ an
+  💬 Chat History : 4 messages
+     👤 Em muốn làm mẫu đơn giấy cam đoan với tên là Trần Quốc Giăng ngành học thạc sĩ Q
+     🤖 Chào bạn! Mình đã tạo mẫu đơn dựa trên thông tin bạn cung cấp. Bạn có thể tham k
+     👤 Em muốn làm mẫu đơn giấy cam đoan với tên là Trần Quốc Giăng ngành học thạc sĩ Q
+     🤖 Chào bạn, mình đã tạo lại mẫu đơn giấy cam đoan với các thông tin bạn cung cấp n
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.001s)
+                                        Message  │  [Fast-Scan PASS — 0.001s] Sạch, cho qua Context Node
+                             normalized_query  │  em muốn làm mẫu đơn giấy cam đoan với tên là trần quốc giăng ngành học thạc sĩ qtkd sdt 0896370564 địa chỉ 75 tân lập dĩ an
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.001s] Sạch, cho qua Context Node
+                                    next_node  │  context
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────

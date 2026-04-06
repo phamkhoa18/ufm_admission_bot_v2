@@ -1,0 +1,493 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-25 03:12:04                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_031204_Khối_D01_gồm_những_môn_gì.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/qwen/qwen3.5-flash-02-23             │
+  │ ⓫ Form Extract       │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓫ Form Draft         │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : Khối D01 gồm những môn gì?
+  💬 Chat History : 4 messages
+     👤 Học phí ngành Marketing chương trình chất lượng cao năm 2024 là bao nhiêu?
+     🤖 Xin lỗi bạn, mình chưa tìm thấy thông tin chính xác cho câu hỏi này trong cơ sở 
+     👤 Trường Đại học Tài chính - Marketing năm nay xét tuyển bằng những phương thức nà
+     🤖 Chào bạn nhé! Mình là Trợ lý Tuyển sinh UFM đây. Rất vui được giải đáp thắc mắc 
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.004s)
+                                        Message  │  [Fast-Scan PASS — 0.000s] Sạch, cho qua Context Node
+                             normalized_query  │  khối d01 gồm những môn gì?
+                                                      >(26 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sạch, cho qua Context Node
+                                                      >(52 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.515s)
+                                        Message  │  Reformulated → 'Khối D01 gồm những môn gì?'
+                             standalone_query  │  Khối D01 gồm những môn gì?
+                                                      >(26 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a+2b)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.410s)
+                                        Message  │  [Contextual-Guard PASS — 1.409s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.409s] standalone_query an toàn
+                                                      >(57 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [4] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.422s)
+                                        Message  │  intent='THONG_TIN_TUYEN_SINH' → action='PROCEED_RAG_UFM_SEARCH' → next='rag_search'
+                                       intent  │  THONG_TIN_TUYEN_SINH
+                                                      >(20 chars)
+                               intent_summary  │  Khối D01 gồm những môn gì?
+                                                      >(26 chars)
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                                                      >(22 chars)
+                         program_level_filter  │  null
+                          program_name_filter  │  null
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+                              response_source  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🔀 [5] MULTI-QUERY NODE (Sinh biến thể)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.312s)
+                                        Message  │  Sinh 3 biến thể
+                                multi_queries  │  [3 items]
+                                                         [0] "Tổ hợp môn thi khối D01 bao gồm những môn nào?"
+                                                         [1] "Các môn thi thuộc khối D01 là gì?"
+                                                         [2] "Khối D01 xét tuyển những môn học nào?"
+
+──────────────────────────────────────────────────────────────────────────
+  📊 [6] EMBEDDING NODE (BGE-M3 batch)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.705s)
+                                        Message  │  Nhúng 4 vectors × 1024D
+                             query_embeddings  │  [4 vectors × 1024D]
+
+──────────────────────────────────────────────────────────────────────────
+  🗄️ [7] RAG NODE (Hybrid Search DB)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.232s)
+                                        Message  │  Chunks=20, Top1Cosine=0.5297, Context=8773 chars ⚠️ CONFIDENCE FAILED
+                                  rag_context  │  [Nguồn 1 — Văn bản: tuyensinh-trinhdo-thacsi-dot1-2026.md | 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.1. Phương thức tuyển sinh: xét tuyển đối với trình độ đại học và văn bằng, chứng chỉ ngoại ngữ đạt trình độ tương đương Bậc 3/6 trở lên. & 2.2. Các môn xét tuyển bao gồm: | Mục: 2.1. Phương thức tuyển sinh: xét tuyển đối với trình độ đại học và văn bằng, chứng chỉ ngoại ngữ đạt trình độ tương đương Bậc 3/6 trở lên. & 2.2. Các môn xét tuyển bao gồm: | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026
+[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]
+[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.1. Phương thức tuyển sinh: xét tuyển đối với trình độ đại học và văn bằng, chứng chỉ ngoại ngữ đạt trình độ tương đương Bậc 3/6 trở lên. & 2.2. Các môn xét tuyển bao gồm:]
+
+2.1. Phương thức tuyển sinh: xét tuyển đối với trình độ đại học và văn bằng, chứng chỉ ngoại ngữ đạt trình độ tương đương Bậc 3/6 trở lên.
+
+a) Hai môn cơ sở ngành phù hợp trình độ đại học. Cụ thể:
+
+| STT | Ngành                 | Môn cơ sở 1       | Môn cơ sở 2                             |
+| --- | --------------------- | ----------------- | --------------------------------------- |
+| 1.  | Tài chính – Ngân hàng | Kinh tế học       | Tài chính - Tiền tệ                     |
+| 2.  | Quản trị kinh doanh   | Kinh tế học       | Quản trị học                            |
+| 3.  | Quản lý kinh tế       | Kinh tế học       | Quản trị học                            |
+| 4.  | Kinh tế học           | Kinh tế học       | Quản trị học                            |
+| 5.  | Kinh doanh quốc tế    | Kinh tế học       | Kinh doanh quốc tế                      |
+| 6.  | Marketing             | Kinh tế học       | Nguyên lý Marketing                     |
+| 7.  | Kế toán               | Nguyên lý kế toán | Kế toán tài chính                       |
+| 8.  | Toán kinh tế          | Kinh tế học       | Toán kinh tế                            |
+| 9.  | Luật kinh tế          | Kinh tế học       | Lý luận chung nhà<br/>nước và pháp luật |
+
+❖ **Lưu ý**: Nếu bảng điểm trình độ đại học của người dự tuyển không có học phần Kinh tế học, mà có 2 học phần Kinh tế vi mô và Kinh tế vĩ mô (mỗi môn 3 tín chỉ trở lên) thì điểm xét tuyển môn Kinh tế học là trung bình cộng điểm của 2 học phần nói trên.
+
+b) Môn ngoại ngữ: xét tuyển đối với ngôn ngữ Anh, với các văn bằng, chứng chỉ được quy định chi tiết tại Phụ lục, Mục 1.3. Trường hợp ứng viên không có văn bằng, chứng chỉ tiếng Anh theo quy định; hoặc có nhưng đã hết thời hạn, phải tham gia kỳ thi đánh giá năng lực ngoại ngữ trình độ bậc 3/6 do Trường tổ chức trước khi thực hiện xét tuyển.
+
+---
+
+[Nguồn 2 — Văn bản: tuyensinh-trinhdo-thacsi-dot1-2026.md | 1. NGÀNH ĐÀO TẠO VÀ HÌNH THỨC ĐÀO TẠO > 1.1. Ngành đào tạo và chỉ tiêu tuyển sinh: | Mục: 1.1. Ngành đào tạo và chỉ tiêu tuyển sinh: | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026
+[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]
+[Mục: 1. NGÀNH ĐÀO TẠO VÀ HÌNH THỨC ĐÀO TẠO > 1.1. Ngành đào tạo và chỉ tiêu tuyển sinh:]
+
+Trường hiện có 09 (chín) ngành đào tạo trình độ thạc sĩ. Mỗi ngành có định hướng nghiên cứu và định hướng ứng dụng với tổng chỉ tiêu là 540, dự kiến phân bổ:
+
+| STT | Ngành                 | Mã ngành | Chỉ tiêu |
+| --- | --------------------- | -------- | -------- |
+| 1.  | Tài chính – Ngân hàng | 8340201  | 130      |
+| 2.  | Quản trị kinh doanh   | 8340101  | 160      |
+| 3.  | Quản lý kinh tế       | 8310110  | 40       |
+| 4.  | Marketing             | 8340115  | 40       |
+| 5.  | Kinh doanh quốc tế    | 8340120  | 40       |
+| 6.  | Kế toán               | 8340301  | 40       |
+| 7.  | Toán kinh tế          | 8310108  | 30       |
+| 8.  | Kinh tế học           | 8310101  | 30       |
+| 9.  | Luật kinh tế          | 8380107  | 30       |
+
+---
+
+[Nguồn 3 — Văn bản: phuluc2.md | 1. Đối tượng | Mục: 1. Đối tượng | Năm: 2026]
+# PHỤ LỤC 2
+*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*
+[Nguồn: phuluc2.md]
+[Mục: 1. Đối tượng]
+
+[Phần 2/3]
+| STT | Môn học            | Số tín chỉ | Lịch học(dự kiến)                         | Học phí(500.000đ/TC) |
+| --- | ------------------ | ---------- | ----------------------------------------- | -------------------- |
+| 1   | Kinh tế học        | 3          | Các buổi tối trong tuần và ngày cuối tuần | 1.500.000 đ          |
+| 2   | Kinh doanh quốc tế | 2          |                                           | 1.000.000 đ          |
+
+- **Ngành khác:** các ngành đào tạo trình độ đại học khác không phải ngành đúng, ngành gần, nhưng có cùng lĩnh vực đào tạo theo phân loại danh mục đào tạo cấp II. Môn học bổ sung kiến thức gồm **4 môn (9 tín chỉ)**, cụ thể:
+
+| STT | Môn học                      | Số tín chỉ | Lịch học(dự kiến)                         | Học phí(500.000đ/TC) |
+| --- | ------------------           | ---------- | ----------------------------------------- | -------------------- |
+| 1   | Kinh tế học                  | 3          | Các buổi tối trong tuần và ngày cuối tuần | 1.500.000 đ          |
+| 2   | Kinh doanh quốc tế           | 2          |                                           | 1.000.000 đ          |
+| 3   | Quản trị logistics           | 2          |                                           | 1.000.000 đ          |
+| 4   | Giao dịch thương mại quốc tế | 2          |                                           | 1.000.000 đ          |
+
+❖ **Đối với ngành Kinh tế học:**
+
+- **Ngành gần:** các ngành đào tạo ở cùng nhóm với ngành Kinh tế học theo phân loại trong Danh mục mã ngành có mã nhóm ngành là 73101. Cụ thể: Kinh tế chính trị, Kinh tế đầu tư, Kinh tế phát triển, Kinh tế quốc tế, Thống kê kinh tế, Quản lý kinh tế, học bổ sung kiến thức gồm **2 môn (5 tín chỉ)**, cụ thể:
+
+| STT | Môn học      | Số tín chỉ | Lịch học(dự kiến)                         | Học phí(500.000đ/TC) |
+| --- | ------------ | ---------- | ----------------------------------------- | -------------------- |
+| 1   | Kinh tế học  | 3          | Các buổi tối trong tuần và ngày cuối tuần | 1.500.000 đ          |
+| 2   | Quản trị học | 2          |                                           | 1.000.000 đ          |
+
+- **Ngành khác:** các ngành đào tạo trình độ đại học khác không phải ngành đúng, ngành gần, nhưng có liên quan trực tiếp tới chuyên môn, nghề nghiệp của ứng viên như Quản trị kinh doanh, Kế toán, Tài chính – Ngân hàng, Kinh tế nông nghiệp, Kinh tế hộ gia đình..... Môn học bổ sung kiến thức gồm **4 môn (9 tín chỉ)**, cụ thể:
+
+| STT | Môn học            | Số tín chỉ | Lịch học(dự kiến)                         | Học phí(500.000đ/TC) |
+| --- | ------------------ | ---------- | ----------------------------------------- | -------------------- |
+| 1   | Kinh tế học        | 3          | Các buổi tối trong tuần và ngày cuối tuần | 1.500.000 đ          |
+| 2   | Quản trị học       | 2          |                                           | 1.000.000 đ          |
+| 3   | Kinh tế đầu tư     | 2          |                                           | 1.000.000 đ          |
+| 4   | Kinh tế phát triển | 2          |                                           | 1.000.000 đ          |
+
+❖ **Đối với ngành Toán kinh tế:**
+
+- **Ngành gần:** các ngành có cùng lĩnh vực với ngành Toán kinh tế, học bổ sung kiến thức gồm **2 môn (5 tín chỉ)**, cụ thể:
+
+| STT | Môn học      | Số tín chỉ | Lịch học(dự kiến)                         | Học phí(500.000đ/TC) |
+| --- | ------------ | ---------- | ----------------------------------------- | -------------------- |
+| 1   | Kinh tế học  | 3          | Các buổi tối trong tuần và ngày cuối tuần | 1.500.000 đ          |
+| 2   | Toán kinh tế | 2          |                                           | 1.000.000 đ          |
+
+- **Ngành khác:** các ngành đào tạo trình độ đại học khác không phải ngành đúng, ngành gần, nhưng có liên quan trực tiếp tới chuyên môn, nghề nghiệp của ứng viên. Môn học bổ sung kiến thức gồm **4 môn (9 tín chỉ)**, cụ thể:
+
+| STT | Môn học                        | Số tín chỉ | Lịch học (dự kiến)                        | Học phí (500.000đ/TC)     |
+| --- | ------------------------------ | ---------- | ----------------------------------------- | ------------------------- |
+| 1   | Kinh tế học                    | 3          | Các buổi tối trong tuần và ngày cuối tuần | 1.500.000đ                |
+| 2   | Toán kinh tế                   | 2          |                                           | 1.000.000đ                |
+| 3   | Lý thuyết xác suất và thống kê | 2          |                                           | 1.000.000đ                |
+| 4   | Lý thuyết Tài chính – Tiền tệ  | 2          |                                           | 1.000.000đ                |
+
+❖ **Đối với ngành Kế toán:**
+- **Ngành gần:...
+                                                      >(8773 chars)
+                             retrieved_chunks  │  [20 items]
+                                                         [0] {"chunk_id": "4dabbc7e-579f-4550-9c7a-2a6db9dc8eaf", "chunk_level": "parent", "parent_id": null, "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.1. Phương thức tuyển sinh: xét tuyển đối với trình độ đại học và văn bằng, chứng chỉ ngoại ngữ đạt trình độ tương đương Bậc 3/6 trở lên. & 2.2. Các môn xét tuyển bao gồm:", "program_name": null, "score": 0.5296579319034783, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.1. Phương thức tuyển sinh: xét tuy", "source": "vector", "rrf_score": 0.01639344262295082}
+                                                         [1] {"chunk_id": "6f22d527-e5d1-48ee-b670-50f352a64d03", "chunk_level": "child", "parent_id": "4dabbc7e-579f-4550-9c7a-2a6db9dc8eaf", "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.1. Phương thức tuyển sinh: xét tuyển đối với trình độ đại học và văn bằng, chứng chỉ ngoại ngữ đạt trình độ tương đương Bậc 3/6 trở lên. & 2.2. Các môn xét tuyển bao gồm:", "program_name": null, "score": 0.5296579319034783, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.1. Phương thức tuyển sinh: xét tuy", "source": "vector", "rrf_score": 0.016129032258064516}
+                                                         [2] {"chunk_id": "4c1e470d-a2a4-43bb-8654-37ddba0aa3d6", "chunk_level": "parent", "parent_id": null, "section_path": "1. NGÀNH ĐÀO TẠO VÀ HÌNH THỨC ĐÀO TẠO > 1.1. Ngành đào tạo và chỉ tiêu tuyển sinh:", "program_name": null, "score": 0.5228664563377833, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 1. NGÀNH ĐÀO TẠO VÀ HÌNH THỨC ĐÀO TẠO > 1.1. Ngành đào tạo và chỉ tiêu tuyển sinh", "source": "vector", "rrf_score": 0.015873015873015872}
+                                                         [3] {"chunk_id": "397fe508-f3e2-486d-a144-d0cde2325371", "chunk_level": "child", "parent_id": "4c1e470d-a2a4-43bb-8654-37ddba0aa3d6", "section_path": "1. NGÀNH ĐÀO TẠO VÀ HÌNH THỨC ĐÀO TẠO > 1.1. Ngành đào tạo và chỉ tiêu tuyển sinh:", "program_name": null, "score": 0.5228664563377833, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 1. NGÀNH ĐÀO TẠO VÀ HÌNH THỨC ĐÀO TẠO > 1.1. Ngành đào tạo và chỉ tiêu tuyển sinh", "source": "vector", "rrf_score": 0.015625}
+                                                         [4] {"chunk_id": "1b70a4c6-7164-44d9-bb4f-2881fc52f77c", "chunk_level": "child", "parent_id": "29916fb7-5780-4c02-888d-5c65fdad70cd", "section_path": "1. Đối tượng", "program_name": null, "score": 0.5037385375421806, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng]\n\n[Phần 2/3]\n| STT | Môn học | Số tín chỉ | Lịch họ", "source": "vector", "rrf_score": 0.015384615384615385}
+                                                         [5] {"chunk_id": "29916fb7-5780-4c02-888d-5c65fdad70cd", "chunk_level": "parent", "parent_id": null, "section_path": "1. Đối tượng", "program_name": null, "score": 0.5037385375421806, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng]\n\n[Phần 2/3]\n| STT | Môn học            | Số tín ch", "source": "vector", "rrf_score": 0.015151515151515152}
+                                                         [6] {"chunk_id": "f1e80370-e8b4-461e-bd1c-087f43ad51d3", "chunk_level": "parent", "parent_id": null, "section_path": "1. Ngành tuyển sinh:", "program_name": null, "score": 0.48134300112724304, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 1. Ngành tuyển sinh:]\n\n|STT|Ngành|Mã ngành|Chỉ tiêu|\n|-|-|-|-|\n|1.|Tài ch", "source": "vector", "rrf_score": 0.014925373134328358}
+                                                         [7] {"chunk_id": "eb187809-228f-49a6-8930-36f5939ddc22", "chunk_level": "child", "parent_id": "3363eb52-12f1-419c-817c-07ff5d55dcfa", "section_path": "1. Đối tượng", "program_name": null, "score": 0.4798405480479876, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng]\n\n[Phần 3/3]\n| STT | Môn học | Số tín chỉ | Lịch họ", "source": "vector", "rrf_score": 0.014705882352941176}
+                                                         [8] {"chunk_id": "3363eb52-12f1-419c-817c-07ff5d55dcfa", "chunk_level": "parent", "parent_id": null, "section_path": "1. Đối tượng", "program_name": null, "score": 0.4798405480479876, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng]\n\n[Phần 3/3]\n| STT | Môn học           | Số tín chỉ", "source": "vector", "rrf_score": 0.014492753623188406}
+                                                         [9] {"chunk_id": "573e8531-8d1a-4c43-b90c-9701ed776991", "chunk_level": "parent", "parent_id": null, "section_path": "1. Đối tượng", "program_name": null, "score": 0.47930088515883085, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng]\n\n[Phần 1/3]\n- Người học bổ sung kiến thức có bằng ", "source": "vector", "rrf_score": 0.014285714285714285}
+                                                         [10] {"chunk_id": "97a68148-db8b-424b-88e8-e726ab1b945f", "chunk_level": "child", "parent_id": "573e8531-8d1a-4c43-b90c-9701ed776991", "section_path": "1. Đối tượng", "program_name": null, "score": 0.47930088515883085, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng]\n\n[Phần 1/3]\n- Người học bổ sung kiến thức có bằng ", "source": "vector", "rrf_score": 0.014084507042253521}
+                                                         [11] {"chunk_id": "94e1b0e8-9078-4ebf-884a-d9520433daf2", "chunk_level": "child", "parent_id": "454b5ee8-ee08-462f-b3db-d0931ce798b2", "section_path": "Thạc sĩ Kinh Tế Học > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Kinh Tế Học", "score": 0.47560328245162964, "content_preview": "[Chương trình: Thạc sĩ Kinh Tế Học (KTH, kth, Kinh tế) | Mã ngành: 8310101] — ĐIỀU KIỆN XÉT TUYỂN\n\n* Ngành gần (Nhóm 2): Bổ sung 02 môn (5 tín chỉ), gồm: Quản trị học (2 TC) và Kinh tế học (3 TC).\n* N", "source": "vector", "rrf_score": 0.013888888888888888}
+                                                         [12] {"chunk_id": "5788cef2-4004-41ed-815f-8536937468b2", "chunk_level": "child", "parent_id": "cb879016-3d5b-4cb9-a7b3-83a5ef93c92c", "section_path": "1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.2. Thí sinh tốt nghiệp đại học thuộc ngành gần (cùng lĩnh vực kinh doanh và quản lý), ngành khác (khác lĩnh vực nhưng có liên quan trực tiếp đến lĩnh vực quản trị, quản lý) với ngành dự tuyển cần học Bổ sung kiến thức. Danh mục ngành đúng, ngành gần, ngành khác và môn học Bổ sung kiến thức được nêu ở Phụ lục 2. & 1.3. Các văn bằng, chứng chỉ chứng minh năng lực ngoại ngữ từ Bậc 3 trở lên:", "program_name": null, "score": 0.47550803422927856, "content_preview": "# PHỤ LỤC 1\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc1.md]\n[Mục: 1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.2. Thí sinh tốt nghiệp đạ", "source": "vector", "rrf_score": 0.0136986301369863}
+                                                         [13] {"chunk_id": "79562098-83f3-452c-a5a1-d4e65910f782", "chunk_level": "parent", "parent_id": null, "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 8. **CHÍNH SÁCH ƯU ĐÃI HỌC PHÍ:**", "program_name": null, "score": 0.4749256372451782, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 8.", "source": "vector", "rrf_score": 0.013513513513513514}
+                                                         [14] {"chunk_id": "510abfe0-b2b3-4df0-9005-cd5217ed0d7d", "chunk_level": "child", "parent_id": "a9a61395-f9d5-41ff-a823-ad424190e575", "section_path": "Thạc sĩ Toán Kinh Tế > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Toán Kinh Tế", "score": 0.4717789730959827, "content_preview": "[Chương trình: Thạc sĩ Toán Kinh Tế (TKT, tkt, Toán KT) | Mã ngành: 8310108] — ĐIỀU KIỆN XÉT TUYỂN\n\n* Ngành gần (Nhóm 2): Bổ sung 02 môn (5 tín chỉ), gồm: Kinh tế học (3 TC) và Toán kinh tế (2 TC).\n* ", "source": "vector", "rrf_score": 0.013333333333333334}
+                                                         [15] {"chunk_id": "f02de27d-1e68-4c15-a796-baf4c62d7b7e", "chunk_level": "parent", "parent_id": null, "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ", "program_name": null, "score": 0.4711511731147766, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9.", "source": "vector", "rrf_score": 0.013157894736842105}
+                                                         [16] {"chunk_id": "0fb4062a-765a-4f7b-a341-7c5e3c39261b", "chunk_level": "child", "parent_id": "f02de27d-1e68-4c15-a796-baf4c62d7b7e", "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ", "program_name": null, "score": 0.4711511731147766, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9.", "source": "vector", "rrf_score": 0.012987012987012988}
+                                                         [17] {"chunk_id": "cb879016-3d5b-4cb9-a7b3-83a5ef93c92c", "chunk_level": "parent", "parent_id": null, "section_path": "1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.2. Thí sinh tốt nghiệp đại học thuộc ngành gần (cùng lĩnh vực kinh doanh và quản lý), ngành khác (khác lĩnh vực nhưng có liên quan trực tiếp đến lĩnh vực quản trị, quản lý) với ngành dự tuyển cần học Bổ sung kiến thức. Danh mục ngành đúng, ngành gần, ngành khác và môn học Bổ sung kiến thức được nêu ở Phụ lục 2. & 1.3. Các văn bằng, chứng chỉ chứng minh năng lực ngoại ngữ từ Bậc 3 trở lên:", "program_name": null, "score": 0.47094133496284485, "content_preview": "# PHỤ LỤC 1\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc1.md]\n[Mục: 1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.2. Thí sinh tốt nghiệp đạ", "source": "vector", "rrf_score": 0.01282051282051282}
+                                                         [18] {"chunk_id": "4206fd8d-0e48-47bc-9d4c-b22d7b8e7ccf", "chunk_level": "child", "parent_id": "eb4549aa-55aa-4978-8730-edde1346077d", "section_path": "1. Đối tượng > **❖ Đối với ngành Marketing:**", "program_name": null, "score": 0.46898120641708374, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng > **❖ Đối với ngành Marketing:**]\n\n- Ngành gần: các", "source": "vector", "rrf_score": 0.012658227848101266}
+                                                         [19] {"chunk_id": "eb4549aa-55aa-4978-8730-edde1346077d", "chunk_level": "parent", "parent_id": null, "section_path": "1. Đối tượng > **❖ Đối với ngành Marketing:**", "program_name": null, "score": 0.46898120641708374, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng > **❖ Đối với ngành Marketing:**]\n\n- Ngành gần: các", "source": "vector", "rrf_score": 0.0125}
+                        rag_confidence_failed  │  ✓ True
+                            top1_cosine_score  │  0.5297
+
+──────────────────────────────────────────────────────────────────────────
+  🌐 [8] RAG SEARCH PIPELINE (Evaluator + Web Search)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (13.715s)
+                                        Message  │  cache=MISS, citations=9
+                           ufm_search_queries  │  [2 items]
+                                                         [0] "Khối D01 gồm những môn nào?"
+                                                         [1] "Tổ hợp môn D01"
+                              pr_search_query  │  null
+                           web_search_results  │  Khối D01 gồm ba môn: Toán, Ngữ văn và Tiếng Anh.
+
+Thông tin tuyển sinh năm 2025 và 2026 của Trường Đại học Tài chính - Marketing (UFM) cũng đề cập đến việc xét tuyển theo tổ hợp các môn, trong đó có Toán, Ngữ văn và Tiếng Anh. Đặc biệt, đối với ngành Ngôn ngữ Anh, UFM xét tuyển tổ hợp D01 với môn Tiếng Anh được nhân hệ số 2.
+                                                      >(326 chars)
+                         web_search_citations  │  [9 items]
+                                                         [0] {"text": "thanhdo.edu.vn", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHgVUQ2sqbWFk1enOMOqtB5VAYpVQ59ZZGkqpgoNLp0VrP2ZAldbpDGdAlIJpLNH8VFrq_Gq7gjYR5KLSprFKJDYM-4iucgaZTa_NbtHJTlbmnrW62DZRSYtyDadCdtT_UNYNymBt_S0Cw7GXwUG1NfxGJcT3_0e8-LwNPXDV5oVzlXyHgCfgd2d2NC"}
+                                                         [1] {"text": "greenwich.edu.vn", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQED_QeOmoSqKAlwiXp49Zo1iSQ8UpE8E2DIJPZFPDI-VHPdsgyTSSTrqzs78HzPHVwc7EnY9LDXE8kXD_4cxM6s1Tu2rsqrETK3Z8nbxhlrRrP6Knhx6VovjEzy37U="}
+                                                         [2] {"text": "leaderbook.com", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQElmmCBCwBxFMtKYvpojpmW9nB_VLKUBVpyYLyCc7J3dzq94holKV915LbOuB30QhMS-KjFvkb3B9yHgHQvmc8YpSifSRX7uOMuIJeoBD_b8jeVMyK-macsFGLIMeVIDOF7z2GBTMVWQeCu1O3gmRHot0mw8bOnDpy6aJmieVQEZeXQfpBElAW3arg="}
+                                                         [3] {"text": "daotaovinacontrol.edu.vn", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG0blKxMc5ttmn1S89cIKyWInA32WtSL7pjXmUXzcLhRCpbUkvu5YNkOB5p4naQP3EHgDSBdFl1lSkrR8kd4p89kNFLkD0rTNhO8MinAtvDmuHH5tzlZGEoDOmX_R8plCzMPMj3RjG4F1WyHeMPZA8HbmSzRrtYk-OzK_FHBTpTqA=="}
+                                                         [4] {"text": "fptshop.com.vn", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHcIypc4iNzd_mxTuKyAZtMTZb9hqsgj_vLbQH92J11QFsYwoeRFEeuKzqOVsiDWnVW3WMGyxhrBRfc98DrQ9Gq0vGSb-ILdtU7HiMR4ZCgN7GHErqZb_CmbB7P2pwF1LHYSV561U9f4BrA77-zcb5UYKM9Nkr6C5h2o-F4bvmGOX8Yf7rWlw=="}
+                                                         [5] {"text": "vietjack.com", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFdh-uhR7Zz-W58VO4MeeXQDrKEVmscrd2QutPBAVyj7cJOHdqGSkRptGRduKnAiV6z6aWSwQTDXb0-77tJrdqmy8-s2uo7xGFhEYMEG2lqSq8GvPo8vEcuNQ5FcYKlv6sn8ufe6Wbi2pjklxIZER3Kk-PEislVzZuLnY0QtWPtqFCfd_9BCZT1JXQjPJo5Pxp17jx-8JPUjg-A8Esq2osVj5G0ZYU6ETc="}
+                                                         [6] {"text": "ufm.edu.vn", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE6HNFpDz6JWoMK2s119yTlo0GQnIaXEtxOGLUyZjbo1Bc90nJHUzzwwXw9xzpE63EgonAdw7Xlu-Ifw6p14Wo40KGMBlUs1B6VIDTATSU9lJ4G1RB1r3hobdyFtoQjmvVUXHnWTHIXJhBnZaaHYLJmxsCUyxXcHEVZAbCxD0jziD5S_FoZfaEZfjA11IBcffZiX8YzCmihhXvKUA9e4AbaM6gG3XKEFM7fdi_vkGoZEkpQWrkx8kVwIeVL4MLUTA=="}
+                                                         [7] {"text": "tuyensinh247.com", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE8WuG2auySF97M7rMAzEvj_9RDUpDcE4wt_l2agGvLF6fJFkQgjVlOpUStXmlUO2qDsOu8X4niEFzly0M46c_5gQWIAP8ulEzWSabstCwgeaJw1lif1p7DQouTEh1zAeeQ9KEi4WJnZjD9huTGkxyXpn0lQK9GXL6uRb0IGUKoW3sNYAG9vhiyFEt5sCkATlhS"}
+                                                         [8] {"text": "ufm.edu.vn", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF1NMLguUtYU-CyhzGDXchyb69kqSTSkL_gdZBaQ-GpBl3vPSgr7oV6YRR0FvQyltfpt7_t6RJAgHwnZOAy5F9QrVFthLiLq8dUAYi5M_HzQoZjZZiIDwcwm2TaPVNlRcbjAOYqJOXHPD-Nh9ejwbrswF9Ku2xhvXOutOHZnsjtR1MgAmtS7v1edtErSsS_prueTF5Q6ecC5YtB7IUHayt2dUoHaQ0="}
+                             search_cache_hit  │  ✗ False
+                      search_cache_similarity  │  0.3735
+                               final_response  │  [DỮ LIỆU NỘI BỘ]
+[Nguồn 1 — Văn bản: tuyensinh-trinhdo-thacsi-dot1-2026.md | 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.1. Phương thức tuyển sinh: xét tuyển đối với trình độ đại học và văn bằng, chứng chỉ ngoại ngữ đạt trình độ tương đương Bậc 3/6 trở lên. & 2.2. Các môn xét tuyển bao gồm: | Mục: 2.1. Phương thức tuyển sinh: xét tuyển đối với trình độ đại học và văn bằng, chứng chỉ ngoại ngữ đạt trình độ tương đương Bậc 3/6 trở lên. & 2.2. Các môn xét tuyển bao gồm: | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026
+[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]
+[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.1. Phương thức tuyển sinh: xét tuyển đối với trình độ đại học và văn bằng, chứng chỉ ngoại ngữ đạt trình độ tương đương Bậc 3/6 trở lên. & 2.2. Các môn xét tuyển bao gồm:]
+
+2.1. Phương thức tuyển sinh: xét tuyển đối với trình độ đại học và văn bằng, chứng chỉ ngoại ngữ đạt trình độ tương đương Bậc 3/6 trở lên.
+
+a) Hai môn cơ sở ngành phù hợp trình độ đại học. Cụ thể:
+
+| STT | Ngành                 | Môn cơ sở 1       | Môn cơ sở 2                             |
+| --- | --------------------- | ----------------- | --------------------------------------- |
+| 1.  | Tài chính – Ngân hàng | Kinh tế học       | Tài chính - Tiền tệ                     |
+| 2.  | Quản trị kinh doanh   | Kinh tế học       | Quản trị học                            |
+| 3.  | Quản lý kinh tế       | Kinh tế học       | Quản trị học                            |
+| 4.  | Kinh tế học           | Kinh tế học       | Quản trị học                            |
+| 5.  | Kinh doanh quốc tế    | Kinh tế học       | Kinh doanh quốc tế                      |
+| 6.  | Marketing             | Kinh tế học       | Nguyên lý Marketing                     |
+| 7.  | Kế toán               | Nguyên lý kế toán | Kế toán tài chính                       |
+| 8.  | Toán kinh tế          | Kinh tế học       | Toán kinh tế                            |
+| 9.  | Luật kinh tế          | Kinh tế học       | Lý luận chung nhà<br/>nước và pháp luật |
+
+❖ **Lưu ý**: Nếu bảng điểm trình độ đại học của người dự tuyển không có học phần Kinh tế học, mà có 2 học phần Kinh tế vi mô và Kinh tế vĩ mô (mỗi môn 3 tín chỉ trở lên) thì điểm xét tuyển môn Kinh tế học là trung bình cộng điểm của 2 học phần nói trên.
+
+b) Môn ngoại ngữ: xét tuyển đối với ngôn ngữ Anh, với các văn bằng, chứng chỉ được quy định chi tiết tại Phụ lục, Mục 1.3. Trường hợp ứng viên không có văn bằng, chứng chỉ tiếng Anh theo quy định; hoặc có nhưng đã hết thời hạn, phải tham gia kỳ thi đánh giá năng lực ngoại ngữ trình độ bậc 3/6 do Trường tổ chức trước khi thực hiện xét tuyển.
+
+---
+
+[Nguồn 2 — Văn bản: tuyensinh-trinhdo-thacsi-dot1-2026.md | 1. NGÀNH ĐÀO TẠO VÀ HÌNH THỨC ĐÀO TẠO > 1.1. Ngành đào tạo và chỉ tiêu tuyển sinh: | Mục: 1.1. Ngành đào tạo và chỉ tiêu tuyển sinh: | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026
+[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]
+[Mục: 1. NGÀNH ĐÀO TẠO VÀ HÌNH THỨC ĐÀO TẠO > 1.1. Ngành đào tạo và chỉ tiêu tuyển sinh:]
+
+Trường hiện có 09 (chín) ngành đào tạo trình độ thạc sĩ. Mỗi ngành có định hướng nghiên cứu và định hướng ứng dụng với tổng chỉ tiêu là 540, dự kiến phân bổ:
+
+| STT | Ngành                 | Mã ngành | Chỉ tiêu |
+| --- | --------------------- | -------- | -------- |
+| 1.  | Tài chính – Ngân hàng | 8340201  | 130      |
+| 2.  | Quản trị kinh doanh   | 8340101  | 160      |
+| 3.  | Quản lý kinh tế       | 8310110  | 40       |
+| 4.  | Marketing             | 8340115  | 40       |
+| 5.  | Kinh doanh quốc tế    | 8340120  | 40       |
+| 6.  | Kế toán               | 8340301  | 40       |
+| 7.  | Toán kinh tế          | 8310108  | 30       |
+| 8.  | Kinh tế học           | 8310101  | 30       |
+| 9.  | Luật kinh tế          | 8380107  | 30       |
+
+---
+
+[Nguồn 3 — Văn bản: phuluc2.md | 1. Đối tượng | Mục: 1. Đối tượng | Năm: 2026]
+# PHỤ LỤC 2
+*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*
+[Nguồn: phuluc2.md]
+[Mục: 1. Đối tượng]
+
+[Phần 2/3]
+| STT | Môn học            | Số tín chỉ | Lịch học(dự kiến)                         | Học phí(500.000đ/TC) |
+| --- | ------------------ | ---------- | ----------------------------------------- | -------------------- |
+| 1   | Kinh tế học        | 3          | Các buổi tối trong tuần và ngày cuối tuần | 1.500.000 đ          |
+| 2   | Kinh doanh quốc tế | 2          |                                           | 1.000.000 đ          |
+
+- **Ngành khác:** các ngành đào tạo trình độ đại học khác không phải ngành đúng, ngành gần, nhưng có cùng lĩnh vực đào tạo theo phân loại danh mục đào tạo cấp II. Môn học bổ sung kiến thức gồm **4 môn (9 tín chỉ)**, cụ thể:
+
+| STT | Môn học                      | Số tín chỉ | Lịch học(dự kiến)                         | Học phí(500.000đ/TC) |
+| --- | ------------------           | ---------- | ----------------------------------------- | -------------------- |
+| 1   | Kinh tế học                  | 3          | Các buổi tối trong tuần và ngày cuối tuần | 1.500.000 đ          |
+| 2   | Kinh doanh quốc tế           | 2          |                                           | 1.000.000 đ          |
+| 3   | Quản trị logistics           | 2          |                                           | 1.000.000 đ          |
+| 4   | Giao dịch thương mại quốc tế | 2          |                                           | 1.000.000 đ          |
+
+❖ **Đối với ngành Kinh tế học:**
+
+- **Ngành gần:** các ngành đào tạo ở cùng nhóm với ngành Kinh tế học theo phân loại trong Danh mục mã ngành có mã nhóm ngành là 73101. Cụ thể: Kinh tế chính trị, Kinh tế đầu tư, Kinh tế phát triển, Kinh tế quốc tế, Thống kê kinh tế, Quản lý kinh tế, học bổ sung kiến thức gồm **2 môn (5 tín chỉ)**, cụ thể:
+
+| STT | Môn học      | Số tín chỉ | Lịch học(dự kiến)                         | Học phí(500.000đ/TC) |
+| --- | ------------ | ---------- | ----------------------------------------- | -------------------- |
+| 1   | Kinh tế học  | 3          | Các buổi tối trong tuần và ngày cuối tuần | 1.500.000 đ          |
+| 2   | Quản trị học | 2          |                                           | 1.000.000 đ          |
+
+- **Ngành khác:** các ngành đào tạo trình độ đại học khác không phải ngành đúng, ngành gần, nhưng có liên quan trực tiếp tới chuyên môn, nghề nghiệp của ứng viên như Quản trị kinh doanh, Kế toán, Tài chính – Ngân hàng, Kinh tế nông nghiệp, Kinh tế hộ gia đình..... Môn học bổ sung kiến thức gồm **4 môn (9 tín chỉ)**, cụ thể:
+
+| STT | Môn học            | Số tín chỉ | Lịch học(dự kiến)                         | Học phí(500.000đ/TC) |
+| --- | ------------------ | ---------- | ----------------------------------------- | -------------------- |
+| 1   | Kinh tế học        | 3          | Các buổi tối trong tuần và ngày cuối tuần | 1.500.000 đ          |
+| 2   | Quản trị học       | 2          |                                           | 1.000.000 đ          |
+| 3   | Kinh tế đầu tư     | 2          |                                           | 1.000.000 đ          |
+| 4   | Kinh tế phát triển | 2          |                                           | 1.000.000 đ          |
+
+❖ **Đối với ngành Toán kinh tế:**
+
+- **Ngành gần:** các ngành có cùng lĩnh vực với ngành Toán kinh tế, học bổ sung kiến thức gồm **2 môn (5 tín chỉ)**, cụ thể:
+
+| STT | Môn học      | Số tín chỉ | Lịch học(dự kiến)                         | Học phí(500.000đ/TC) |
+| --- | ------------ | ---------- | ----------------------------------------- | -------------------- |
+| 1   | Kinh tế học  | 3          | Các buổi tối trong tuần và ngày cuối tuần | 1.500.000 đ          |
+| 2   | Toán kinh tế | 2          |                                           | 1.000.000 đ          |
+
+- **Ngành khác:** các ngành đào tạo trình độ đại học khác không phải ngành đúng, ngành gần, nhưng có liên quan trực tiếp tới chuyên môn, nghề nghiệp của ứng viên. Môn học bổ sung kiến thức gồm **4 môn (9 tín chỉ)**, cụ thể:
+
+| STT | Môn học                        | Số tín chỉ | Lịch học (dự kiến)                        | Học phí (500.000đ/TC)     |
+| --- | ------------------------------ | ---------- | ----------------------------------------- | ------------------------- |
+| 1   | Kinh tế học                    | 3          | Các buổi tối trong tuần và ngày cuối tuần | 1.500.000đ                |
+| 2   | Toán kinh tế                   | 2          |                                           | 1.000.000đ                |
+| 3   | Lý thuyết xác suất và thống kê | 2          |                                           | 1.000.000đ                |
+| 4   | Lý thuyết Tài chính – Tiền tệ  | 2          |                                           | 1.000.000đ                |
+
+❖ **Đối với ngành Kế toán:**
+- **Ngành gần:...
+
+[DỮ LIỆU TỪ WEB]
+Khối D01 gồm ba môn: Toán, Ngữ văn và Tiếng Anh.
+
+Thông tin tuyển sinh năm 2025 và 2026 của Trường Đại học Tài chính - Marketing (UFM) cũng đề cập đến việc xét tuyển theo tổ hợp các môn, trong đó có Toán, Ngữ văn và Tiếng Anh. Đặc biệt, đối với ngành Ngôn ngữ Anh, UFM xét tuyển tổ hợp D01 với môn Tiếng Anh được nhân hệ số 2.
+
+[NGUỒN TRÍCH DẪN]
+- [thanhdo.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHgVUQ2sqbWFk1enOMOqtB5VAYpVQ59ZZGkqpgoNLp0VrP2ZAldbpDGdAlIJpLNH8VFrq_Gq7gjYR5KLSprFKJDYM-4iucgaZTa_NbtHJTlbmnrW62DZRSYtyDadCdtT_UNYNymBt_S0Cw7GXwUG1NfxGJcT3_0e8-LwNPXDV5oVzlXyHgCfgd2d2NC)
+- [greenwich.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQED_QeOmoSqKAlwiXp49Zo1iSQ8UpE8E2DIJPZFPDI-VHPdsgyTSSTrqzs78HzPHVwc7EnY9LDXE8kXD_4cxM6s1Tu2rsqrETK3Z8nbxhlrRrP6Knhx6VovjEzy37U=)
+- [leaderbook.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQElmmCBCwBxFMtKYvpojpmW9nB_VLKUBVpyYLyCc7J3dzq94holKV915LbOuB30QhMS-KjFvkb3B9yHgHQvmc8YpSifSRX7uOMuIJeoBD_b8jeVMyK-macsFGLIMeVIDOF7z2GBTMVWQeCu1O3gmRHot0mw8bOnDpy6aJmieVQEZeXQfpBElAW3arg=)
+- [daotaovinacontrol.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG0blKxMc5ttmn1S89cIKyWInA32WtSL7pjXmUXzcLhRCpbUkvu5YNkOB5p4naQP3EHgDSBdFl1lSkrR8kd4p89kNFLkD0rTNhO8MinAtvDmuHH5tzlZGEoDOmX_R8plCzMPMj3RjG4F1WyHeMPZA8HbmSzRrtYk-OzK_FHBTpTqA==)
+- [fptshop.com.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHcIypc4iNzd_mxTuKyAZtMTZb9hqsgj_vLbQH92J11QFsYwoeRFEeuKzqOVsiDWnVW3WMGyxhrBRfc98DrQ9Gq0vGSb-ILdtU7HiMR4ZCgN7GHErqZb_CmbB7P2pwF1LHYSV561U9f4BrA77-zcb5UYKM9Nkr6C5h2o-F4bvmGOX8Yf7rWlw==)
+- [vietjack.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFdh-uhR7Zz-W58VO4MeeXQDrKEVmscrd2QutPBAVyj7cJOHdqGSkRptGRduKnAiV6z6aWSwQTDXb0-77tJrdqmy8-s2uo7xGFhEYMEG2lqSq8GvPo8vEcuNQ5FcYKlv6sn8ufe6Wbi2pjklxIZER3Kk-PEislVzZuLnY0QtWPtqFCfd_9BCZT1JXQjPJo5Pxp17jx-8JPUjg-A8Esq2osVj5G0ZYU6ETc=)
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE6HNFpDz6JWoMK2s119yTlo0GQnIaXEtxOGLUyZjbo1Bc90nJHUzzwwXw9xzpE63EgonAdw7Xlu-Ifw6p14Wo40KGMBlUs1B6VIDTATSU9lJ4G1RB1r3hobdyFtoQjmvVUXHnWTHIXJhBnZaaHYLJmxsCUyxXcHEVZAbCxD0jziD5S_FoZfaEZfjA11IBcffZiX8YzCmihhXvKUA9e4AbaM6gG3XKEFM7fdi_vkGoZEkpQWrkx8kVwIeVL4MLUTA==)
+- [tuyensinh247.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE8WuG2auySF97M7rMAzEvj_9RDUpDcE4wt_l2agGvLF6fJFkQgjVlOpUStXmlUO2qDsOu8X4niEFzly0M46c_5gQWIAP8ulEzWSabstCwgeaJw1lif1p7DQouTEh1zAeeQ9KEi4WJnZjD9huTGkxyXpn0lQK9GXL6uRb0IGUKoW3sNYAG9vhiyFEt5sCkATlhS)
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF1NMLguUtYU-CyhzGDXchyb69kqSTSkL_gdZBaQ-GpBl3vPSgr7oV6YRR0FvQyltfpt7_t6RJAgHwnZOAy5F9QrVFthLiLq8dUAYi5M_HzQoZjZZiIDwcwm2TaPVNlRcbjAOYqJOXHPD-Nh9ejwbrswF9Ku2xhvXOutOHZnsjtR1MgAmtS7v1edtErSsS_prueTF5Q6ecC5YtB7IUHayt2dUoHaQ0=)
+                                                      >(11722 chars)
+                              response_source  │  rag_search_context
+                                                      >(18 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [9] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (7.729s)
+                                        Message  │  source='rag_search_context_generated', length=3419 chars
+                               final_response  │  Chào bạn nhé! Mình là Trợ lý Tuyển sinh UFM đây. Mình rất vui được giải đáp thắc mắc của bạn về khối D01. 🎓
+
+Khối D01 là một trong những tổ hợp môn xét tuyển phổ biến nhất hiện nay, và nó bao gồm ba môn học quen thuộc: **Toán, Ngữ văn và Tiếng Anh** [thanhdo.edu.vn].
+
+Đặc biệt, tại UFM, trong thông tin tuyển sinh các năm gần đây (như 2025 và 2026), trường cũng có xét tuyển theo tổ hợp các môn này. Đối với một số ngành đặc thù như **Ngôn ngữ Anh**, môn Tiếng Anh còn được nhân hệ số 2 để tăng lợi thế cho các bạn có năng khiếu ngoại ngữ đó [thanhdo.edu.vn].
+
+Hy vọng thông tin này hữu ích cho bạn trong quá trình tìm hiểu về các khối thi và lựa chọn ngành học nhé! Bạn có muốn mình giải thích thêm về các ngành học tại UFM có xét tuyển khối D01 không?
+
+📎 **Nguồn tham khảo:**
+- [thanhdo.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHgVUQ2sqbWFk1enOMOqtB5VAYpVQ59ZZGkqpgoNLp0VrP2ZAldbpDG1AlIJpLNH8VFrq_Gq7gjYR5KLSprFKJDYM-4iucgaZTa_NbtHJTlbmnrW62DZRSYtyDadCdtT_UNYNymBt_S0Cw7GXwUG1NfxGJcT3_0e8-LwNPXDV5oVzlXyHgCfgd2d2NC)
+- [greenwich.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQED_QeOmoSqKAlwiXp49Zo1iSQ8UpE8E2DIJPZFPDI-VHPdsgyTSSTrqzs78HzPHVwc7EnY9LDXE8kXD_4cxM6s1Tu2rsqrETK3Z8nbhhlrRrP6Knhx6VovjEzy37U=)
+- [leaderbook.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQElmmCBCwBxFMtKYvpojpmW9nB_VLKUBVpyYLyCc7J3dzq94holKV915LbOuB30QhMS-KjFvkb3B9yHgHQvmc8YpSifSRX7uOMuIJeoBD_b8jeVMyK-macsFGLIMeVIDOF7z2GBTMVWQeCu1O3gmRHot0mw8bOnDpy6aJmieVQEZeXQfpBElAW3arg=)
+- [daotaovinacontrol.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG0blKxMc5ttmn1S89cIKyWInA32WtSL7pjXmUXzcLhRCpbUkvu5YNkOB5p4naQP3EHgDSBdFl1lSkrR8kd4p89kNFLkD0rTNhO8MinAtvDmuHH5tzlZGEoDOmX_R8plCzMPMj3RjG4F1WyHeMPZA8HbmSzRrtYk-OzX_FHBTpTqA==)
+- [fptshop.com.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHcIypc4iNzd_mxTuKyAZtMTZb9hqsgj_vLbQH92J11QFsYwoeRFEeuKzqOVsiDWnVW3WMGyxhrBRfc98DrQ9Gq0vGSb-ILdtU7HiMR4ZCgN7GHErqZb_CmbB7P2pwF1LHYSV561U9f4BrA77-zcb5UYKM9Nkr6C5h2o-F4bvmGOX8Yf7rWlw==)
+- [vietjack.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFdh-uhR7Zz-W58VO4MeeXQDrKEVmscrd2QutPBAVyj7cJOHdqGSkRptGRduKnAiV6z6aWSwQTDXb0-77tJrdUmy8-s2uo7xGFhEYMEG2lqSq8GvPo8vEcuNQ5FcYKlv6sn8ufe6Wbi2pjklxIZER3Kk-PEislVzZuLnY0QtWPtqFCfd_9BCZT1JXQjPJo5Pxp17jx-8JPUjg-A8Esq2osVj5G0ZYU6ETc=)
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE6HNFpDz6JWoMK2s119yTlo0GQnIaXEtxOGLUyZjbo1Bc90nJHUzzwwXw9xzpE63EgonAdw7Xlu-Ifw6p14Wo40KGMBlUs1B6VIDTATSU9lJ4G1RB1r3hobdyFtoQjmvVUXHnWTHIXJhBnZaaHYLJmxsCUyxXcHEVZAbCxD0jziD5S_FoZfaEZfjA11IBcffZiX8YzCmihhXvKUA9e4AbaM6gG3XKEFM7fdi_vkGoZEkpQWrkx8kVwIeVL4MLUTA==)
+- [tuyensinh247.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE8WuG2auySF97M7rMAzEvj_9RDUpDcE4wt_l2agGvLF6fJFkQgjVlOpUStXmlUO2qDsOu8X4niEFzly0M46c_5gQWIAP8ulEzWSabstCwgeaJw1lif1p7DQouTEh1zAee9KEi4WJnZjD9huTHIXJhBnZaaHYLJmxsCUyxXcHEVZAbCxD0jziD5S_FoZfaEZfjA11IBcffZiX8YzCmihhXvKUA9e4AbaM6gG3XKEFM7fdi_vkGoZEkpQWrkx8kVwIeVL4MLUTA==)
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF1NMLguUtYU-CyhzGDXchyb69kqSTSkL_gdZBaQ-GpBl3vPSgr7oV6YRR0FvQyltfpt7_t6RJAgHwnZOAy5F9QrVFthLiLq8dUAYi5M_HzQoZjZZiIDwcwm2TaPVNlRcbjAOYqJOXHPD-Nh9ejwbrswF9Ku2xhvXOutOHZnsjtR1MgAmtS7v1edtErSsS_prueTF5Q6ecC5YtB7IUHayt2dUoHaQ0=)
+                                                      >(3419 chars)
+                              response_source  │  rag_search_context_generated
+                                                      >(28 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : rag_search_context_generated
+  Intent          : THONG_TIN_TUYEN_SINH → PROCEED_RAG_UFM_SEARCH
+  Response Length : 3419 chars
+  Total Time      : 30.08s
+  Nodes Executed  : 9
+──────────────────────────────────────────────────────────────────────────
+
+Chào bạn nhé! Mình là Trợ lý Tuyển sinh UFM đây. Mình rất vui được giải đáp thắc mắc của bạn về khối D01. 🎓
+
+Khối D01 là một trong những tổ hợp môn xét tuyển phổ biến nhất hiện nay, và nó bao gồm ba môn học quen thuộc: **Toán, Ngữ văn và Tiếng Anh** [thanhdo.edu.vn].
+
+Đặc biệt, tại UFM, trong thông tin tuyển sinh các năm gần đây (như 2025 và 2026), trường cũng có xét tuyển theo tổ hợp các môn này. Đối với một số ngành đặc thù như **Ngôn ngữ Anh**, môn Tiếng Anh còn được nhân hệ số 2 để tăng lợi thế cho các bạn có năng khiếu ngoại ngữ đó [thanhdo.edu.vn].
+
+Hy vọng thông tin này hữu ích cho bạn trong quá trình tìm hiểu về các khối thi và lựa chọn ngành học nhé! Bạn có muốn mình giải thích thêm về các ngành học tại UFM có xét tuyển khối D01 không?
+
+📎 **Nguồn tham khảo:**
+- [thanhdo.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHgVUQ2sqbWFk1enOMOqtB5VAYpVQ59ZZGkqpgoNLp0VrP2ZAldbpDG1AlIJpLNH8VFrq_Gq7gjYR5KLSprFKJDYM-4iucgaZTa_NbtHJTlbmnrW62DZRSYtyDadCdtT_UNYNymBt_S0Cw7GXwUG1NfxGJcT3_0e8-LwNPXDV5oVzlXyHgCfgd2d2NC)
+- [greenwich.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQED_QeOmoSqKAlwiXp49Zo1iSQ8UpE8E2DIJPZFPDI-VHPdsgyTSSTrqzs78HzPHVwc7EnY9LDXE8kXD_4cxM6s1Tu2rsqrETK3Z8nbhhlrRrP6Knhx6VovjEzy37U=)
+- [leaderbook.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQElmmCBCwBxFMtKYvpojpmW9nB_VLKUBVpyYLyCc7J3dzq94holKV915LbOuB30QhMS-KjFvkb3B9yHgHQvmc8YpSifSRX7uOMuIJeoBD_b8jeVMyK-macsFGLIMeVIDOF7z2GBTMVWQeCu1O3gmRHot0mw8bOnDpy6aJmieVQEZeXQfpBElAW3arg=)
+- [daotaovinacontrol.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG0blKxMc5ttmn1S89cIKyWInA32WtSL7pjXmUXzcLhRCpbUkvu5YNkOB5p4naQP3EHgDSBdFl1lSkrR8kd4p89kNFLkD0rTNhO8MinAtvDmuHH5tzlZGEoDOmX_R8plCzMPMj3RjG4F1WyHeMPZA8HbmSzRrtYk-OzX_FHBTpTqA==)
+- [fptshop.com.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHcIypc4iNzd_mxTuKyAZtMTZb9hqsgj_vLbQH92J11QFsYwoeRFEeuKzqOVsiDWnVW3WMGyxhrBRfc98DrQ9Gq0vGSb-ILdtU7HiMR4ZCgN7GHErqZb_CmbB7P2pwF1LHYSV561U9f4BrA77-zcb5UYKM9Nkr6C5h2o-F4bvmGOX8Yf7rWlw==)
+- [vietjack.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFdh-uhR7Zz-W58VO4MeeXQDrKEVmscrd2QutPBAVyj7cJOHdqGSkRptGRduKnAiV6z6aWSwQTDXb0-77tJrdUmy8-s2uo7xGFhEYMEG2lqSq8GvPo8vEcuNQ5FcYKlv6sn8ufe6Wbi2pjklxIZER3Kk-PEislVzZuLnY0QtWPtqFCfd_9BCZT1JXQjPJo5Pxp17jx-8JPUjg-A8Esq2osVj5G0ZYU6ETc=)
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE6HNFpDz6JWoMK2s119yTlo0GQnIaXEtxOGLUyZjbo1Bc90nJHUzzwwXw9xzpE63EgonAdw7Xlu-Ifw6p14Wo40KGMBlUs1B6VIDTATSU9lJ4G1RB1r3hobdyFtoQjmvVUXHnWTHIXJhBnZaaHYLJmxsCUyxXcHEVZAbCxD0jziD5S_FoZfaEZfjA11IBcffZiX8YzCmihhXvKUA9e4AbaM6gG3XKEFM7fdi_vkGoZEkpQWrkx8kVwIeVL4MLUTA==)
+- [tuyensinh247.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE8WuG2auySF97M7rMAzEvj_9RDUpDcE4wt_l2agGvLF6fJFkQgjVlOpUStXmlUO2qDsOu8X4niEFzly0M46c_5gQWIAP8ulEzWSabstCwgeaJw1lif1p7DQouTEh1zAee9KEi4WJnZjD9huTHIXJhBnZaaHYLJmxsCUyxXcHEVZAbCxD0jziD5S_FoZfaEZfjA11IBcffZiX8YzCmihhXvKUA9e4AbaM6gG3XKEFM7fdi_vkGoZEkpQWrkx8kVwIeVL4MLUTA==)
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF1NMLguUtYU-CyhzGDXchyb69kqSTSkL_gdZBaQ-GpBl3vPSgr7oV6YRR0FvQyltfpt7_t6RJAgHwnZOAy5F9QrVFthLiLq8dUAYi5M_HzQoZjZZiIDwcwm2TaPVNlRcbjAOYqJOXHPD-Nh9ejwbrswF9Ku2xhvXOutOHZnsjtR1MgAmtS7v1edtErSsS_prueTF5Q6ecC5YtB7IUHayt2dUoHaQ0=)
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.004s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  1.515s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a+2b)        │  1.410s  │   PASS   │
+  │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  1.422s  │   PASS   │
+  │ 🔀 MULTI-QUERY NODE (Sinh biến thể)           │  1.312s  │   PASS   │
+  │ 📊 EMBEDDING NODE (BGE-M3 batch)              │  2.705s  │   PASS   │
+  │ 🗄️ RAG NODE (Hybrid Search DB)               │  0.232s  │   PASS   │
+  │ 🌐 RAG SEARCH PIPELINE (Evaluator + Web Searc │ 13.715s  │   PASS   │
+  │ 🎯 RESPONSE NODE (Final Answer)               │  7.729s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  30.08s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_031204_Khối_D01_gồm_những_môn_gì.txt
+

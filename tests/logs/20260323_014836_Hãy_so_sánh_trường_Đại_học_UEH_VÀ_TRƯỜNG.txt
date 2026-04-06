@@ -1,0 +1,470 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test Runner                        ║
+║    2026-03-23 01:48:36                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260323_014836_Hãy_so_sánh_trường_Đại_học_UEH_VÀ_TRƯỜNG.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❷ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❹ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❺ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❻ Guard (Deep)       │ openrouter/qwen/qwen3.5-flash-02-23             │
+  │ ❼ Multi-Query        │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❽ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❾a Vector Router     │ openrouter/baai/bge-m3                          │
+  │ ❾b Semantic Rtr      │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫c Web Search        │ openrouter/openai/gpt-4o-mini-search-preview    │
+  │ ⓫d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Care               │ openrouter/qwen/qwen3.5-flash-02-23             │
+  │ ⓭ Form Extract       │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓭ Form Draft         │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓮ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  📝 Input Query  : Hãy so sánh trường Đại học UEH VÀ TRƯỜNG MÌNH về đào tạo kinh doanh quốc tế
+  💬 Chat History : 4 messages
+     👤 TÔI MUỐN THAM KHẢO CSVC VÀ CHƯƠNG TRÌNH ĐÀO TẠO CHUẨN QTKD CỦA UFM THẠC SĨ VÀ CƠ
+     🤖 Chào bạn, mình sẽ cung cấp thông tin về chương trình đào tạo Thạc sĩ ngành **Quả
+     👤 Làm cho tôi mẫu đơn xin học thạc sĩ ngành này đi
+     🤖 Chào bạn,
+
+Mình có thể cung cấp cho bạn mẫu đơn xin học thạc sĩ ngành Quản trị k
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.000s)
+                                        Message  │  [Fast-Scan PASS — 0.000s] Sạch, cho qua Context Node
+                             normalized_query  │  hãy so sánh trường đại học ueh và trường mình về đào tạo kinh doanh quốc tế
+                                                       (75 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sạch, cho qua Context Node
+                                                       (52 chars)
+                                    next_node  │  context
+                                                       (7 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.885s)
+                                        Message  │  Reformulated: 'Hãy so sánh trường Đại học UEH VÀ TRƯỜNG' → 'Hãy so sánh trường Đại học UEH và trường Đại học Tài chính M'
+                             standalone_query  │  Hãy so sánh trường Đại học UEH và trường Đại học Tài chính Marketing UFM về đào tạo ngành Kinh doanh quốc tế.
+                                                       (109 chars)
+                                    next_node  │  contextual_guard
+                                                       (16 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a+2b)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (4.026s)
+                                        Message  │  [Contextual-Guard PASS — 4.026s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 4.026s] standalone_query an toàn
+                                                       (57 chars)
+                                    next_node  │  multi_query
+                                                       (11 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔀 [4] MULTI-QUERY NODE (Sinh biến thể)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.127s)
+                                multi_queries  │  [3 items]
+                                                         [0] "So sánh chương trình đào tạo ngành Kinh doanh quốc tế giữa UEH và UFM"
+                                                         [1] "Đánh giá sự khác biệt về ngành Kinh doanh quốc tế của Đại học UEH và Đại học Tài chính Marketing"
+                                                         [2] "Phân tích ngành Kinh doanh quốc tế: UEH so với UFM"
+                                    next_node  │  embedding
+                                                       (9 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  📊 [5] EMBEDDING NODE (BGE-M3 batch)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.272s)
+                                        Message  │  Nhúng 4 vectors × 1024D thành công
+                             query_embeddings  │  [4 vectors × 1024D]
+                                    next_node  │  cache
+                                                       (5 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🗄️ [6] RAG NODE (Hybrid Search DB)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.174s)
+                                        Message  │  Chunks=20, Top1Cosine=0.6210, Context=8924 chars ⚠️ CONFIDENCE FAILED
+                                  rag_context  │  [Nguồn 1 — Văn bản: ThS KDQT.txt | Thạc sĩ Kinh Doanh Quốc Tế > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ | Mục: CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ | Ngành: Kinh Doanh Quốc Tế | Mã ngành: 8340120 | Năm: 2026]
+[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120]
+CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ
+
+Chương trình đào tạo Thạc sĩ ngành Kinh doanh quốc tế tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế theo hệ thống tín chỉ, cập nhật liên tục để đáp ứng nhu cầu nhân lực chất lượng cao trong bối cảnh toàn cầu hóa.
+
+Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt để người học lựa chọn phù hợp với mục tiêu nghề nghiệp:
+
+* Định hướng Nghiên cứu: Tập trung phát triển tư duy hàn lâm, năng lực nghiên cứu chuyên sâu về các vấn đề kinh doanh, thương mại và đầu tư quốc tế. Phù hợp với giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+* Định hướng Ứng dụng: Tập trung phát triển kỹ năng thực hành, năng lực quản trị và giải quyết các tình huống kinh doanh phức tạp trong môi trường quốc tế. Phù hợp với các nhà quản lý, doanh nhân, chuyên gia xuất nhập khẩu.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=vgYI12ybsQ9CjAUJSvAStg>
+
+---
+
+[Nguồn 2 — Văn bản: ThS Marketing.txt | Thạc sĩ Marketing > GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING | Mục: GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING | Ngành: Marketing | Mã ngành: 8340115 | Năm: 2026]
+[Chương trình: Thạc sĩ Marketing (MKT, mkt, Marketing) | Mã ngành: 8340115]
+GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING
+
+Chương trình đào tạo Thạc sĩ ngành Marketing tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế theo hệ thống tín chỉ, cập nhật liên tục để đáp ứng nhu cầu thực tiễn của doanh nghiệp và xã hội.
+
+Năm 2026, chương trình cung cấp hai định hướng đào tạo riêng biệt để người học lựa chọn phù hợp với mục tiêu nghề nghiệp:
+
+* Định hướng Nghiên cứu: Tập trung vào năng lực nghiên cứu chuyên sâu, phát triển tư duy lý luận, phù hợp cho giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+* Định hướng Ứng dụng: Tập trung vào kỹ năng thực hành, giải quyết vấn đề thực tiễn trong kinh doanh, phù hợp cho các nhà quản lý, điều hành doanh nghiệp.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=SDmYi_9tWDH1CNuBz184Tw>
+
+---
+
+[Nguồn 3 — Văn bản: ThS QTKD.txt | Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH | Mục: CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH | Ngành: Quản Trị Kinh Doanh | Mã ngành: 8340101 | Năm: 2026]
+[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]
+CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH
+
+Chương trình đào tạo Thạc sĩ ngành Quản trị kinh doanh tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế linh hoạt theo hệ thống tín chỉ, cập nhật liên tục để đáp ứng nhu cầu của nhà tuyển dụng và xu hướng quản trị hiện đại.
+
+**Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt:**
+
+* **Định hướng Nghiên cứu:** Tập trung vào phát triển tư duy hàn lâm, năng lực nghiên cứu khoa học chuyên sâu và khả năng giải quyết các vấn đề quản trị phức tạp bằng phương pháp luận khoa học. Phù hợp với giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+* **Định hướng Ứng dụng:** Tập trung vào phát triển kỹ năng thực hành, năng lực lãnh đạo và giải quyết các tình huống quản trị thực tiễn tại doanh nghiệp. Phù hợp với các nhà quản lý, điều hành, doanh nhân.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=ig3wGlAYnn1rof8yGKfbBA>
+
+---
+
+[Nguồn 4 — Văn bản: dieukien-ngoaingu-xettuyen-ths-ts-sdh.md | Giới thiệu | Mục: Giới thiệu | Năm: 2026]
+**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**
+*(Ban hành kèm theo Quyết định số 537/QĐ-ĐHTCM ngày 24 tháng 02 năm 2026 của Hiệu trưởng Trường Đại học Tài chính – Marketing)*
+[Nguồn: dieukien-ngoaingu-xettuyen-ths-ts-sdh.md]
+[Mục: Giới thiệu]
+
+**Điều 1. Phạm vi điều chỉnh và đối tượng áp dụng**
+Văn bản này hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ đối với các khóa tuyển sinh từ năm 2026 và điều kiện tốt nghiệp đối với học viên cao học các khóa đang học tại Trường Đại học Tài chính – Marketing (sau đây gọi tắt là Trường).
+
+**Điều 2. Quy định chung**
+1. Thời hạn giá trị của các chứng chỉ tiếng Anh quốc tế là 2 năm tính từ ngày thi đến ngày học viên nộp chứng chỉ theo thông báo của Nhà trường.
+2. Các chứng chỉ tiếng Anh được quy định tại Điều 4 chỉ xuất trình và nộp một lần để được xét công nhận đạt chuẩn đầu ra.
+3. Hằng năm, Trường ban hành thông báo thể hiện các mốc thời gian xét đạt chuẩn đầu ra về năng lực ngoại ngữ. Sau khi học viên nộp văn bằng, chứng chỉ theo thông báo và được Nhà trường kiểm tra tính xác thực, Hiệu trưởng ra quyết định công nhận đạt chuẩn đầu ra về năng lực ngoại ngữ cho học viên, đáp ứng.
+
+**Điều 3. Văn bằng, chứng chỉ ngoại ngữ đủ điều kiện xét tuyển sinh đầu vào tiến sĩ**
+1. Học viên có các văn bằng, chứng chỉ đạt mức điểm được quy định tại các Khoản 2, 3, 4, 5 Điều này đủ điều kiện ngoại ngữ xét tuyển sinh đầu vào theo quy định.
+2. Bằng tốt nghiệp trình độ đại học trở lên do một cơ sở đào tạo nước ngoài, phân hiệu của cơ sở đào tạo nước ngoài ở Việt Nam hoặc cơ sở đào tạo của Việt Nam cấp cho người học toàn thời gian bằng tiếng nước ngoài;
+3. Bằng tốt nghiệp trình độ đại học ngành ngôn ngữ tiếng nước ngoài do các cơ sở đào tạo của Việt Nam cấp;
+4. Các chứng chỉ ngoại ngữ khác tương đương trình độ bậc 4 (theo khung năng ngoại ngữ 6 bậc dùng cho Việt Nam) do Bộ Giáo dục và Đào tạo công bố.
+5. Có một trong các chứng chỉ ngoại ngữ còn hiệu lực tính đến ngày đăng ký dự tuyển theo Phụ lục 1.
+
+**Điều 4. Văn bằng, chứng chỉ ngoại ngữ đủ điều kiện xét tuyển sinh đầu vào thạc sĩ**
+1. Học viên có các văn bằng, chứng chỉ đạt mức điểm được quy định tại các Khoản 2, 3, 4, 5 Điều này đủ điều kiện ngoại ngữ xét tuyển sinh đầu vào theo quy định.
+2. Bằng tốt nghiệp trình độ đại học trở lên ngành ngôn ngữ nước ngoài; hoặc bằng tốt nghiệp trình độ đại học trở lên mà chương trình được thực hiện chủ yếu bằng ngôn ngữ nước ngoài;
+
+3. Bằng tốt nghiệp trình độ đại học trở lên do Trường Đại học Tài chính – Marketing cấp trong thời gian không quá 02 năm mà chuẩn đầu ra của chương trình đã đáp ứng yêu cầu ngoại ngữ đạt trình độ Bậc 3 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam;
+
+4. Có một trong các chứng chỉ ngoại ngữ còn hiệu lực tính đến ngày đăng ký dự tuyển theo Phụ lục 2.
+
+5. Các chứng chỉ ngoại ngữ khác tương đương trình độ bậc 3 (theo khung năng ngoại ngữ 6 bậc dùng cho Việt Nam) do Bộ Giáo dục và Đào tạo công bố.
+
+---
+
+[Nguồn 5 — Văn bản: ThS Kinh te hoc.txt | Thạc sĩ Kinh Tế Học > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC | Mục: CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC | Ngành: Kinh Tế Học | Mã ngành: 8310101 | Năm: 2026]
+[Chương trình: Thạc sĩ Kinh Tế Học (KTH, kth, Kinh tế) | Mã ngành: 8310101]
+CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC
+
+Chương trình đào tạo Thạc sĩ ngành Kinh tế học tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình nhằm đào tạo nguồn nhân lực chất lượng cao, có tư duy chiến lược và khả năng vận dụng các mô hình kinh tế hiện đại để giải quyết các vấn đề thực tiễn phức tạp.
+
+Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt để người học lựa chọn phù hợp với mục tiêu nghề nghiệp:
+
+* Định hướng Nghiên cứu: Tập trung phát triển tư duy hàn lâm, năng lực nghiên cứu độc lập và phân tích chính sách chuyên sâu. Phù hợp với giảng viên, nghiên cứu viên, chuyên gia hoạch định chính sách hoặc người muốn học lên Tiến sĩ.
+* Định hướng Ứng dụng: Tập trung phát triển kỹ năng thực hành, năng lực quản trị và giải quyết các vấn đề kinh tế thực tiễn tại địa phương và doanh nghiệp. Phù hợp với nhà quản lý, chuyên gia tư vấn, lãnh đạo doanh nghiệp.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=pdtYJjIO1EfhKibzkDlcAw>
+                                                       (8924 chars)
+                             retrieved_chunks  │  [20 items]
+                                                         [0] {"chunk_id": "82b313b1-e62c-40df-9b38-bb95af403128", "chunk_level": "child", "parent_id": "7a16c309-a7f3-4c5f-8557-17fc3dd77f5c", "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ", "program_name": "Kinh Doanh Quốc Tế", "score": 0.621032104369151, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ\n\nChương trình đào tạo Thạc sĩ ngành Kinh doanh quốc tế t", "source": "vector", "rrf_score": 0.01639344262295082}
+                                                         [1] {"chunk_id": "7a16c309-a7f3-4c5f-8557-17fc3dd77f5c", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ", "program_name": "Kinh Doanh Quốc Tế", "score": 0.6186448520018119, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120]\nCHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ\n\nChương trình đào tạo Thạc sĩ ngành Kinh doanh quốc tế tại", "source": "vector", "rrf_score": 0.016129032258064516}
+                                                         [2] {"chunk_id": "0922d4db-eee3-4f37-ac3b-b5f2e79a6741", "chunk_level": "child", "parent_id": "7a16c309-a7f3-4c5f-8557-17fc3dd77f5c", "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ", "program_name": "Kinh Doanh Quốc Tế", "score": 0.5968129456993083, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ\n\nThông tin chi tiết chương trình đào tạo: <https://daota", "source": "vector", "rrf_score": 0.015873015873015872}
+                                                         [3] {"chunk_id": "1e42db23-57b9-42aa-9dff-bada5875089b", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Marketing > GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING", "program_name": "Marketing", "score": 0.58982974977824, "content_preview": "[Chương trình: Thạc sĩ Marketing (MKT, mkt, Marketing) | Mã ngành: 8340115]\nGIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING\n\nChương trình đào tạo Thạc sĩ ngành Marketing tại Trường Đại học Tài chính – Marketi", "source": "vector", "rrf_score": 0.015625}
+                                                         [4] {"chunk_id": "967684c1-33aa-4a7d-87e8-389259f974ea", "chunk_level": "child", "parent_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.5816799228882836, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nChương trình đào tạo Thạc sĩ ngành Quản trị kinh doa", "source": "vector", "rrf_score": 0.015384615384615385}
+                                                         [5] {"chunk_id": "17449e37-fb73-4365-aaaa-b2253e6f3aad", "chunk_level": "child", "parent_id": "1e42db23-57b9-42aa-9dff-bada5875089b", "section_path": "Thạc sĩ Marketing > GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING", "program_name": "Marketing", "score": 0.5810635263044696, "content_preview": "[Chương trình: Thạc sĩ Marketing (MKT, mkt, Marketing) | Mã ngành: 8340115] — GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING\n\nChương trình đào tạo Thạc sĩ ngành Marketing tại Trường Đại học Tài chính – Marke", "source": "vector", "rrf_score": 0.015151515151515152}
+                                                         [6] {"chunk_id": "4fb7dde6-8a5d-44f1-be90-c1d9aa058015", "chunk_level": "child", "parent_id": "3f57efc0-566f-46df-9c29-3bca36a9b084", "section_path": "Giới thiệu", "program_name": null, "score": 0.5810042792857971, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "vector", "rrf_score": 0.014925373134328358}
+                                                         [7] {"chunk_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.5802113336513641, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]\nCHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nChương trình đào tạo Thạc sĩ ngành Quản trị kinh doanh", "source": "vector", "rrf_score": 0.014705882352941176}
+                                                         [8] {"chunk_id": "c16af4c1-5d30-42c4-9412-3de793007683", "chunk_level": "child", "parent_id": "ae0f5c99-2df3-40d5-95f0-cdd5bbff2298", "section_path": "Thạc sĩ Kinh Tế Học > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC", "program_name": "Kinh Tế Học", "score": 0.5797290128227188, "content_preview": "[Chương trình: Thạc sĩ Kinh Tế Học (KTH, kth, Kinh tế) | Mã ngành: 8310101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC\n\nChương trình đào tạo Thạc sĩ ngành Kinh tế học tại Trường Đại học Tài chín", "source": "vector", "rrf_score": 0.014492753623188406}
+                                                         [9] {"chunk_id": "ae0f5c99-2df3-40d5-95f0-cdd5bbff2298", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Kinh Tế Học > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC", "program_name": "Kinh Tế Học", "score": 0.5784234749331162, "content_preview": "[Chương trình: Thạc sĩ Kinh Tế Học (KTH, kth, Kinh tế) | Mã ngành: 8310101]\nCHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC\n\nChương trình đào tạo Thạc sĩ ngành Kinh tế học tại Trường Đại học Tài chính ", "source": "vector", "rrf_score": 0.014285714285714285}
+                                                         [10] {"chunk_id": "6646db5c-916d-4327-9692-b0ad5ee4ec63", "chunk_level": "parent", "parent_id": null, "section_path": "9. Địa chỉ liên hệ đăng ký và nộp hồ sơ", "program_name": null, "score": 0.5755895376205485, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ]\n\nViện Đào tạo sau đại học – Trườ", "source": "vector", "rrf_score": 0.014084507042253521}
+                                                         [11] {"chunk_id": "7cbe1ebd-ab8d-444f-a697-29a3ecda2182", "chunk_level": "child", "parent_id": "6646db5c-916d-4327-9692-b0ad5ee4ec63", "section_path": "9. Địa chỉ liên hệ đăng ký và nộp hồ sơ", "program_name": null, "score": 0.5755895376205485, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ]\n\nViện Đào tạo sau đại học – Trườ", "source": "vector", "rrf_score": 0.013888888888888888}
+                                                         [12] {"chunk_id": "87e26df1-d52e-4cb8-9d35-4b4ca546f016", "chunk_level": "parent", "parent_id": null, "section_path": "Tiến sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.5651957651856095, "content_preview": "[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101]\nCHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nChương trình đào tạo Tiến sĩ ngành Quản trị kinh doanh", "source": "vector", "rrf_score": 0.0136986301369863}
+                                                         [13] {"chunk_id": "d322e119-fc71-438f-832b-d1b336f82dd7", "chunk_level": "child", "parent_id": "87e26df1-d52e-4cb8-9d35-4b4ca546f016", "section_path": "Tiến sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.564096920001874, "content_preview": "[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101] — CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nChương trình đào tạo Tiến sĩ ngành Quản trị kinh doa", "source": "vector", "rrf_score": 0.013513513513513514}
+                                                         [14] {"chunk_id": "f76e7fdd-bf59-48f8-b00c-0d9be5e99c8d", "chunk_level": "child", "parent_id": "7f26f8a1-67a8-4118-8ef1-b7716b614a20", "section_path": "Thạc sĩ Luật Kinh Tế > GIỚI THIỆU CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH LUẬT KINH TẾ", "program_name": "Luật Kinh Tế", "score": 0.5597437453346351, "content_preview": "[Chương trình: Thạc sĩ Luật Kinh Tế (LKT, lkt, Luật KT) | Mã ngành: 8380107] — GIỚI THIỆU CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH LUẬT KINH TẾ\n\nChương trình đào tạo Thạc sĩ ngành Luật Kinh tế tại Trường Đạ", "source": "vector", "rrf_score": 0.013333333333333334}
+                                                         [15] {"chunk_id": "4e6423ea-4afc-4732-b4d0-b80bf8ca22b1", "chunk_level": "child", "parent_id": "909af947-ad0f-4dd1-b6ee-26639c1fbb00", "section_path": "Thạc sĩ Quản Lý Kinh Tế > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN LÝ KINH TẾ", "program_name": "Quản Lý Kinh Tế", "score": 0.5587706232803699, "content_preview": "[Chương trình: Thạc sĩ Quản Lý Kinh Tế (QLKT, qlkt, Quản lý KT) | Mã ngành: 8310110] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN LÝ KINH TẾ\n\nChương trình đào tạo Thạc sĩ ngành Quản lý kinh tế tại Trường", "source": "vector", "rrf_score": 0.013157894736842105}
+                                                         [16] {"chunk_id": "c3628a96-d39d-4538-b7c3-5f15062f260e", "chunk_level": "child", "parent_id": "18135cd9-fda7-4ddf-92a9-689f14b9bd1e", "section_path": "Thạc sĩ Tài Chính – Ngân Hàng > GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH TÀI CHÍNH – NGÂN HÀNG", "program_name": "Tài Chính – Ngân Hàng", "score": 0.5564472841157703, "content_preview": "[Chương trình: Thạc sĩ Tài Chính – Ngân Hàng (TC-NH, TCNH, tc-nh, tcnh, Tài chính Ngân hàng) | Mã ngành: 8340201] — GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH TÀI CHÍNH – NGÂN HÀNG\n\nChương trình đào tạo thạc sĩ ng", "source": "vector", "rrf_score": 0.012987012987012988}
+                                                         [17] {"chunk_id": "96a58195-e18f-4e64-88cf-6366fbb871c2", "chunk_level": "child", "parent_id": "eda72bd9-7b82-4ff5-b7d1-41718461d2e3", "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Kinh Doanh Quốc Tế", "score": 0.5557375815071127, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120] — ĐIỀU KIỆN XÉT TUYỂN\n\nĐối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Kinh doanh quốc tế, Nhà trườn", "source": "vector", "rrf_score": 0.01282051282051282}
+                                                         [18] {"chunk_id": "7bd3def2-e18a-41b0-911c-d0ecd1197bdc", "chunk_level": "child", "parent_id": "eda72bd9-7b82-4ff5-b7d1-41718461d2e3", "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Kinh Doanh Quốc Tế", "score": 0.5551283955574076, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120] — ĐIỀU KIỆN XÉT TUYỂN\n\n* Ngành gần: Bổ sung 02 môn (5 tín chỉ), gồm: Kinh tế học (3 TC) và Kinh doanh quốc tế (2", "source": "vector", "rrf_score": 0.012658227848101266}
+                                                         [19] {"chunk_id": "18135cd9-fda7-4ddf-92a9-689f14b9bd1e", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Tài Chính – Ngân Hàng > GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH TÀI CHÍNH – NGÂN HÀNG", "program_name": "Tài Chính – Ngân Hàng", "score": 0.5551012323826922, "content_preview": "[Chương trình: Thạc sĩ Tài Chính – Ngân Hàng (TC-NH, TCNH, tc-nh, tcnh, Tài chính Ngân hàng) | Mã ngành: 8340201]\nGIỚI THIỆU CHƯƠNG TRÌNH NGÀNH TÀI CHÍNH – NGÂN HÀNG\n\nChương trình đào tạo thạc sĩ ngàn", "source": "vector", "rrf_score": 0.0125}
+                        rag_confidence_failed  │  ✓ True
+                            top1_cosine_score  │  0.6210
+                                    next_node  │  intent
+                                                       (6 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [7] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.328s)
+                                        Message  │  intent='SO_SANH_TRUONG' → action='PROCEED_RAG_PR_SEARCH' | summary='So sánh trường Đại học UEH và trường Đại học Tài chính Marke'
+                                       intent  │  SO_SANH_TRUONG
+                                                       (14 chars)
+                               intent_summary  │  So sánh trường Đại học UEH và trường Đại học Tài chính Marketing UFM về đào tạo ngành Kinh doanh quốc tế.
+                                                       (105 chars)
+                                intent_action  │  PROCEED_RAG_PR_SEARCH
+                                                       (21 chars)
+                         program_level_filter  │  dai_hoc
+                                                       (7 chars)
+                          program_name_filter  │  Kinh Doanh Quốc Tế
+                                                       (18 chars)
+                                    next_node  │  rag_search
+                                                       (10 chars)
+                              response_source  │  ""
+
+  🚦 Routing Decision: next_node='rag_search' | intent_action='PROCEED_RAG_PR_SEARCH'
+
+──────────────────────────────────────────────────────────────────────────
+  🌐 [8] RAG SEARCH PIPELINE (Evaluator + Web Search)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (10.341s)
+                                        Message  │  source='rag_search_context', cache=MISS, citations=3
+                           ufm_search_queries  │  null
+                              pr_search_query  │  site:ufm.edu.vn UFM thành tựu giải thưởng uy tín chất lượng
+                                                       (59 chars)
+                           web_search_results  │  Trường Đại học Tài chính – Marketing (UFM) đã đạt được nhiều thành tựu và giải thưởng uy tín trong năm 2025. Cụ thể, sinh viên UFM đã xuất sắc giành giải cao tại Hội thi Khoa học sinh viên toàn quốc Olympic Kinh tế lượng và Ứng dụng lần thứ X năm 2025, khẳng định bản lĩnh và trí tuệ của mình tại sân chơi học thuật uy tín cấp quốc gia. ([doanthanhnien.ufm.edu.vn](https://doanthanhnien.ufm.edu.vn/vi/tin-tuc-812/sinh-vien-ufm-dat-giai-cao-tai-hoi-thi-khoa-hoc-toan-quoc-olympic-kinh-te-luong-va-ung-dung-2025?utm_source=openai))
+
+Ngoài ra, UFM cũng đăng cai vòng bán kết Giải thưởng Sinh viên Nghiên cứu Khoa học Euréka lần thứ 27 năm 2025, lĩnh vực Kinh tế – Tiểu ban Tài chính ngân hàng, thể hiện vai trò quan trọng trong việc thúc đẩy nghiên cứu khoa học trong sinh viên. ([ufm.edu.vn](https://ufm.edu.vn/ufm-dang-cai-vong-ban-ket-giai-thuong-eureka-lan-thu-27-nam-2025-linh-vuc-kinh-te-tieu-ban-tai-chinh-ngan-hang-1815.html?utm_source=openai))
+
+Đặc biệt, trong chương trình Bình chọn Sự kiện tiêu biểu UFM năm 2025, sự kiện "Nữ sinh UFM xuất sắc đăng quang ở các cuộc thi sắc đẹp uy tín" đã được bình chọn là sự kiện tiêu biểu nhất, phản ánh sự phát triển toàn diện của sinh viên UFM. ([dacc.ufm.edu.vn](https://dacc.ufm.edu.vn/ufm-cong-bo-ket-qua-binh-chon-su-kien-tieu-bieu-nam-2025--138.html?utm_source=openai))
+
+Những thành tựu này khẳng định chất lượng đào tạo và môi trường học tập năng động, sáng tạo tại UFM.
+                                                       (1422 chars)
+                         web_search_citations  │  [3 items]
+                                                         [0] {"text": "doanthanhnien.ufm.edu.vn", "url": "https://doanthanhnien.ufm.edu.vn/vi/tin-tuc-812/sinh-vien-ufm-dat-giai-cao-tai-hoi-thi-khoa-hoc-toan-quoc-olympic-kinh-te-luong-va-ung-dung-2025?utm_source=openai"}
+                                                         [1] {"text": "ufm.edu.vn", "url": "https://ufm.edu.vn/ufm-dang-cai-vong-ban-ket-giai-thuong-eureka-lan-thu-27-nam-2025-linh-vuc-kinh-te-tieu-ban-tai-chinh-ngan-hang-1815.html?utm_source=openai"}
+                                                         [2] {"text": "dacc.ufm.edu.vn", "url": "https://dacc.ufm.edu.vn/ufm-cong-bo-ket-qua-binh-chon-su-kien-tieu-bieu-nam-2025--138.html?utm_source=openai"}
+                             search_cache_hit  │  ✗ False
+                      search_cache_similarity  │  0.0000
+                               final_response  │  [DỮ LIỆU NỘI BỘ]
+[Nguồn 1 — Văn bản: ThS KDQT.txt | Thạc sĩ Kinh Doanh Quốc Tế > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ | Mục: CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ | Ngành: Kinh Doanh Quốc Tế | Mã ngành: 8340120 | Năm: 2026]
+[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120]
+CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ
+
+Chương trình đào tạo Thạc sĩ ngành Kinh doanh quốc tế tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế theo hệ thống tín chỉ, cập nhật liên tục để đáp ứng nhu cầu nhân lực chất lượng cao trong bối cảnh toàn cầu hóa.
+
+Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt để người học lựa chọn phù hợp với mục tiêu nghề nghiệp:
+
+* Định hướng Nghiên cứu: Tập trung phát triển tư duy hàn lâm, năng lực nghiên cứu chuyên sâu về các vấn đề kinh doanh, thương mại và đầu tư quốc tế. Phù hợp với giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+* Định hướng Ứng dụng: Tập trung phát triển kỹ năng thực hành, năng lực quản trị và giải quyết các tình huống kinh doanh phức tạp trong môi trường quốc tế. Phù hợp với các nhà quản lý, doanh nhân, chuyên gia xuất nhập khẩu.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=vgYI12ybsQ9CjAUJSvAStg>
+
+---
+
+[Nguồn 2 — Văn bản: ThS Marketing.txt | Thạc sĩ Marketing > GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING | Mục: GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING | Ngành: Marketing | Mã ngành: 8340115 | Năm: 2026]
+[Chương trình: Thạc sĩ Marketing (MKT, mkt, Marketing) | Mã ngành: 8340115]
+GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING
+
+Chương trình đào tạo Thạc sĩ ngành Marketing tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế theo hệ thống tín chỉ, cập nhật liên tục để đáp ứng nhu cầu thực tiễn của doanh nghiệp và xã hội.
+
+Năm 2026, chương trình cung cấp hai định hướng đào tạo riêng biệt để người học lựa chọn phù hợp với mục tiêu nghề nghiệp:
+
+* Định hướng Nghiên cứu: Tập trung vào năng lực nghiên cứu chuyên sâu, phát triển tư duy lý luận, phù hợp cho giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+* Định hướng Ứng dụng: Tập trung vào kỹ năng thực hành, giải quyết vấn đề thực tiễn trong kinh doanh, phù hợp cho các nhà quản lý, điều hành doanh nghiệp.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=SDmYi_9tWDH1CNuBz184Tw>
+
+---
+
+[Nguồn 3 — Văn bản: ThS QTKD.txt | Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH | Mục: CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH | Ngành: Quản Trị Kinh Doanh | Mã ngành: 8340101 | Năm: 2026]
+[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]
+CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH
+
+Chương trình đào tạo Thạc sĩ ngành Quản trị kinh doanh tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế linh hoạt theo hệ thống tín chỉ, cập nhật liên tục để đáp ứng nhu cầu của nhà tuyển dụng và xu hướng quản trị hiện đại.
+
+**Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt:**
+
+* **Định hướng Nghiên cứu:** Tập trung vào phát triển tư duy hàn lâm, năng lực nghiên cứu khoa học chuyên sâu và khả năng giải quyết các vấn đề quản trị phức tạp bằng phương pháp luận khoa học. Phù hợp với giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+* **Định hướng Ứng dụng:** Tập trung vào phát triển kỹ năng thực hành, năng lực lãnh đạo và giải quyết các tình huống quản trị thực tiễn tại doanh nghiệp. Phù hợp với các nhà quản lý, điều hành, doanh nhân.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=ig3wGlAYnn1rof8yGKfbBA>
+
+---
+
+[Nguồn 4 — Văn bản: dieukien-ngoaingu-xettuyen-ths-ts-sdh.md | Giới thiệu | Mục: Giới thiệu | Năm: 2026]
+**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**
+*(Ban hành kèm theo Quyết định số 537/QĐ-ĐHTCM ngày 24 tháng 02 năm 2026 của Hiệu trưởng Trường Đại học Tài chính – Marketing)*
+[Nguồn: dieukien-ngoaingu-xettuyen-ths-ts-sdh.md]
+[Mục: Giới thiệu]
+
+**Điều 1. Phạm vi điều chỉnh và đối tượng áp dụng**
+Văn bản này hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ đối với các khóa tuyển sinh từ năm 2026 và điều kiện tốt nghiệp đối với học viên cao học các khóa đang học tại Trường Đại học Tài chính – Marketing (sau đây gọi tắt là Trường).
+
+**Điều 2. Quy định chung**
+1. Thời hạn giá trị của các chứng chỉ tiếng Anh quốc tế là 2 năm tính từ ngày thi đến ngày học viên nộp chứng chỉ theo thông báo của Nhà trường.
+2. Các chứng chỉ tiếng Anh được quy định tại Điều 4 chỉ xuất trình và nộp một lần để được xét công nhận đạt chuẩn đầu ra.
+3. Hằng năm, Trường ban hành thông báo thể hiện các mốc thời gian xét đạt chuẩn đầu ra về năng lực ngoại ngữ. Sau khi học viên nộp văn bằng, chứng chỉ theo thông báo và được Nhà trường kiểm tra tính xác thực, Hiệu trưởng ra quyết định công nhận đạt chuẩn đầu ra về năng lực ngoại ngữ cho học viên, đáp ứng.
+
+**Điều 3. Văn bằng, chứng chỉ ngoại ngữ đủ điều kiện xét tuyển sinh đầu vào tiến sĩ**
+1. Học viên có các văn bằng, chứng chỉ đạt mức điểm được quy định tại các Khoản 2, 3, 4, 5 Điều này đủ điều kiện ngoại ngữ xét tuyển sinh đầu vào theo quy định.
+2. Bằng tốt nghiệp trình độ đại học trở lên do một cơ sở đào tạo nước ngoài, phân hiệu của cơ sở đào tạo nước ngoài ở Việt Nam hoặc cơ sở đào tạo của Việt Nam cấp cho người học toàn thời gian bằng tiếng nước ngoài;
+3. Bằng tốt nghiệp trình độ đại học ngành ngôn ngữ tiếng nước ngoài do các cơ sở đào tạo của Việt Nam cấp;
+4. Các chứng chỉ ngoại ngữ khác tương đương trình độ bậc 4 (theo khung năng ngoại ngữ 6 bậc dùng cho Việt Nam) do Bộ Giáo dục và Đào tạo công bố.
+5. Có một trong các chứng chỉ ngoại ngữ còn hiệu lực tính đến ngày đăng ký dự tuyển theo Phụ lục 1.
+
+**Điều 4. Văn bằng, chứng chỉ ngoại ngữ đủ điều kiện xét tuyển sinh đầu vào thạc sĩ**
+1. Học viên có các văn bằng, chứng chỉ đạt mức điểm được quy định tại các Khoản 2, 3, 4, 5 Điều này đủ điều kiện ngoại ngữ xét tuyển sinh đầu vào theo quy định.
+2. Bằng tốt nghiệp trình độ đại học trở lên ngành ngôn ngữ nước ngoài; hoặc bằng tốt nghiệp trình độ đại học trở lên mà chương trình được thực hiện chủ yếu bằng ngôn ngữ nước ngoài;
+
+3. Bằng tốt nghiệp trình độ đại học trở lên do Trường Đại học Tài chính – Marketing cấp trong thời gian không quá 02 năm mà chuẩn đầu ra của chương trình đã đáp ứng yêu cầu ngoại ngữ đạt trình độ Bậc 3 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam;
+
+4. Có một trong các chứng chỉ ngoại ngữ còn hiệu lực tính đến ngày đăng ký dự tuyển theo Phụ lục 2.
+
+5. Các chứng chỉ ngoại ngữ khác tương đương trình độ bậc 3 (theo khung năng ngoại ngữ 6 bậc dùng cho Việt Nam) do Bộ Giáo dục và Đào tạo công bố.
+
+---
+
+[Nguồn 5 — Văn bản: ThS Kinh te hoc.txt | Thạc sĩ Kinh Tế Học > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC | Mục: CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC | Ngành: Kinh Tế Học | Mã ngành: 8310101 | Năm: 2026]
+[Chương trình: Thạc sĩ Kinh Tế Học (KTH, kth, Kinh tế) | Mã ngành: 8310101]
+CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC
+
+Chương trình đào tạo Thạc sĩ ngành Kinh tế học tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình nhằm đào tạo nguồn nhân lực chất lượng cao, có tư duy chiến lược và khả năng vận dụng các mô hình kinh tế hiện đại để giải quyết các vấn đề thực tiễn phức tạp.
+
+Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt để người học lựa chọn phù hợp với mục tiêu nghề nghiệp:
+
+* Định hướng Nghiên cứu: Tập trung phát triển tư duy hàn lâm, năng lực nghiên cứu độc lập và phân tích chính sách chuyên sâu. Phù hợp với giảng viên, nghiên cứu viên, chuyên gia hoạch định chính sách hoặc người muốn học lên Tiến sĩ.
+* Định hướng Ứng dụng: Tập trung phát triển kỹ năng thực hành, năng lực quản trị và giải quyết các vấn đề kinh tế thực tiễn tại địa phương và doanh nghiệp. Phù hợp với nhà quản lý, chuyên gia tư vấn, lãnh đạo doanh nghiệp.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=pdtYJjIO1EfhKibzkDlcAw>
+
+[DỮ LIỆU TỪ WEB]
+Trường Đại học Tài chính – Marketing (UFM) đã đạt được nhiều thành tựu và giải thưởng uy tín trong năm 2025. Cụ thể, sinh viên UFM đã xuất sắc giành giải cao tại Hội thi Khoa học sinh viên toàn quốc Olympic Kinh tế lượng và Ứng dụng lần thứ X năm 2025, khẳng định bản lĩnh và trí tuệ của mình tại sân chơi học thuật uy tín cấp quốc gia. ([doanthanhnien.ufm.edu.vn](https://doanthanhnien.ufm.edu.vn/vi/tin-tuc-812/sinh-vien-ufm-dat-giai-cao-tai-hoi-thi-khoa-hoc-toan-quoc-olympic-kinh-te-luong-va-ung-dung-2025?utm_source=openai))
+
+Ngoài ra, UFM cũng đăng cai vòng bán kết Giải thưởng Sinh viên Nghiên cứu Khoa học Euréka lần thứ 27 năm 2025, lĩnh vực Kinh tế – Tiểu ban Tài chính ngân hàng, thể hiện vai trò quan trọng trong việc thúc đẩy nghiên cứu khoa học trong sinh viên. ([ufm.edu.vn](https://ufm.edu.vn/ufm-dang-cai-vong-ban-ket-giai-thuong-eureka-lan-thu-27-nam-2025-linh-vuc-kinh-te-tieu-ban-tai-chinh-ngan-hang-1815.html?utm_source=openai))
+
+Đặc biệt, trong chương trình Bình chọn Sự kiện tiêu biểu UFM năm 2025, sự kiện "Nữ sinh UFM xuất sắc đăng quang ở các cuộc thi sắc đẹp uy tín" đã được bình chọn là sự kiện tiêu biểu nhất, phản ánh sự phát triển toàn diện của sinh viên UFM. ([dacc.ufm.edu.vn](https://dacc.ufm.edu.vn/ufm-cong-bo-ket-qua-binh-chon-su-kien-tieu-bieu-nam-2025--138.html?utm_source=openai))
+
+Những thành tựu này khẳng định chất lượng đào tạo và môi trường học tập năng động, sáng tạo tại UFM.
+
+[NGUỒN TRÍCH DẪN]
+- [doanthanhnien.ufm.edu.vn](https://doanthanhnien.ufm.edu.vn/vi/tin-tuc-812/sinh-vien-ufm-dat-giai-cao-tai-hoi-thi-khoa-hoc-toan-quoc-olympic-kinh-te-luong-va-ung-dung-2025?utm_source=openai)
+- [ufm.edu.vn](https://ufm.edu.vn/ufm-dang-cai-vong-ban-ket-giai-thuong-eureka-lan-thu-27-nam-2025-linh-vuc-kinh-te-tieu-ban-tai-chinh-ngan-hang-1815.html?utm_source=openai)
+- [dacc.ufm.edu.vn](https://dacc.ufm.edu.vn/ufm-cong-bo-ket-qua-binh-chon-su-kien-tieu-bieu-nam-2025--138.html?utm_source=openai)
+                                                       (10898 chars)
+                              response_source  │  rag_search_context
+                                                       (18 chars)
+                                    next_node  │  response
+                                                       (8 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [9] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (3.264s)
+                                        Message  │  source='rag_search_context_generated', length=1694 chars
+                               final_response  │  Chào bạn,
+
+Hiện tại mình chưa được cung cấp thông tin về ngành Kinh doanh quốc tế của trường Đại học Kinh tế TP.HCM (UEH) để có thể so sánh một cách đầy đủ và chính xác.
+
+Tuy nhiên, mình có thể cung cấp thông tin chi tiết về chương trình đào tạo Thạc sĩ ngành **Kinh doanh quốc tế** tại Đại học Tài chính - Marketing (UFM) để bạn tham khảo:
+
+Chương trình đào tạo Thạc sĩ ngành **Kinh doanh quốc tế** tại UFM được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế theo hệ thống tín chỉ và cập nhật liên tục để đáp ứng nhu cầu nhân lực chất lượng cao trong bối cảnh toàn cầu hóa.
+
+Năm **2026**, chương trình cung cấp hai định hướng đào tạo chuyên biệt để người học lựa chọn phù hợp với mục tiêu nghề nghiệp:
+
+*   **Định hướng Nghiên cứu**: Tập trung phát triển tư duy hàn lâm, năng lực nghiên cứu chuyên sâu về các vấn đề kinh doanh, thương mại và đầu tư quốc tế. Định hướng này phù hợp với giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+*   **Định hướng Ứng dụng**: Tập trung phát triển kỹ năng thực hành, năng lực quản trị và giải quyết các tình huống kinh doanh phức tạp trong môi trường quốc tế. Định hướng này phù hợp với các nhà quản lý, doanh nhân, chuyên gia xuất nhập khẩu.
+
+Thời gian đào tạo trung bình là **02 năm** (tối đa **04 năm**) với tổng khối lượng kiến thức toàn khóa là **61 tín chỉ**.
+
+Bạn có thể xem thông tin chi tiết về chương trình đào tạo Thạc sĩ ngành Kinh doanh quốc tế tại UFM tại đây: [https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=vgYI12ybsQ9CjAUJSvAStg](https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=vgYI12ybsQ9CjAUJSvAStg) (Nguồn: Văn bản ThS KDQT.txt)
+
+Bạn còn muốn tìm hiểu thêm điều gì không?
+                                                       (1694 chars)
+                              response_source  │  rag_search_context_generated
+                                                       (28 chars)
+                                    next_node  │  end
+                                                       (3 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : rag_search_context_generated
+  Intent          : SO_SANH_TRUONG → PROCEED_RAG_PR_SEARCH
+  Response Length : 1694 chars
+  Total Time      : 24.43s
+  Nodes Executed  : 9
+──────────────────────────────────────────────────────────────────────────
+
+Chào bạn,
+
+Hiện tại mình chưa được cung cấp thông tin về ngành Kinh doanh quốc tế của trường Đại học Kinh tế TP.HCM (UEH) để có thể so sánh một cách đầy đủ và chính xác.
+
+Tuy nhiên, mình có thể cung cấp thông tin chi tiết về chương trình đào tạo Thạc sĩ ngành **Kinh doanh quốc tế** tại Đại học Tài chính - Marketing (UFM) để bạn tham khảo:
+
+Chương trình đào tạo Thạc sĩ ngành **Kinh doanh quốc tế** tại UFM được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế theo hệ thống tín chỉ và cập nhật liên tục để đáp ứng nhu cầu nhân lực chất lượng cao trong bối cảnh toàn cầu hóa.
+
+Năm **2026**, chương trình cung cấp hai định hướng đào tạo chuyên biệt để người học lựa chọn phù hợp với mục tiêu nghề nghiệp:
+
+*   **Định hướng Nghiên cứu**: Tập trung phát triển tư duy hàn lâm, năng lực nghiên cứu chuyên sâu về các vấn đề kinh doanh, thương mại và đầu tư quốc tế. Định hướng này phù hợp với giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+*   **Định hướng Ứng dụng**: Tập trung phát triển kỹ năng thực hành, năng lực quản trị và giải quyết các tình huống kinh doanh phức tạp trong môi trường quốc tế. Định hướng này phù hợp với các nhà quản lý, doanh nhân, chuyên gia xuất nhập khẩu.
+
+Thời gian đào tạo trung bình là **02 năm** (tối đa **04 năm**) với tổng khối lượng kiến thức toàn khóa là **61 tín chỉ**.
+
+Bạn có thể xem thông tin chi tiết về chương trình đào tạo Thạc sĩ ngành Kinh doanh quốc tế tại UFM tại đây: [https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=vgYI12ybsQ9CjAUJSvAStg](https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=vgYI12ybsQ9CjAUJSvAStg) (Nguồn: Văn bản ThS KDQT.txt)
+
+Bạn còn muốn tìm hiểu thêm điều gì không?
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ FAST SCAN NODE (Guard Layer 0-1)             │  0.000s  │   PASS   │
+  │ CONTEXT NODE (Query Reformulation)           │  1.885s  │   PASS   │
+  │ CONTEXTUAL GUARD NODE (Layer 2a+2b)          │  4.026s  │   PASS   │
+  │ MULTI-QUERY NODE (Sinh biến thể)             │  1.127s  │   PASS   │
+  │ EMBEDDING NODE (BGE-M3 batch)                │  2.272s  │   PASS   │
+  │ RAG NODE (Hybrid Search DB)                  │  0.174s  │   PASS   │
+  │ INTENT NODE (Router Phân Loại Ý Định)        │  1.328s  │   PASS   │
+  │ RAG SEARCH PIPELINE (Evaluator + Web Search) │ 10.341s  │   PASS   │
+  │ RESPONSE NODE (Final Answer)                 │  3.264s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  24.43s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260323_014836_Hãy_so_sánh_trường_Đại_học_UEH_VÀ_TRƯỜNG.txt
+

@@ -1,0 +1,145 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-25 08:26:10                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_082610_MULTI-QUERY_NODE_Sinh_biến_thể.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/qwen/qwen3.5-flash-02-23             │
+  │ ⓫ Form Extract       │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Draft         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : │ 🔀 MULTI-QUERY NODE (Sinh biến thể)           │  1.523s  │   PASS   │
+  💬 Chat History : 14 messages
+     👤 │ �� CONTEXTUAL GUARD NODE (Layer 2a+2b)        │  1.504s  │   PASS   │
+     🤖 Dạ em chào anh chị! 🎓 Em là bot tư vấn tuyển sinh UFM. Anh chị đang quan tâm đến
+     👤 │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  2.112s  │   PASS   │
+     🤖 Mình hiểu bạn đang cần tư vấn — nhưng câu hỏi còn khá ngắn! Bạn đang hỏi về học 
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.002s)
+                                        Message  │  [Fast-Scan PASS — 0.000s] Sạch, cho qua Context Node
+                             normalized_query  │  │ 🔀 multi-query node (sinh biến thể)           │  1.523s  │   pass   │
+                                                      >(70 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sạch, cho qua Context Node
+                                                      >(52 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.584s)
+                                        Message  │  Reformulated → 'Bạn muốn hỏi về học phí, điểm chuẩn hay chương trình đào tạo?'
+                             standalone_query  │  Bạn muốn hỏi về học phí, điểm chuẩn hay chương trình đào tạo?
+                                                      >(61 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a+2b)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.133s)
+                                        Message  │  [Contextual-Guard PASS — 1.128s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.128s] standalone_query an toàn
+                                                      >(57 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [4] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.185s)
+                                        Message  │  intent='KHONG_XAC_DINH' → action='CLARIFY' → next='response'
+                                       intent  │  KHONG_XAC_DINH
+                                                      >(14 chars)
+                               intent_summary  │  Bạn muốn hỏi về học phí, điểm chuẩn hay chương trình đào tạo?
+                                                      >(61 chars)
+                                intent_action  │  CLARIFY
+                                                      >(7 chars)
+                         program_level_filter  │  null
+                          program_name_filter  │  null
+                                    next_node  │  response
+                                                      >(8 chars)
+                              response_source  │  clarify_template
+                                                      >(16 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [5] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.009s)
+                                        Message  │  source='clarify_template', length=121 chars
+                               final_response  │  Xin lỗi bạn, mình chưa hiểu rõ câu hỏi lắm 😅 Bạn có thể nói rõ hơn bạn đang muốn hỏi về ngành nào hoặc vấn đề gì không ạ?
+                                                      >(121 chars)
+                              response_source  │  clarify_template
+                                                      >(16 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : clarify_template
+  Intent          : KHONG_XAC_DINH → CLARIFY
+  Response Length : 121 chars
+  Total Time      : 4.92s
+  Nodes Executed  : 5
+──────────────────────────────────────────────────────────────────────────
+
+Xin lỗi bạn, mình chưa hiểu rõ câu hỏi lắm 😅 Bạn có thể nói rõ hơn bạn đang muốn hỏi về ngành nào hoặc vấn đề gì không ạ?
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.002s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  1.584s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a+2b)        │  1.133s  │   PASS   │
+  │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  2.185s  │   PASS   │
+  │ 🎯 RESPONSE NODE (Final Answer)               │  0.009s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │   4.92s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_082610_MULTI-QUERY_NODE_Sinh_biến_thể.txt
+

@@ -1,0 +1,276 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-25 03:01:04                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_030104_Học_phí_ngành_Marketing_chương_trình_chấ.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/qwen/qwen3.5-flash-02-23             │
+  │ ⓫ Form Extract       │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓫ Form Draft         │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : Học phí ngành Marketing chương trình chất lượng cao năm 2024 là bao nhiêu?
+  💬 Chat History : Trống (lượt đầu tiên)
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.010s)
+                                        Message  │  [Fast-Scan PASS — 0.002s] Sạch, cho qua Context Node
+                             normalized_query  │  học phí ngành marketing chương trình chất lượng cao năm 2024 là bao nhiêu?
+                                                      >(74 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.002s] Sạch, cho qua Context Node
+                                                      >(52 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.001s)
+                                        Message  │  Reformulated → 'Học phí ngành Marketing chương trình chất lượng cao năm 2024 là bao nhiêu?'
+                             standalone_query  │  Học phí ngành Marketing chương trình chất lượng cao năm 2024 là bao nhiêu?
+                                                      >(74 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a+2b)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.276s)
+                                        Message  │  [Contextual-Guard PASS — 1.275s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.275s] standalone_query an toàn
+                                                      >(57 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [4] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.459s)
+                                        Message  │  intent='HOC_PHI_HOC_BONG' → action='PROCEED_RAG' → next='response'
+                                       intent  │  HOC_PHI_HOC_BONG
+                                                      >(16 chars)
+                               intent_summary  │  Học phí ngành Marketing chương trình chất lượng cao năm 2024
+                                                      >(60 chars)
+                                intent_action  │  PROCEED_RAG
+                                                      >(11 chars)
+                         program_level_filter  │  null
+                          program_name_filter  │  Marketing
+                                                      >(9 chars)
+                                    next_node  │  response
+                                                      >(8 chars)
+                              response_source  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🔀 [5] MULTI-QUERY NODE (Sinh biến thể)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.122s)
+                                        Message  │  Sinh 3 biến thể
+                                multi_queries  │  [3 items]
+                                                         [0] "Chi phí đào tạo ngành Marketing chất lượng cao UFM 2024"
+                                                         [1] "Mức học phí chương trình Marketing chất lượng cao tại UFM năm 2024"
+                                                         [2] "Ngành Marketing chất lượng cao UFM năm 2024 có học phí bao nhiêu?"
+
+──────────────────────────────────────────────────────────────────────────
+  📊 [6] EMBEDDING NODE (BGE-M3 batch)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (8.318s)
+                                        Message  │  Nhúng 4 vectors × 1024D
+                             query_embeddings  │  [4 vectors × 1024D]
+
+──────────────────────────────────────────────────────────────────────────
+  🗄️ [7] RAG NODE (Hybrid Search DB)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.404s)
+                                        Message  │  Chunks=20, Top1Cosine=0.6757, Context=5471 chars ⚠️ CONFIDENCE FAILED
+                                  rag_context  │  [Nguồn 1 — Văn bản: phuluc2.md | 1. Đối tượng > **❖ Đối với ngành Marketing:** | Mục: **❖ Đối với ngành Marketing:** | Năm: 2026]
+# PHỤ LỤC 2
+*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*
+[Nguồn: phuluc2.md]
+[Mục: 1. Đối tượng > **❖ Đối với ngành Marketing:**]
+
+- Ngành gần: các ngành có cùng lĩnh vực với ngành Marketing, học bổ sung kiến thức gồm **2 môn (5 tín chỉ)**, cụ thể:
+| STT | Môn học                             | Số tín chỉ | Lịch học(dự kiến)                         | Học phí(500.000đ/TC) |
+| --- | ----------------------------------- | ---------- | ----------------------------------------- | -------------------- |
+| 1   | Kinh tế học                         | 3          | Các buổi tối trong tuần và ngày cuối tuần | 1.500.000 đ          |
+| 2   | Nguyên lý marketing                 | 2          |                                           | 1.000.000 đ          |
+
+- Ngành khác: các ngành đào tạo trình độ đại học khác không phải ngành đúng, ngành gần, nhưng có liên quan trực tiếp tới chuyên môn, nghề nghiệp của ứng viên. Môn học bổ sung kiến thức gồm **4 môn (9 tín chỉ)**, cụ thể:
+
+| STT | Môn học                          | Số tín chỉ | Lịch học(dự kiến)                         | Học phí(500.000đ/TC) |
+| --- | -------------------------------- | ---------- | ----------------------------------------- | -------------------- |
+| 1   | Kinh tế học                      | 3          | Các buổi tối trong tuần và ngày cuối tuần | 1.500.000 đ          |
+| 2   | Nguyên lý Marketing              | 2          |                                           | 1.000.000 đ          |
+| 3   | Hành vi người tiêu dùng nâng cao | 2          |                                           | 1.000.000 đ          |
+| 4   | Nghiên cứu Marketing             | 2          |                                           | 1.000.000 đ          |
+
+---
+
+[Nguồn 2 — Văn bản: ThS Marketing.txt | Thạc sĩ Marketing > GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING | Mục: GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING | Ngành: Marketing | Mã ngành: 8340115 | Năm: 2026]
+[Chương trình: Thạc sĩ Marketing (MKT, mkt, Marketing) | Mã ngành: 8340115]
+GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING
+
+Chương trình đào tạo Thạc sĩ ngành Marketing tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế theo hệ thống tín chỉ, cập nhật liên tục để đáp ứng nhu cầu thực tiễn của doanh nghiệp và xã hội.
+
+Năm 2026, chương trình cung cấp hai định hướng đào tạo riêng biệt để người học lựa chọn phù hợp với mục tiêu nghề nghiệp:
+
+* Định hướng Nghiên cứu: Tập trung vào năng lực nghiên cứu chuyên sâu, phát triển tư duy lý luận, phù hợp cho giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+* Định hướng Ứng dụng: Tập trung vào kỹ năng thực hành, giải quyết vấn đề thực tiễn trong kinh doanh, phù hợp cho các nhà quản lý, điều hành doanh nghiệp.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=SDmYi_9tWDH1CNuBz184Tw>
+
+---
+
+[Nguồn 3 — Văn bản: ThS Marketing.txt | Thạc sĩ Marketing > CHÍNH SÁCH ƯU ĐÃ HỌC PHÍ | Mục: CHÍNH SÁCH ƯU ĐÃ HỌC PHÍ | Ngành: Marketing | Mã ngành: 8340115 | Năm: 2026]
+[Chương trình: Thạc sĩ Marketing (MKT, mkt, Marketing) | Mã ngành: 8340115]
+CHÍNH SÁCH ƯU ĐÃ HỌC PHÍ
+
+* Giảm 10% học phí đối với học viên là cựu sinh viên của Trường.
+* Giảm 5% học phí đối với học viên có người thân đã và đang học cao học tại Trường
+
+---
+
+[Nguồn 4 — Văn bản: ThS Marketing.txt | Thạc sĩ Marketing > ĐIỀU KIỆN XÉT TUYỂN | Mục: ĐIỀU KIỆN XÉT TUYỂN | Ngành: Marketing | Mã ngành: 8340115 | Năm: 2026]
+[Chương trình: Thạc sĩ Marketing (MKT, mkt, Marketing) | Mã ngành: 8340115]
+ĐIỀU KIỆN XÉT TUYỂN
+
+Ứng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:
+
+* Về văn bằng: Đã tốt nghiệp đại học ngành Marketing hoặc các ngành phù hợp/ngành gần/ngành khác (có bổ sung kiến thức) .
+* Phương thức tuyển sinh: Xét tuyển dựa trên hồ sơ văn bằng, kết quả học tập đại học và năng lực ngoại ngữ.
+* Môn xét tuyển: Đánh giá năng lực qua hai môn cơ sở ngành là Kinh tế học và Nguyên lý Marketing.
+* Trình độ ngoại ngữ: Ứng viên phải đạt năng lực ngoại ngữ từ Bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc sở hữu các văn bằng, chứng chỉ tương đương.
+
+Đối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Marketing, Nhà trường tổ chức học bổ sung kiến thức trước khi xét tuyển:
+
+* Ngành gần: Bổ sung 02 môn (5 tín chỉ), gồm: Kinh tế học (3 TC) và Nguyên lý Marketing (2 TC).
+* Ngành khác: Bổ sung 04 môn (9 tín chỉ), gồm: Kinh tế học (3 TC), Nguyên lý Marketing (2 TC), Hành vi người tiêu dùng nâng cao (2 TC) và Nghiên cứu Marketing (2 TC).
+
+---
+
+[Nguồn 5 — Văn bản: tuyensinh-trinhdo-thacsi-dot1-2026.md | 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 4. **LỆ PHÍ XÉT TUYỂN VÀ HỌC PHÍ** | Mục: 4. **LỆ PHÍ XÉT TUYỂN VÀ HỌC PHÍ** | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026
+[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]
+[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 4. **LỆ PHÍ XÉT TUYỂN VÀ HỌC PHÍ**]
+
+- Lệ phí xét tuyển 2 môn cơ sở ngành: 280.000 đồng.
+- Học phí dự kiến: **1.150.000 đồng/tín chỉ** (được chia làm 4 kỳ). Tổng chương trình đào tạo có 61 tín chỉ.
+                                                      >(5471 chars)
+                             retrieved_chunks  │  [20 items]
+                                                         [0] {"chunk_id": "4206fd8d-0e48-47bc-9d4c-b22d7b8e7ccf", "chunk_level": "child", "parent_id": "eb4549aa-55aa-4978-8730-edde1346077d", "section_path": "1. Đối tượng > **❖ Đối với ngành Marketing:**", "program_name": null, "score": 0.6756946041766057, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng > **❖ Đối với ngành Marketing:**]\n\n- Ngành gần: các", "source": "vector", "rrf_score": 0.01639344262295082}
+                                                         [1] {"chunk_id": "eb4549aa-55aa-4978-8730-edde1346077d", "chunk_level": "parent", "parent_id": null, "section_path": "1. Đối tượng > **❖ Đối với ngành Marketing:**", "program_name": null, "score": 0.6756946041766057, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng > **❖ Đối với ngành Marketing:**]\n\n- Ngành gần: các", "source": "vector", "rrf_score": 0.016129032258064516}
+                                                         [2] {"chunk_id": "1e42db23-57b9-42aa-9dff-bada5875089b", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Marketing > GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING", "program_name": "Marketing", "score": 0.6052252164080363, "content_preview": "[Chương trình: Thạc sĩ Marketing (MKT, mkt, Marketing) | Mã ngành: 8340115]\nGIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING\n\nChương trình đào tạo Thạc sĩ ngành Marketing tại Trường Đại học Tài chính – Marketi", "source": "vector", "rrf_score": 0.015873015873015872}
+                                                         [3] {"chunk_id": "5338d28e-a343-4388-b100-b11d321d3e34", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Marketing > CHÍNH SÁCH ƯU ĐÃ HỌC PHÍ", "program_name": "Marketing", "score": 0.6010151922400262, "content_preview": "[Chương trình: Thạc sĩ Marketing (MKT, mkt, Marketing) | Mã ngành: 8340115]\nCHÍNH SÁCH ƯU ĐÃ HỌC PHÍ\n\n* Giảm 10% học phí đối với học viên là cựu sinh viên của Trường.\n* Giảm 5% học phí đối với học viê", "source": "vector", "rrf_score": 0.015625}
+                                                         [4] {"chunk_id": "14f6b921-30bb-448c-b01c-7b8d658874c5", "chunk_level": "child", "parent_id": "5338d28e-a343-4388-b100-b11d321d3e34", "section_path": "Thạc sĩ Marketing > CHÍNH SÁCH ƯU ĐÃ HỌC PHÍ", "program_name": "Marketing", "score": 0.599298936149512, "content_preview": "[Chương trình: Thạc sĩ Marketing (MKT, mkt, Marketing) | Mã ngành: 8340115] — CHÍNH SÁCH ƯU ĐÃ HỌC PHÍ\n\n* Giảm 10% học phí đối với học viên là cựu sinh viên của Trường.\n* Giảm 5% học phí đối với học v", "source": "vector", "rrf_score": 0.015384615384615385}
+                                                         [5] {"chunk_id": "35308aed-5b23-4ff3-a1ad-619ac97880a7", "chunk_level": "child", "parent_id": "1e42db23-57b9-42aa-9dff-bada5875089b", "section_path": "Thạc sĩ Marketing > GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING", "program_name": "Marketing", "score": 0.5921891574746883, "content_preview": "[Chương trình: Thạc sĩ Marketing (MKT, mkt, Marketing) | Mã ngành: 8340115] — GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING\n\nThời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến t", "source": "vector", "rrf_score": 0.015151515151515152}
+                                                         [6] {"chunk_id": "fecaeed2-27cf-470e-98c3-1396abc71e7b", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Marketing > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Marketing", "score": 0.5804132646199112, "content_preview": "[Chương trình: Thạc sĩ Marketing (MKT, mkt, Marketing) | Mã ngành: 8340115]\nĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:\n\n* Về văn bằng: Đã tốt nghiệp đại học ngành", "source": "vector", "rrf_score": 0.014925373134328358}
+                                                         [7] {"chunk_id": "f6dd19d0-0d4b-4017-9ea7-f329e3c73e38", "chunk_level": "child", "parent_id": "fecaeed2-27cf-470e-98c3-1396abc71e7b", "section_path": "Thạc sĩ Marketing > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Marketing", "score": 0.5797584903384165, "content_preview": "[Chương trình: Thạc sĩ Marketing (MKT, mkt, Marketing) | Mã ngành: 8340115] — ĐIỀU KIỆN XÉT TUYỂN\n\n* Ngành gần: Bổ sung 02 môn (5 tín chỉ), gồm: Kinh tế học (3 TC) và Nguyên lý Marketing (2 TC).\n* Ngà", "source": "vector", "rrf_score": 0.014705882352941176}
+                                                         [8] {"chunk_id": "17449e37-fb73-4365-aaaa-b2253e6f3aad", "chunk_level": "child", "parent_id": "1e42db23-57b9-42aa-9dff-bada5875089b", "section_path": "Thạc sĩ Marketing > GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING", "program_name": "Marketing", "score": 0.5747737541929641, "content_preview": "[Chương trình: Thạc sĩ Marketing (MKT, mkt, Marketing) | Mã ngành: 8340115] — GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING\n\nChương trình đào tạo Thạc sĩ ngành Marketing tại Trường Đại học Tài chính – Marke", "source": "vector", "rrf_score": 0.014492753623188406}
+                                                         [9] {"chunk_id": "c7008cda-1862-4f07-93fb-a8b954992e17", "chunk_level": "child", "parent_id": "1e42db23-57b9-42aa-9dff-bada5875089b", "section_path": "Thạc sĩ Marketing > GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING", "program_name": "Marketing", "score": 0.56621623039246, "content_preview": "[Chương trình: Thạc sĩ Marketing (MKT, mkt, Marketing) | Mã ngành: 8340115] — GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING\n\nNăm 2026, chương trình cung cấp hai định hướng đào tạo riêng biệt để người học lự", "source": "vector", "rrf_score": 0.014285714285714285}
+                                                         [10] {"chunk_id": "e80fc88d-710f-4910-9b69-641fac2d0180", "chunk_level": "child", "parent_id": "1e42db23-57b9-42aa-9dff-bada5875089b", "section_path": "Thạc sĩ Marketing > GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING", "program_name": "Marketing", "score": 0.5648557971460902, "content_preview": "[Chương trình: Thạc sĩ Marketing (MKT, mkt, Marketing) | Mã ngành: 8340115] — GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING\n\nThông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.as", "source": "vector", "rrf_score": 0.014084507042253521}
+                                                         [11] {"chunk_id": "00c79694-a3d6-4611-8628-811c8aea0f20", "chunk_level": "child", "parent_id": "fecaeed2-27cf-470e-98c3-1396abc71e7b", "section_path": "Thạc sĩ Marketing > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Marketing", "score": 0.5603878331068827, "content_preview": "[Chương trình: Thạc sĩ Marketing (MKT, mkt, Marketing) | Mã ngành: 8340115] — ĐIỀU KIỆN XÉT TUYỂN\n\n* Về văn bằng: Đã tốt nghiệp đại học ngành Marketing hoặc các ngành phù hợp/ngành gần/ngành khác (có ", "source": "vector", "rrf_score": 0.013888888888888888}
+                                                         [12] {"chunk_id": "ba7e6359-ce90-4a64-9871-49e986c9a23a", "chunk_level": "parent", "parent_id": null, "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 4. **LỆ PHÍ XÉT TUYỂN VÀ HỌC PHÍ**", "program_name": null, "score": 0.5589728022233972, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 4.", "source": "vector", "rrf_score": 0.0136986301369863}
+                                                         [13] {"chunk_id": "1b70a4c6-7164-44d9-bb4f-2881fc52f77c", "chunk_level": "child", "parent_id": "29916fb7-5780-4c02-888d-5c65fdad70cd", "section_path": "1. Đối tượng", "program_name": null, "score": 0.556912524792181, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng]\n\n[Phần 2/3]\n| STT | Môn học | Số tín chỉ | Lịch họ", "source": "vector", "rrf_score": 0.013513513513513514}
+                                                         [14] {"chunk_id": "29916fb7-5780-4c02-888d-5c65fdad70cd", "chunk_level": "parent", "parent_id": null, "section_path": "1. Đối tượng", "program_name": null, "score": 0.556912524792181, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng]\n\n[Phần 2/3]\n| STT | Môn học            | Số tín ch", "source": "vector", "rrf_score": 0.013333333333333334}
+                                                         [15] {"chunk_id": "4fb7dde6-8a5d-44f1-be90-c1d9aa058015", "chunk_level": "child", "parent_id": "3f57efc0-566f-46df-9c29-3bca36a9b084", "section_path": "Giới thiệu", "program_name": null, "score": 0.5419662271758192, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "vector", "rrf_score": 0.013157894736842105}
+                                                         [16] {"chunk_id": "eb187809-228f-49a6-8930-36f5939ddc22", "chunk_level": "child", "parent_id": "3363eb52-12f1-419c-817c-07ff5d55dcfa", "section_path": "1. Đối tượng", "program_name": null, "score": 0.541630561157398, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng]\n\n[Phần 3/3]\n| STT | Môn học | Số tín chỉ | Lịch họ", "source": "vector", "rrf_score": 0.012987012987012988}
+                                                         [17] {"chunk_id": "3363eb52-12f1-419c-817c-07ff5d55dcfa", "chunk_level": "parent", "parent_id": null, "section_path": "1. Đối tượng", "program_name": null, "score": 0.541630561157398, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng]\n\n[Phần 3/3]\n| STT | Môn học           | Số tín chỉ", "source": "vector", "rrf_score": 0.01282051282051282}
+                                                         [18] {"chunk_id": "db009523-fa16-4c27-9d5b-96cc026aba65", "chunk_level": "child", "parent_id": "76f98c4e-14ee-4a43-be9e-b622a0d441b8", "section_path": "8. Học phí dự kiến", "program_name": null, "score": 0.5376701034504123, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 8. Học phí dự kiến]\n\nHọc phí cho 3 năm học tập trung là 198.000.000 đồng,", "source": "vector", "rrf_score": 0.012658227848101266}
+                                                         [19] {"chunk_id": "76f98c4e-14ee-4a43-be9e-b622a0d441b8", "chunk_level": "parent", "parent_id": null, "section_path": "8. Học phí dự kiến", "program_name": null, "score": 0.5376701034504123, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 8. Học phí dự kiến]\n\nHọc phí cho 3 năm học tập trung là 198.000.000 đồng,", "source": "vector", "rrf_score": 0.0125}
+                        rag_confidence_failed  │  ✓ True
+                            top1_cosine_score  │  0.6757
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [8] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.009s)
+                                        Message  │  source='rag_confidence_failed', length=395 chars
+                               final_response  │  Xin lỗi bạn, mình chưa tìm thấy thông tin chính xác cho câu hỏi này trong cơ sở dữ liệu. Bạn thử hỏi cụ thể hơn nhé, ví dụ: "Học phí ngành Marketing năm 2026?" hoặc "Điều kiện xét tuyển Thạc sĩ QTKD?"
+
+
+Bạn cũng có thể liên hệ trực tiếp để được hỗ trợ nhanh nhất:
+📞 Hotline Tuyển sinh ĐH: (028) 3772 0406 | Sau đại học: 0967 657 532
+📧 Email: tuyensinh@ufm.edu.vn | 🌐 https://tuyensinh.ufm.edu.vn
+                                                      >(395 chars)
+                              response_source  │  rag_confidence_failed
+                                                      >(21 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : rag_confidence_failed
+  Intent          : HOC_PHI_HOC_BONG → PROCEED_RAG
+  Response Length : 395 chars
+  Total Time      : 12.65s
+  Nodes Executed  : 8
+──────────────────────────────────────────────────────────────────────────
+
+Xin lỗi bạn, mình chưa tìm thấy thông tin chính xác cho câu hỏi này trong cơ sở dữ liệu. Bạn thử hỏi cụ thể hơn nhé, ví dụ: "Học phí ngành Marketing năm 2026?" hoặc "Điều kiện xét tuyển Thạc sĩ QTKD?"
+
+
+Bạn cũng có thể liên hệ trực tiếp để được hỗ trợ nhanh nhất:
+📞 Hotline Tuyển sinh ĐH: (028) 3772 0406 | Sau đại học: 0967 657 532
+📧 Email: tuyensinh@ufm.edu.vn | 🌐 https://tuyensinh.ufm.edu.vn
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.010s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  0.001s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a+2b)        │  1.276s  │   PASS   │
+  │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  1.459s  │   PASS   │
+  │ 🔀 MULTI-QUERY NODE (Sinh biến thể)           │  1.122s  │   PASS   │
+  │ 📊 EMBEDDING NODE (BGE-M3 batch)              │  8.318s  │   PASS   │
+  │ 🗄️ RAG NODE (Hybrid Search DB)               │  0.404s  │   PASS   │
+  │ 🎯 RESPONSE NODE (Final Answer)               │  0.009s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  12.65s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_030104_Học_phí_ngành_Marketing_chương_trình_chấ.txt
+

@@ -1,0 +1,1046 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-30 00:30:15                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260330_003015_ngành_qtkd_tsi.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.5-flash              │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash              │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Extract       │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ⓫ Form Draft         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : ngành qtkd tsi
+  💬 Chat History : Trống (lượt đầu tiên)
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.009s)
+                                        Message  │  [Fast-Scan PASS — 0.001s] Sach, cho qua Context Node
+                                 chat_history  │  []
+                                   user_query  │  ngành qtkd tsi
+                                                      >(14 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  ngành qtkd tsi
+                                                      >(14 chars)
+                             standalone_query  │  ""
+                                multi_queries  │  []
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.001s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  null
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  ""
+                             query_embeddings  │  []
+                                       intent  │  ""
+                               intent_summary  │  ""
+                                intent_action  │  ""
+                         program_level_filter  │  null
+                          program_name_filter  │  null
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                               final_response  │  ""
+                              response_source  │  ""
+                                    next_node  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.003s)
+                                        Message  │  Reformulated → 'ngành qtkd tsi'
+                                 chat_history  │  []
+                                   user_query  │  ngành qtkd tsi
+                                                      >(14 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  ngành qtkd tsi
+                                                      >(14 chars)
+                             standalone_query  │  ngành qtkd tsi
+                                                      >(14 chars)
+                                multi_queries  │  []
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.001s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  null
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  ""
+                             query_embeddings  │  []
+                                       intent  │  ""
+                               intent_summary  │  ""
+                                intent_action  │  ""
+                         program_level_filter  │  null
+                          program_name_filter  │  null
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                               final_response  │  ""
+                              response_source  │  ""
+                                    next_node  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a Llama)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.027s)
+                                        Message  │  [Contextual-Guard PASS — 1.027s] standalone_query an toan
+                                 chat_history  │  []
+                                   user_query  │  ngành qtkd tsi
+                                                      >(14 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  ngành qtkd tsi
+                                                      >(14 chars)
+                             standalone_query  │  ngành qtkd tsi
+                                                      >(14 chars)
+                                multi_queries  │  []
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.001s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.027s] standalone_query an toan
+                                                      >(57 chars)
+                             query_embeddings  │  []
+                                       intent  │  ""
+                               intent_summary  │  ""
+                                intent_action  │  ""
+                         program_level_filter  │  null
+                          program_name_filter  │  null
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                               final_response  │  ""
+                              response_source  │  ""
+                                    next_node  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [4] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (3.028s)
+                                        Message  │  intent='THONG_TIN_TUYEN_SINH' → action='PROCEED_RAG_UFM_SEARCH' → next='rag_search'
+                                 chat_history  │  []
+                                   user_query  │  ngành qtkd tsi
+                                                      >(14 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  ngành qtkd tsi
+                                                      >(14 chars)
+                             standalone_query  │  ngành qtkd tsi
+                                                      >(14 chars)
+                                multi_queries  │  []
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.001s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.027s] standalone_query an toan
+                                                      >(57 chars)
+                             query_embeddings  │  []
+                                       intent  │  THONG_TIN_TUYEN_SINH
+                                                      >(20 chars)
+                               intent_summary  │  ""
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                                                      >(22 chars)
+                         program_level_filter  │  null
+                          program_name_filter  │  Quản Trị Kinh Doanh
+                                                      >(19 chars)
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                               final_response  │  ""
+                              response_source  │  ""
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔀 [5] MULTI-QUERY NODE (Sinh biến thể)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.664s)
+                                        Message  │  Sinh 2 biến thể
+                                 chat_history  │  []
+                                   user_query  │  ngành qtkd tsi
+                                                      >(14 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  ngành qtkd tsi
+                                                      >(14 chars)
+                             standalone_query  │  ngành qtkd tsi
+                                                      >(14 chars)
+                                multi_queries  │  [2 items]
+                                                         [0] "Ngành Quản trị kinh doanh tuyển sinh như thế nào?"
+                                                         [1] "Thông tin tuyển sinh ngành Quản trị kinh doanh là gì?"
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.001s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.027s] standalone_query an toan
+                                                      >(57 chars)
+                             query_embeddings  │  []
+                                       intent  │  THONG_TIN_TUYEN_SINH
+                                                      >(20 chars)
+                               intent_summary  │  ""
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                                                      >(22 chars)
+                         program_level_filter  │  null
+                          program_name_filter  │  Quản Trị Kinh Doanh
+                                                      >(19 chars)
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                               final_response  │  ""
+                              response_source  │  ""
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  📊 [6] EMBEDDING NODE (BGE-M3 batch)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.140s)
+                                        Message  │  Nhúng 3 vectors × 1024D
+                                 chat_history  │  []
+                                   user_query  │  ngành qtkd tsi
+                                                      >(14 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  ngành qtkd tsi
+                                                      >(14 chars)
+                             standalone_query  │  ngành qtkd tsi
+                                                      >(14 chars)
+                                multi_queries  │  [2 items]
+                                                         [0] "Ngành Quản trị kinh doanh tuyển sinh như thế nào?"
+                                                         [1] "Thông tin tuyển sinh ngành Quản trị kinh doanh là gì?"
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.001s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.027s] standalone_query an toan
+                                                      >(57 chars)
+                             query_embeddings  │  [3 vectors × 1024D]
+                                       intent  │  THONG_TIN_TUYEN_SINH
+                                                      >(20 chars)
+                               intent_summary  │  ""
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                                                      >(22 chars)
+                         program_level_filter  │  null
+                          program_name_filter  │  Quản Trị Kinh Doanh
+                                                      >(19 chars)
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                               final_response  │  ""
+                              response_source  │  ""
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🗄️ [7] RAG NODE (Hybrid Search DB)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.117s)
+                                        Message  │  Chunks=20, Context=7235 chars
+                                 chat_history  │  []
+                                   user_query  │  ngành qtkd tsi
+                                                      >(14 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  ngành qtkd tsi
+                                                      >(14 chars)
+                             standalone_query  │  ngành qtkd tsi
+                                                      >(14 chars)
+                                multi_queries  │  [2 items]
+                                                         [0] "Ngành Quản trị kinh doanh tuyển sinh như thế nào?"
+                                                         [1] "Thông tin tuyển sinh ngành Quản trị kinh doanh là gì?"
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.001s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.027s] standalone_query an toan
+                                                      >(57 chars)
+                             query_embeddings  │  [3 vectors × 1024D]
+                                       intent  │  THONG_TIN_TUYEN_SINH
+                                                      >(20 chars)
+                               intent_summary  │  ""
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                                                      >(22 chars)
+                         program_level_filter  │  null
+                          program_name_filter  │  Quản Trị Kinh Doanh
+                                                      >(19 chars)
+                             retrieved_chunks  │  [20 items]
+                                                         [0] {"chunk_id": "5d05b110-4074-4d30-925b-66873c16fd0d", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.7049837112426808, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]\nĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:\n\n* **Về văn bằng:** Đã tốt ng", "source": "vector", "rrf_score": 0.01639344262295082}
+                                                         [1] {"chunk_id": "d74a51d8-ce9c-4dfe-8945-d72df0795293", "chunk_level": "child", "parent_id": "5d05b110-4074-4d30-925b-66873c16fd0d", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.6891484260559131, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — ĐIỀU KIỆN XÉT TUYỂN\n\n* **Về văn bằng:** Đã tốt nghiệp đại học ngành Quản trị kinh doanh hoặc các ngành phù h", "source": "vector", "rrf_score": 0.016129032258064516}
+                                                         [2] {"chunk_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.6824134588241626, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]\nCHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nChương trình đào tạo Thạc sĩ ngành Quản trị kinh doanh", "source": "vector", "rrf_score": 0.015873015873015872}
+                                                         [3] {"chunk_id": "282ec213-a4ff-4055-aa67-1cd2e444e656", "chunk_level": "child", "parent_id": "5d05b110-4074-4d30-925b-66873c16fd0d", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.6749531634110063, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — ĐIỀU KIỆN XÉT TUYỂN\n\nĐối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Quản trị kinh doanh, Nhà tr", "source": "vector", "rrf_score": 0.015625}
+                                                         [4] {"chunk_id": "967684c1-33aa-4a7d-87e8-389259f974ea", "chunk_level": "child", "parent_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.6726612844270112, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nChương trình đào tạo Thạc sĩ ngành Quản trị kinh doa", "source": "vector", "rrf_score": 0.015384615384615385}
+                                                         [5] {"chunk_id": "a83af527-0285-4624-8fd6-7d5c416ff5ce", "chunk_level": "child", "parent_id": "5d05b110-4074-4d30-925b-66873c16fd0d", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.6713608107376343, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — ĐIỀU KIỆN XÉT TUYỂN\n\n* **Ngành gần:** Bổ sung 02 môn (5 tín chỉ), gồm: Quản trị học (2 TC) và Kinh tế học (3", "source": "vector", "rrf_score": 0.015151515151515152}
+                                                         [6] {"chunk_id": "d322e119-fc71-438f-832b-d1b336f82dd7", "chunk_level": "child", "parent_id": "87e26df1-d52e-4cb8-9d35-4b4ca546f016", "section_path": "Tiến sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.6697979367020206, "content_preview": "[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101] — CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nChương trình đào tạo Tiến sĩ ngành Quản trị kinh doa", "source": "vector", "rrf_score": 0.014925373134328358}
+                                                         [7] {"chunk_id": "87e26df1-d52e-4cb8-9d35-4b4ca546f016", "chunk_level": "parent", "parent_id": null, "section_path": "Tiến sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.6681606371307005, "content_preview": "[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101]\nCHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nChương trình đào tạo Tiến sĩ ngành Quản trị kinh doanh", "source": "vector", "rrf_score": 0.014705882352941176}
+                                                         [8] {"chunk_id": "111e5228-69f7-40fb-a989-10ac61fd8ffd", "chunk_level": "parent", "parent_id": null, "section_path": "Tiến sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.6532527621683166, "content_preview": "[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101]\nĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên dự tuyển cần đáp ứng các điều kiện sau:\n\n* **Về văn bằng:** Đã tốt nghiệp thạc s", "source": "vector", "rrf_score": 0.014492753623188406}
+                                                         [9] {"chunk_id": "fe6b5481-bd95-4a29-a1d4-7c0b74745639", "chunk_level": "child", "parent_id": "111e5228-69f7-40fb-a989-10ac61fd8ffd", "section_path": "Tiến sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.6525889635086106, "content_preview": "[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101] — ĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên dự tuyển cần đáp ứng các điều kiện sau:\n\n* **Về văn bằng:** Đã tốt nghiệp thạc", "source": "vector", "rrf_score": 0.014285714285714285}
+                                                         [10] {"chunk_id": "dc9e22ec-ee19-47b3-9bea-fd2fa5c8babd", "chunk_level": "child", "parent_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.6524298981556269, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nThông tin chi tiết chương trình đào tạo: <https://da", "source": "vector", "rrf_score": 0.014084507042253521}
+                                                         [11] {"chunk_id": "26fe8ce8-b0f3-4d49-957b-521c7a2db24f", "chunk_level": "child", "parent_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.6368756294250534, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\n* **Định hướng Nghiên cứu:** Tập trung vào phát triể", "source": "vector", "rrf_score": 0.013888888888888888}
+                                                         [12] {"chunk_id": "3a1b8e6d-f8e7-4120-bb74-5c6d446989c4", "chunk_level": "child", "parent_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.6305053046195144, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nThời gian đào tạo trung bình là 02 năm (tối đa 04 nă", "source": "vector", "rrf_score": 0.0136986301369863}
+                                                         [13] {"chunk_id": "f02de27d-1e68-4c15-a796-baf4c62d7b7e", "chunk_level": "parent", "parent_id": null, "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ", "program_name": null, "score": 0.6298510023907129, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9.", "source": "vector", "rrf_score": 0.013513513513513514}
+                                                         [14] {"chunk_id": "0fb4062a-765a-4f7b-a341-7c5e3c39261b", "chunk_level": "child", "parent_id": "f02de27d-1e68-4c15-a796-baf4c62d7b7e", "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ", "program_name": null, "score": 0.6298510023907129, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9.", "source": "vector", "rrf_score": 0.013333333333333334}
+                                                         [15] {"chunk_id": "298df87c-67fd-4510-931d-6de576f41c1d", "chunk_level": "child", "parent_id": "5d05b110-4074-4d30-925b-66873c16fd0d", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.6292194503080517, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — ĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:", "source": "vector", "rrf_score": 0.013157894736842105}
+                                                         [16] {"chunk_id": "308ab7f5-dcb3-4852-b5e4-7c586775a38d", "chunk_level": "child", "parent_id": "033f39cc-7b10-40e8-b1a4-f9c72401a03e", "section_path": "Tiến sĩ Quản Trị Kinh Doanh > CƠ HỘI NGHỀ NGHIỆP", "program_name": "Quản Trị Kinh Doanh", "score": 0.6272774747825447, "content_preview": "[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101] — CƠ HỘI NGHỀ NGHIỆP\n\nSau khi tốt nghiệp, Tiến sĩ ngành Quản trị kinh doanh có thể đảm nhiệm các vị trí lãnh đ", "source": "vector", "rrf_score": 0.012987012987012988}
+                                                         [17] {"chunk_id": "033f39cc-7b10-40e8-b1a4-f9c72401a03e", "chunk_level": "parent", "parent_id": null, "section_path": "Tiến sĩ Quản Trị Kinh Doanh > CƠ HỘI NGHỀ NGHIỆP", "program_name": "Quản Trị Kinh Doanh", "score": 0.6233257875844378, "content_preview": "[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101]\nCƠ HỘI NGHỀ NGHIỆP\n\nSau khi tốt nghiệp, Tiến sĩ ngành Quản trị kinh doanh có thể đảm nhiệm các vị trí lãnh đạo", "source": "vector", "rrf_score": 0.01282051282051282}
+                                                         [18] {"chunk_id": "2cbdbb27-9efe-42aa-9eb5-8e7394c33caf", "chunk_level": "child", "parent_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.6229424105320935, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\n**Năm 2026, chương trình cung cấp hai định hướng đào", "source": "vector", "rrf_score": 0.012658227848101266}
+                                                         [19] {"chunk_id": "97a68148-db8b-424b-88e8-e726ab1b945f", "chunk_level": "child", "parent_id": "573e8531-8d1a-4c43-b90c-9701ed776991", "section_path": "1. Đối tượng", "program_name": null, "score": 0.620170767918596, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng]\n\n[Phần 1/3]\n- Người học bổ sung kiến thức có bằng ", "source": "vector", "rrf_score": 0.0125}
+                                  rag_context  │  1.{{ SOURCE: ThS QTKD.txt
+PATH (NẰM Ở MỤC: Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [ThS QTKD.txt](/view-document/e7105c5c-d80c-4762-8ea0-6b116d6f45c3) }}
+
+[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]
+ĐIỀU KIỆN XÉT TUYỂN
+
+Ứng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:
+
+* **Về văn bằng:** Đã tốt nghiệp đại học ngành Quản trị kinh doanh hoặc các ngành phù hợp/ngành gần/ngành khác (có bổ sung kiến thức) .
+* **Phương thức tuyển sinh:** Xét tuyển dựa trên hồ sơ văn bằng, kết quả học tập đại học và năng lực ngoại ngữ.
+* **Môn xét tuyển:** Đánh giá năng lực qua hai môn cơ sở ngành là Kinh tế học và Quản trị học.
+* **Trình độ ngoại ngữ:** Ứng viên phải đạt năng lực ngoại ngữ từ Bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc sở hữu các văn bằng, chứng chỉ tương đương.
+
+Đối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Quản trị kinh doanh, Nhà trường tổ chức học bổ sung kiến thức trước khi xét tuyển:
+
+* **Ngành gần:** Bổ sung 02 môn (5 tín chỉ), gồm: Quản trị học (2 TC) và Kinh tế học (3 TC).
+* **Ngành khác:** Bổ sung 04 môn (9 tín chỉ), gồm: Quản trị học (2 TC), Marketing căn bản (2 TC), Kinh tế học (3 TC) và Kinh tế phát triển (2 TC).
+
+---
+
+2.{{ SOURCE: ThS QTKD.txt
+PATH (NẰM Ở MỤC: Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [ThS QTKD.txt](/view-document/93d2c590-32d7-4ce0-a62b-7edd89597ee3) }}
+
+[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]
+CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH
+
+Chương trình đào tạo Thạc sĩ ngành Quản trị kinh doanh tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế linh hoạt theo hệ thống tín chỉ, cập nhật liên tục để đáp ứng nhu cầu của nhà tuyển dụng và xu hướng quản trị hiện đại.
+
+**Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt:**
+
+* **Định hướng Nghiên cứu:** Tập trung vào phát triển tư duy hàn lâm, năng lực nghiên cứu khoa học chuyên sâu và khả năng giải quyết các vấn đề quản trị phức tạp bằng phương pháp luận khoa học. Phù hợp với giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+* **Định hướng Ứng dụng:** Tập trung vào phát triển kỹ năng thực hành, năng lực lãnh đạo và giải quyết các tình huống quản trị thực tiễn tại doanh nghiệp. Phù hợp với các nhà quản lý, điều hành, doanh nhân.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=ig3wGlAYnn1rof8yGKfbBA>
+
+---
+
+3.{{ SOURCE: NCS QTKD gop y.txt
+PATH (NẰM Ở MỤC: Tiến sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH)
+BẬC ĐÀO TẠO: tien_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [NCS QTKD gop y.txt](/view-document/0f397b41-0c89-488f-8b58-a6a18ab62708) }}
+
+[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101]
+CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH
+
+Chương trình đào tạo Tiến sĩ ngành Quản trị kinh doanh tại Trường Đại học Tài chính – Marketing được thiết kế nhằm đào tạo những nhà khoa học, chuyên gia cấp cao có trình độ và năng lực ứng dụng thực tiễn. Chương trình bám sát triết lý giáo dục “Thực chất, đổi mới sáng tạo và hội nhập”, hướng đến việc nâng cao năng lực nghiên cứu độc lập, sáng tạo tri thức mới và giải quyết các thách thức trong môi trường kinh doanh toàn cầu.
+
+Thời gian đào tạo chuẩn là **03 năm** (đối với người có bằng Thạc sĩ) hoặc **04 năm** (đối với người có bằng Đại học loại Giỏi trở lên ngành phù hợp).
+
+---
+
+4.{{ SOURCE: NCS QTKD gop y.txt
+PATH (NẰM Ở MỤC: Tiến sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN)
+BẬC ĐÀO TẠO: tien_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [NCS QTKD gop y.txt](/view-document/dfffb2da-376b-4006-b6e7-fe605871e57f) }}
+
+[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101]
+ĐIỀU KIỆN XÉT TUYỂN
+
+Ứng viên dự tuyển cần đáp ứng các điều kiện sau:
+
+* **Về văn bằng:** Đã tốt nghiệp thạc sĩ hoặc tốt nghiệp đại học hạng giỏi trở lên ngành phù hợp với ngành Quản trị kinh doanh.
+* **Năng lực nghiên cứu:** Có kinh nghiệm nghiên cứu thể hiện qua luận văn thạc sĩ (định hướng nghiên cứu) hoặc các bài báo, báo cáo khoa học đã công bố; hoặc có thời gian công tác từ 02 năm (24 tháng) trở lên là giảng viên, nghiên cứu viên của các cơ sở đào tạo, tổ chức khoa học và công nghệ.
+* **Đề cương nghiên cứu:** Có dự thảo đề cương nghiên cứu và dự kiến kế hoạch học tập, nghiên cứu toàn khóa.
+* **Trình độ ngoại ngữ:** Ứng viên phải có năng lực ngoại ngữ đủ để nghiên cứu tài liệu chuyên sâu và viết bài báo quốc tế (tương đương Bậc 4/6 trở lên, hoặc bằng tốt nghiệp đại học ngành ngôn ngữ tiếng nước ngoài, hoặc bằng tốt nghiệp đại học trở lên do cơ sở đào tạo nước ngoài cấp được công nhận).
+
+---
+
+5.{{ SOURCE: tuyensinh-trinhdo-thacsi-dot1-2026.md
+PATH (NẰM Ở MỤC: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [tuyensinh-trinhdo-thacsi-dot1-2026.md](/view-document/19b53728-72ce-4cf9-ab90-d88a977f1ef8) }}
+
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026
+[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]
+[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ]
+
+Link đăng ký Tuyển sinh Sau đại học trực tuyến: https://tuyensinhsdh.ufm.edu.vn/DangKy/CaoHoc
+Viện Đào tạo sau đại học, Trường Đại học Tài chính – Marketing
+Phòng D006, cơ sở 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.
+Email: tuyensinhsaudaihoc@ufm.edu.vn ĐT: 028 3997 4641
+Thời gian: Sáng: 8g00 – 11g30 Chiều: 13g30 – 16g30
+Chuyên viên phụ trách tuyển sinh:
+
+| STT | Ngành                 | Chuyên viên<br/>phụ trách    | SĐT          | Email                   |
+| --- | --------------------- | ---------------------------- | ------------ | ----------------------- |
+| 1.  | Quản trị kinh doanh   | ThS. Đỗ Minh Hương           | 0983637999   | dmhuong\@ufm.edu.vn     |
+| 2.  | Kế toán               |                              |              |                         |
+| 3.  | Tài chính – Ngân hàng | ThS. Vũ Mạnh Thành           | 0703 216 336 | manhthanhvn\@ufm.edu.vn |
+| 4.  | Luật kinh tế          |                              |              |                         |
+| 5.  | Quản lý kinh tế       | TS. Hoàng Sĩ Nam             | 0343843868   | hs.nam\@ufm.edu.vn      |
+| 6.  | Marketing             | ThS. Nguyễn Ngọc Thảo Nguyên | 0988932803   | nntnguyen\@ufm.edu.vn   |
+| 7.  | Kinh tế học           |                              |              |                         |
+| 8.  | Kinh doanh quốc tế    | ThS. Châu Mỹ Chi             | 0903 848285  | chaumychi\@ufm.edu.vn   |
+| 9.  | Toán kinh tế          |                              |              |                         |
+
+
+Đơn vị, cá nhân đăng ký tại văn phòng Viện Đào tạo sau đại học hoặc qua điện thoại, email như trên.
+                                                      >(7235 chars)
+                               final_response  │  ""
+                              response_source  │  ""
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🌐 [8] RAG SEARCH PIPELINE (Evaluator + Web Search)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.002s)
+                                        Message  │  cache=MISS, citations=0
+                                 chat_history  │  []
+                                   user_query  │  ngành qtkd tsi
+                                                      >(14 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  ngành qtkd tsi
+                                                      >(14 chars)
+                             standalone_query  │  ngành qtkd tsi
+                                                      >(14 chars)
+                                multi_queries  │  [2 items]
+                                                         [0] "Ngành Quản trị kinh doanh tuyển sinh như thế nào?"
+                                                         [1] "Thông tin tuyển sinh ngành Quản trị kinh doanh là gì?"
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.001s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.027s] standalone_query an toan
+                                                      >(57 chars)
+                             query_embeddings  │  [3 vectors × 1024D]
+                                       intent  │  THONG_TIN_TUYEN_SINH
+                                                      >(20 chars)
+                               intent_summary  │  ""
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                                                      >(22 chars)
+                         program_level_filter  │  null
+                          program_name_filter  │  Quản Trị Kinh Doanh
+                                                      >(19 chars)
+                             retrieved_chunks  │  [20 items]
+                                                         [0] {"chunk_id": "5d05b110-4074-4d30-925b-66873c16fd0d", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.7049837112426808, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]\nĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:\n\n* **Về văn bằng:** Đã tốt ng", "source": "vector", "rrf_score": 0.01639344262295082}
+                                                         [1] {"chunk_id": "d74a51d8-ce9c-4dfe-8945-d72df0795293", "chunk_level": "child", "parent_id": "5d05b110-4074-4d30-925b-66873c16fd0d", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.6891484260559131, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — ĐIỀU KIỆN XÉT TUYỂN\n\n* **Về văn bằng:** Đã tốt nghiệp đại học ngành Quản trị kinh doanh hoặc các ngành phù h", "source": "vector", "rrf_score": 0.016129032258064516}
+                                                         [2] {"chunk_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.6824134588241626, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]\nCHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nChương trình đào tạo Thạc sĩ ngành Quản trị kinh doanh", "source": "vector", "rrf_score": 0.015873015873015872}
+                                                         [3] {"chunk_id": "282ec213-a4ff-4055-aa67-1cd2e444e656", "chunk_level": "child", "parent_id": "5d05b110-4074-4d30-925b-66873c16fd0d", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.6749531634110063, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — ĐIỀU KIỆN XÉT TUYỂN\n\nĐối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Quản trị kinh doanh, Nhà tr", "source": "vector", "rrf_score": 0.015625}
+                                                         [4] {"chunk_id": "967684c1-33aa-4a7d-87e8-389259f974ea", "chunk_level": "child", "parent_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.6726612844270112, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nChương trình đào tạo Thạc sĩ ngành Quản trị kinh doa", "source": "vector", "rrf_score": 0.015384615384615385}
+                                                         [5] {"chunk_id": "a83af527-0285-4624-8fd6-7d5c416ff5ce", "chunk_level": "child", "parent_id": "5d05b110-4074-4d30-925b-66873c16fd0d", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.6713608107376343, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — ĐIỀU KIỆN XÉT TUYỂN\n\n* **Ngành gần:** Bổ sung 02 môn (5 tín chỉ), gồm: Quản trị học (2 TC) và Kinh tế học (3", "source": "vector", "rrf_score": 0.015151515151515152}
+                                                         [6] {"chunk_id": "d322e119-fc71-438f-832b-d1b336f82dd7", "chunk_level": "child", "parent_id": "87e26df1-d52e-4cb8-9d35-4b4ca546f016", "section_path": "Tiến sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.6697979367020206, "content_preview": "[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101] — CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nChương trình đào tạo Tiến sĩ ngành Quản trị kinh doa", "source": "vector", "rrf_score": 0.014925373134328358}
+                                                         [7] {"chunk_id": "87e26df1-d52e-4cb8-9d35-4b4ca546f016", "chunk_level": "parent", "parent_id": null, "section_path": "Tiến sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.6681606371307005, "content_preview": "[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101]\nCHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nChương trình đào tạo Tiến sĩ ngành Quản trị kinh doanh", "source": "vector", "rrf_score": 0.014705882352941176}
+                                                         [8] {"chunk_id": "111e5228-69f7-40fb-a989-10ac61fd8ffd", "chunk_level": "parent", "parent_id": null, "section_path": "Tiến sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.6532527621683166, "content_preview": "[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101]\nĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên dự tuyển cần đáp ứng các điều kiện sau:\n\n* **Về văn bằng:** Đã tốt nghiệp thạc s", "source": "vector", "rrf_score": 0.014492753623188406}
+                                                         [9] {"chunk_id": "fe6b5481-bd95-4a29-a1d4-7c0b74745639", "chunk_level": "child", "parent_id": "111e5228-69f7-40fb-a989-10ac61fd8ffd", "section_path": "Tiến sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.6525889635086106, "content_preview": "[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101] — ĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên dự tuyển cần đáp ứng các điều kiện sau:\n\n* **Về văn bằng:** Đã tốt nghiệp thạc", "source": "vector", "rrf_score": 0.014285714285714285}
+                                                         [10] {"chunk_id": "dc9e22ec-ee19-47b3-9bea-fd2fa5c8babd", "chunk_level": "child", "parent_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.6524298981556269, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nThông tin chi tiết chương trình đào tạo: <https://da", "source": "vector", "rrf_score": 0.014084507042253521}
+                                                         [11] {"chunk_id": "26fe8ce8-b0f3-4d49-957b-521c7a2db24f", "chunk_level": "child", "parent_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.6368756294250534, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\n* **Định hướng Nghiên cứu:** Tập trung vào phát triể", "source": "vector", "rrf_score": 0.013888888888888888}
+                                                         [12] {"chunk_id": "3a1b8e6d-f8e7-4120-bb74-5c6d446989c4", "chunk_level": "child", "parent_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.6305053046195144, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nThời gian đào tạo trung bình là 02 năm (tối đa 04 nă", "source": "vector", "rrf_score": 0.0136986301369863}
+                                                         [13] {"chunk_id": "f02de27d-1e68-4c15-a796-baf4c62d7b7e", "chunk_level": "parent", "parent_id": null, "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ", "program_name": null, "score": 0.6298510023907129, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9.", "source": "vector", "rrf_score": 0.013513513513513514}
+                                                         [14] {"chunk_id": "0fb4062a-765a-4f7b-a341-7c5e3c39261b", "chunk_level": "child", "parent_id": "f02de27d-1e68-4c15-a796-baf4c62d7b7e", "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ", "program_name": null, "score": 0.6298510023907129, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9.", "source": "vector", "rrf_score": 0.013333333333333334}
+                                                         [15] {"chunk_id": "298df87c-67fd-4510-931d-6de576f41c1d", "chunk_level": "child", "parent_id": "5d05b110-4074-4d30-925b-66873c16fd0d", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.6292194503080517, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — ĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:", "source": "vector", "rrf_score": 0.013157894736842105}
+                                                         [16] {"chunk_id": "308ab7f5-dcb3-4852-b5e4-7c586775a38d", "chunk_level": "child", "parent_id": "033f39cc-7b10-40e8-b1a4-f9c72401a03e", "section_path": "Tiến sĩ Quản Trị Kinh Doanh > CƠ HỘI NGHỀ NGHIỆP", "program_name": "Quản Trị Kinh Doanh", "score": 0.6272774747825447, "content_preview": "[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101] — CƠ HỘI NGHỀ NGHIỆP\n\nSau khi tốt nghiệp, Tiến sĩ ngành Quản trị kinh doanh có thể đảm nhiệm các vị trí lãnh đ", "source": "vector", "rrf_score": 0.012987012987012988}
+                                                         [17] {"chunk_id": "033f39cc-7b10-40e8-b1a4-f9c72401a03e", "chunk_level": "parent", "parent_id": null, "section_path": "Tiến sĩ Quản Trị Kinh Doanh > CƠ HỘI NGHỀ NGHIỆP", "program_name": "Quản Trị Kinh Doanh", "score": 0.6233257875844378, "content_preview": "[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101]\nCƠ HỘI NGHỀ NGHIỆP\n\nSau khi tốt nghiệp, Tiến sĩ ngành Quản trị kinh doanh có thể đảm nhiệm các vị trí lãnh đạo", "source": "vector", "rrf_score": 0.01282051282051282}
+                                                         [18] {"chunk_id": "2cbdbb27-9efe-42aa-9eb5-8e7394c33caf", "chunk_level": "child", "parent_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.6229424105320935, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\n**Năm 2026, chương trình cung cấp hai định hướng đào", "source": "vector", "rrf_score": 0.012658227848101266}
+                                                         [19] {"chunk_id": "97a68148-db8b-424b-88e8-e726ab1b945f", "chunk_level": "child", "parent_id": "573e8531-8d1a-4c43-b90c-9701ed776991", "section_path": "1. Đối tượng", "program_name": null, "score": 0.620170767918596, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng]\n\n[Phần 1/3]\n- Người học bổ sung kiến thức có bằng ", "source": "vector", "rrf_score": 0.0125}
+                                  rag_context  │  1.{{ SOURCE: ThS QTKD.txt
+PATH (NẰM Ở MỤC: Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [ThS QTKD.txt](/view-document/e7105c5c-d80c-4762-8ea0-6b116d6f45c3) }}
+
+[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]
+ĐIỀU KIỆN XÉT TUYỂN
+
+Ứng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:
+
+* **Về văn bằng:** Đã tốt nghiệp đại học ngành Quản trị kinh doanh hoặc các ngành phù hợp/ngành gần/ngành khác (có bổ sung kiến thức) .
+* **Phương thức tuyển sinh:** Xét tuyển dựa trên hồ sơ văn bằng, kết quả học tập đại học và năng lực ngoại ngữ.
+* **Môn xét tuyển:** Đánh giá năng lực qua hai môn cơ sở ngành là Kinh tế học và Quản trị học.
+* **Trình độ ngoại ngữ:** Ứng viên phải đạt năng lực ngoại ngữ từ Bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc sở hữu các văn bằng, chứng chỉ tương đương.
+
+Đối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Quản trị kinh doanh, Nhà trường tổ chức học bổ sung kiến thức trước khi xét tuyển:
+
+* **Ngành gần:** Bổ sung 02 môn (5 tín chỉ), gồm: Quản trị học (2 TC) và Kinh tế học (3 TC).
+* **Ngành khác:** Bổ sung 04 môn (9 tín chỉ), gồm: Quản trị học (2 TC), Marketing căn bản (2 TC), Kinh tế học (3 TC) và Kinh tế phát triển (2 TC).
+
+---
+
+2.{{ SOURCE: ThS QTKD.txt
+PATH (NẰM Ở MỤC: Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [ThS QTKD.txt](/view-document/93d2c590-32d7-4ce0-a62b-7edd89597ee3) }}
+
+[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]
+CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH
+
+Chương trình đào tạo Thạc sĩ ngành Quản trị kinh doanh tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế linh hoạt theo hệ thống tín chỉ, cập nhật liên tục để đáp ứng nhu cầu của nhà tuyển dụng và xu hướng quản trị hiện đại.
+
+**Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt:**
+
+* **Định hướng Nghiên cứu:** Tập trung vào phát triển tư duy hàn lâm, năng lực nghiên cứu khoa học chuyên sâu và khả năng giải quyết các vấn đề quản trị phức tạp bằng phương pháp luận khoa học. Phù hợp với giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+* **Định hướng Ứng dụng:** Tập trung vào phát triển kỹ năng thực hành, năng lực lãnh đạo và giải quyết các tình huống quản trị thực tiễn tại doanh nghiệp. Phù hợp với các nhà quản lý, điều hành, doanh nhân.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=ig3wGlAYnn1rof8yGKfbBA>
+
+---
+
+3.{{ SOURCE: NCS QTKD gop y.txt
+PATH (NẰM Ở MỤC: Tiến sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH)
+BẬC ĐÀO TẠO: tien_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [NCS QTKD gop y.txt](/view-document/0f397b41-0c89-488f-8b58-a6a18ab62708) }}
+
+[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101]
+CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH
+
+Chương trình đào tạo Tiến sĩ ngành Quản trị kinh doanh tại Trường Đại học Tài chính – Marketing được thiết kế nhằm đào tạo những nhà khoa học, chuyên gia cấp cao có trình độ và năng lực ứng dụng thực tiễn. Chương trình bám sát triết lý giáo dục “Thực chất, đổi mới sáng tạo và hội nhập”, hướng đến việc nâng cao năng lực nghiên cứu độc lập, sáng tạo tri thức mới và giải quyết các thách thức trong môi trường kinh doanh toàn cầu.
+
+Thời gian đào tạo chuẩn là **03 năm** (đối với người có bằng Thạc sĩ) hoặc **04 năm** (đối với người có bằng Đại học loại Giỏi trở lên ngành phù hợp).
+
+---
+
+4.{{ SOURCE: NCS QTKD gop y.txt
+PATH (NẰM Ở MỤC: Tiến sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN)
+BẬC ĐÀO TẠO: tien_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [NCS QTKD gop y.txt](/view-document/dfffb2da-376b-4006-b6e7-fe605871e57f) }}
+
+[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101]
+ĐIỀU KIỆN XÉT TUYỂN
+
+Ứng viên dự tuyển cần đáp ứng các điều kiện sau:
+
+* **Về văn bằng:** Đã tốt nghiệp thạc sĩ hoặc tốt nghiệp đại học hạng giỏi trở lên ngành phù hợp với ngành Quản trị kinh doanh.
+* **Năng lực nghiên cứu:** Có kinh nghiệm nghiên cứu thể hiện qua luận văn thạc sĩ (định hướng nghiên cứu) hoặc các bài báo, báo cáo khoa học đã công bố; hoặc có thời gian công tác từ 02 năm (24 tháng) trở lên là giảng viên, nghiên cứu viên của các cơ sở đào tạo, tổ chức khoa học và công nghệ.
+* **Đề cương nghiên cứu:** Có dự thảo đề cương nghiên cứu và dự kiến kế hoạch học tập, nghiên cứu toàn khóa.
+* **Trình độ ngoại ngữ:** Ứng viên phải có năng lực ngoại ngữ đủ để nghiên cứu tài liệu chuyên sâu và viết bài báo quốc tế (tương đương Bậc 4/6 trở lên, hoặc bằng tốt nghiệp đại học ngành ngôn ngữ tiếng nước ngoài, hoặc bằng tốt nghiệp đại học trở lên do cơ sở đào tạo nước ngoài cấp được công nhận).
+
+---
+
+5.{{ SOURCE: tuyensinh-trinhdo-thacsi-dot1-2026.md
+PATH (NẰM Ở MỤC: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [tuyensinh-trinhdo-thacsi-dot1-2026.md](/view-document/19b53728-72ce-4cf9-ab90-d88a977f1ef8) }}
+
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026
+[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]
+[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ]
+
+Link đăng ký Tuyển sinh Sau đại học trực tuyến: https://tuyensinhsdh.ufm.edu.vn/DangKy/CaoHoc
+Viện Đào tạo sau đại học, Trường Đại học Tài chính – Marketing
+Phòng D006, cơ sở 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.
+Email: tuyensinhsaudaihoc@ufm.edu.vn ĐT: 028 3997 4641
+Thời gian: Sáng: 8g00 – 11g30 Chiều: 13g30 – 16g30
+Chuyên viên phụ trách tuyển sinh:
+
+| STT | Ngành                 | Chuyên viên<br/>phụ trách    | SĐT          | Email                   |
+| --- | --------------------- | ---------------------------- | ------------ | ----------------------- |
+| 1.  | Quản trị kinh doanh   | ThS. Đỗ Minh Hương           | 0983637999   | dmhuong\@ufm.edu.vn     |
+| 2.  | Kế toán               |                              |              |                         |
+| 3.  | Tài chính – Ngân hàng | ThS. Vũ Mạnh Thành           | 0703 216 336 | manhthanhvn\@ufm.edu.vn |
+| 4.  | Luật kinh tế          |                              |              |                         |
+| 5.  | Quản lý kinh tế       | TS. Hoàng Sĩ Nam             | 0343843868   | hs.nam\@ufm.edu.vn      |
+| 6.  | Marketing             | ThS. Nguyễn Ngọc Thảo Nguyên | 0988932803   | nntnguyen\@ufm.edu.vn   |
+| 7.  | Kinh tế học           |                              |              |                         |
+| 8.  | Kinh doanh quốc tế    | ThS. Châu Mỹ Chi             | 0903 848285  | chaumychi\@ufm.edu.vn   |
+| 9.  | Toán kinh tế          |                              |              |                         |
+
+
+Đơn vị, cá nhân đăng ký tại văn phòng Viện Đào tạo sau đại học hoặc qua điện thoại, email như trên.
+                                                      >(7235 chars)
+                               final_response  │  1.{{ SOURCE: ThS QTKD.txt
+PATH (NẰM Ở MỤC: Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [ThS QTKD.txt](/view-document/e7105c5c-d80c-4762-8ea0-6b116d6f45c3) }}
+
+[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]
+ĐIỀU KIỆN XÉT TUYỂN
+
+Ứng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:
+
+* **Về văn bằng:** Đã tốt nghiệp đại học ngành Quản trị kinh doanh hoặc các ngành phù hợp/ngành gần/ngành khác (có bổ sung kiến thức) .
+* **Phương thức tuyển sinh:** Xét tuyển dựa trên hồ sơ văn bằng, kết quả học tập đại học và năng lực ngoại ngữ.
+* **Môn xét tuyển:** Đánh giá năng lực qua hai môn cơ sở ngành là Kinh tế học và Quản trị học.
+* **Trình độ ngoại ngữ:** Ứng viên phải đạt năng lực ngoại ngữ từ Bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc sở hữu các văn bằng, chứng chỉ tương đương.
+
+Đối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Quản trị kinh doanh, Nhà trường tổ chức học bổ sung kiến thức trước khi xét tuyển:
+
+* **Ngành gần:** Bổ sung 02 môn (5 tín chỉ), gồm: Quản trị học (2 TC) và Kinh tế học (3 TC).
+* **Ngành khác:** Bổ sung 04 môn (9 tín chỉ), gồm: Quản trị học (2 TC), Marketing căn bản (2 TC), Kinh tế học (3 TC) và Kinh tế phát triển (2 TC).
+
+---
+
+2.{{ SOURCE: ThS QTKD.txt
+PATH (NẰM Ở MỤC: Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [ThS QTKD.txt](/view-document/93d2c590-32d7-4ce0-a62b-7edd89597ee3) }}
+
+[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]
+CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH
+
+Chương trình đào tạo Thạc sĩ ngành Quản trị kinh doanh tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế linh hoạt theo hệ thống tín chỉ, cập nhật liên tục để đáp ứng nhu cầu của nhà tuyển dụng và xu hướng quản trị hiện đại.
+
+**Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt:**
+
+* **Định hướng Nghiên cứu:** Tập trung vào phát triển tư duy hàn lâm, năng lực nghiên cứu khoa học chuyên sâu và khả năng giải quyết các vấn đề quản trị phức tạp bằng phương pháp luận khoa học. Phù hợp với giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+* **Định hướng Ứng dụng:** Tập trung vào phát triển kỹ năng thực hành, năng lực lãnh đạo và giải quyết các tình huống quản trị thực tiễn tại doanh nghiệp. Phù hợp với các nhà quản lý, điều hành, doanh nhân.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=ig3wGlAYnn1rof8yGKfbBA>
+
+---
+
+3.{{ SOURCE: NCS QTKD gop y.txt
+PATH (NẰM Ở MỤC: Tiến sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH)
+BẬC ĐÀO TẠO: tien_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [NCS QTKD gop y.txt](/view-document/0f397b41-0c89-488f-8b58-a6a18ab62708) }}
+
+[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101]
+CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH
+
+Chương trình đào tạo Tiến sĩ ngành Quản trị kinh doanh tại Trường Đại học Tài chính – Marketing được thiết kế nhằm đào tạo những nhà khoa học, chuyên gia cấp cao có trình độ và năng lực ứng dụng thực tiễn. Chương trình bám sát triết lý giáo dục “Thực chất, đổi mới sáng tạo và hội nhập”, hướng đến việc nâng cao năng lực nghiên cứu độc lập, sáng tạo tri thức mới và giải quyết các thách thức trong môi trường kinh doanh toàn cầu.
+
+Thời gian đào tạo chuẩn là **03 năm** (đối với người có bằng Thạc sĩ) hoặc **04 năm** (đối với người có bằng Đại học loại Giỏi trở lên ngành phù hợp).
+
+---
+
+4.{{ SOURCE: NCS QTKD gop y.txt
+PATH (NẰM Ở MỤC: Tiến sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN)
+BẬC ĐÀO TẠO: tien_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [NCS QTKD gop y.txt](/view-document/dfffb2da-376b-4006-b6e7-fe605871e57f) }}
+
+[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101]
+ĐIỀU KIỆN XÉT TUYỂN
+
+Ứng viên dự tuyển cần đáp ứng các điều kiện sau:
+
+* **Về văn bằng:** Đã tốt nghiệp thạc sĩ hoặc tốt nghiệp đại học hạng giỏi trở lên ngành phù hợp với ngành Quản trị kinh doanh.
+* **Năng lực nghiên cứu:** Có kinh nghiệm nghiên cứu thể hiện qua luận văn thạc sĩ (định hướng nghiên cứu) hoặc các bài báo, báo cáo khoa học đã công bố; hoặc có thời gian công tác từ 02 năm (24 tháng) trở lên là giảng viên, nghiên cứu viên của các cơ sở đào tạo, tổ chức khoa học và công nghệ.
+* **Đề cương nghiên cứu:** Có dự thảo đề cương nghiên cứu và dự kiến kế hoạch học tập, nghiên cứu toàn khóa.
+* **Trình độ ngoại ngữ:** Ứng viên phải có năng lực ngoại ngữ đủ để nghiên cứu tài liệu chuyên sâu và viết bài báo quốc tế (tương đương Bậc 4/6 trở lên, hoặc bằng tốt nghiệp đại học ngành ngôn ngữ tiếng nước ngoài, hoặc bằng tốt nghiệp đại học trở lên do cơ sở đào tạo nước ngoài cấp được công nhận).
+
+---
+
+5.{{ SOURCE: tuyensinh-trinhdo-thacsi-dot1-2026.md
+PATH (NẰM Ở MỤC: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [tuyensinh-trinhdo-thacsi-dot1-2026.md](/view-document/19b53728-72ce-4cf9-ab90-d88a977f1ef8) }}
+
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026
+[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]
+[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ]
+
+Link đăng ký Tuyển sinh Sau đại học trực tuyến: https://tuyensinhsdh.ufm.edu.vn/DangKy/CaoHoc
+Viện Đào tạo sau đại học, Trường Đại học Tài chính – Marketing
+Phòng D006, cơ sở 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.
+Email: tuyensinhsaudaihoc@ufm.edu.vn ĐT: 028 3997 4641
+Thời gian: Sáng: 8g00 – 11g30 Chiều: 13g30 – 16g30
+Chuyên viên phụ trách tuyển sinh:
+
+| STT | Ngành                 | Chuyên viên<br/>phụ trách    | SĐT          | Email                   |
+| --- | --------------------- | ---------------------------- | ------------ | ----------------------- |
+| 1.  | Quản trị kinh doanh   | ThS. Đỗ Minh Hương           | 0983637999   | dmhuong\@ufm.edu.vn     |
+| 2.  | Kế toán               |                              |              |                         |
+| 3.  | Tài chính – Ngân hàng | ThS. Vũ Mạnh Thành           | 0703 216 336 | manhthanhvn\@ufm.edu.vn |
+| 4.  | Luật kinh tế          |                              |              |                         |
+| 5.  | Quản lý kinh tế       | TS. Hoàng Sĩ Nam             | 0343843868   | hs.nam\@ufm.edu.vn      |
+| 6.  | Marketing             | ThS. Nguyễn Ngọc Thảo Nguyên | 0988932803   | nntnguyen\@ufm.edu.vn   |
+| 7.  | Kinh tế học           |                              |              |                         |
+| 8.  | Kinh doanh quốc tế    | ThS. Châu Mỹ Chi             | 0903 848285  | chaumychi\@ufm.edu.vn   |
+| 9.  | Toán kinh tế          |                              |              |                         |
+
+
+Đơn vị, cá nhân đăng ký tại văn phòng Viện Đào tạo sau đại học hoặc qua điện thoại, email như trên.
+                                                      >(7235 chars)
+                              response_source  │  rag_db_only
+                                                      >(11 chars)
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+                           ufm_search_queries  │  null
+                              pr_search_query  │  null
+                           web_search_results  │  null
+                         web_search_citations  │  null
+                             search_cache_hit  │  ✗ False
+                      search_cache_similarity  │  0.0000
+                         sanitizer_loop_count  │  0
+                           sanitizer_critique  │  null
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [9] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (7.703s)
+                                        Message  │  source='rag_db_only_generated', length=4940 chars
+                                 chat_history  │  []
+                                   user_query  │  ngành qtkd tsi
+                                                      >(14 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  ngành qtkd tsi
+                                                      >(14 chars)
+                             standalone_query  │  ngành qtkd tsi
+                                                      >(14 chars)
+                                multi_queries  │  [2 items]
+                                                         [0] "Ngành Quản trị kinh doanh tuyển sinh như thế nào?"
+                                                         [1] "Thông tin tuyển sinh ngành Quản trị kinh doanh là gì?"
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.001s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.027s] standalone_query an toan
+                                                      >(57 chars)
+                             query_embeddings  │  [3 vectors × 1024D]
+                                       intent  │  THONG_TIN_TUYEN_SINH
+                                                      >(20 chars)
+                               intent_summary  │  ""
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                                                      >(22 chars)
+                         program_level_filter  │  null
+                          program_name_filter  │  Quản Trị Kinh Doanh
+                                                      >(19 chars)
+                             retrieved_chunks  │  [20 items]
+                                                         [0] {"chunk_id": "5d05b110-4074-4d30-925b-66873c16fd0d", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.7049837112426808, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]\nĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:\n\n* **Về văn bằng:** Đã tốt ng", "source": "vector", "rrf_score": 0.01639344262295082}
+                                                         [1] {"chunk_id": "d74a51d8-ce9c-4dfe-8945-d72df0795293", "chunk_level": "child", "parent_id": "5d05b110-4074-4d30-925b-66873c16fd0d", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.6891484260559131, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — ĐIỀU KIỆN XÉT TUYỂN\n\n* **Về văn bằng:** Đã tốt nghiệp đại học ngành Quản trị kinh doanh hoặc các ngành phù h", "source": "vector", "rrf_score": 0.016129032258064516}
+                                                         [2] {"chunk_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.6824134588241626, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]\nCHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nChương trình đào tạo Thạc sĩ ngành Quản trị kinh doanh", "source": "vector", "rrf_score": 0.015873015873015872}
+                                                         [3] {"chunk_id": "282ec213-a4ff-4055-aa67-1cd2e444e656", "chunk_level": "child", "parent_id": "5d05b110-4074-4d30-925b-66873c16fd0d", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.6749531634110063, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — ĐIỀU KIỆN XÉT TUYỂN\n\nĐối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Quản trị kinh doanh, Nhà tr", "source": "vector", "rrf_score": 0.015625}
+                                                         [4] {"chunk_id": "967684c1-33aa-4a7d-87e8-389259f974ea", "chunk_level": "child", "parent_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.6726612844270112, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nChương trình đào tạo Thạc sĩ ngành Quản trị kinh doa", "source": "vector", "rrf_score": 0.015384615384615385}
+                                                         [5] {"chunk_id": "a83af527-0285-4624-8fd6-7d5c416ff5ce", "chunk_level": "child", "parent_id": "5d05b110-4074-4d30-925b-66873c16fd0d", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.6713608107376343, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — ĐIỀU KIỆN XÉT TUYỂN\n\n* **Ngành gần:** Bổ sung 02 môn (5 tín chỉ), gồm: Quản trị học (2 TC) và Kinh tế học (3", "source": "vector", "rrf_score": 0.015151515151515152}
+                                                         [6] {"chunk_id": "d322e119-fc71-438f-832b-d1b336f82dd7", "chunk_level": "child", "parent_id": "87e26df1-d52e-4cb8-9d35-4b4ca546f016", "section_path": "Tiến sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.6697979367020206, "content_preview": "[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101] — CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nChương trình đào tạo Tiến sĩ ngành Quản trị kinh doa", "source": "vector", "rrf_score": 0.014925373134328358}
+                                                         [7] {"chunk_id": "87e26df1-d52e-4cb8-9d35-4b4ca546f016", "chunk_level": "parent", "parent_id": null, "section_path": "Tiến sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.6681606371307005, "content_preview": "[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101]\nCHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nChương trình đào tạo Tiến sĩ ngành Quản trị kinh doanh", "source": "vector", "rrf_score": 0.014705882352941176}
+                                                         [8] {"chunk_id": "111e5228-69f7-40fb-a989-10ac61fd8ffd", "chunk_level": "parent", "parent_id": null, "section_path": "Tiến sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.6532527621683166, "content_preview": "[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101]\nĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên dự tuyển cần đáp ứng các điều kiện sau:\n\n* **Về văn bằng:** Đã tốt nghiệp thạc s", "source": "vector", "rrf_score": 0.014492753623188406}
+                                                         [9] {"chunk_id": "fe6b5481-bd95-4a29-a1d4-7c0b74745639", "chunk_level": "child", "parent_id": "111e5228-69f7-40fb-a989-10ac61fd8ffd", "section_path": "Tiến sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.6525889635086106, "content_preview": "[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101] — ĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên dự tuyển cần đáp ứng các điều kiện sau:\n\n* **Về văn bằng:** Đã tốt nghiệp thạc", "source": "vector", "rrf_score": 0.014285714285714285}
+                                                         [10] {"chunk_id": "dc9e22ec-ee19-47b3-9bea-fd2fa5c8babd", "chunk_level": "child", "parent_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.6524298981556269, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nThông tin chi tiết chương trình đào tạo: <https://da", "source": "vector", "rrf_score": 0.014084507042253521}
+                                                         [11] {"chunk_id": "26fe8ce8-b0f3-4d49-957b-521c7a2db24f", "chunk_level": "child", "parent_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.6368756294250534, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\n* **Định hướng Nghiên cứu:** Tập trung vào phát triể", "source": "vector", "rrf_score": 0.013888888888888888}
+                                                         [12] {"chunk_id": "3a1b8e6d-f8e7-4120-bb74-5c6d446989c4", "chunk_level": "child", "parent_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.6305053046195144, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nThời gian đào tạo trung bình là 02 năm (tối đa 04 nă", "source": "vector", "rrf_score": 0.0136986301369863}
+                                                         [13] {"chunk_id": "f02de27d-1e68-4c15-a796-baf4c62d7b7e", "chunk_level": "parent", "parent_id": null, "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ", "program_name": null, "score": 0.6298510023907129, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9.", "source": "vector", "rrf_score": 0.013513513513513514}
+                                                         [14] {"chunk_id": "0fb4062a-765a-4f7b-a341-7c5e3c39261b", "chunk_level": "child", "parent_id": "f02de27d-1e68-4c15-a796-baf4c62d7b7e", "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ", "program_name": null, "score": 0.6298510023907129, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9.", "source": "vector", "rrf_score": 0.013333333333333334}
+                                                         [15] {"chunk_id": "298df87c-67fd-4510-931d-6de576f41c1d", "chunk_level": "child", "parent_id": "5d05b110-4074-4d30-925b-66873c16fd0d", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.6292194503080517, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — ĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:", "source": "vector", "rrf_score": 0.013157894736842105}
+                                                         [16] {"chunk_id": "308ab7f5-dcb3-4852-b5e4-7c586775a38d", "chunk_level": "child", "parent_id": "033f39cc-7b10-40e8-b1a4-f9c72401a03e", "section_path": "Tiến sĩ Quản Trị Kinh Doanh > CƠ HỘI NGHỀ NGHIỆP", "program_name": "Quản Trị Kinh Doanh", "score": 0.6272774747825447, "content_preview": "[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101] — CƠ HỘI NGHỀ NGHIỆP\n\nSau khi tốt nghiệp, Tiến sĩ ngành Quản trị kinh doanh có thể đảm nhiệm các vị trí lãnh đ", "source": "vector", "rrf_score": 0.012987012987012988}
+                                                         [17] {"chunk_id": "033f39cc-7b10-40e8-b1a4-f9c72401a03e", "chunk_level": "parent", "parent_id": null, "section_path": "Tiến sĩ Quản Trị Kinh Doanh > CƠ HỘI NGHỀ NGHIỆP", "program_name": "Quản Trị Kinh Doanh", "score": 0.6233257875844378, "content_preview": "[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101]\nCƠ HỘI NGHỀ NGHIỆP\n\nSau khi tốt nghiệp, Tiến sĩ ngành Quản trị kinh doanh có thể đảm nhiệm các vị trí lãnh đạo", "source": "vector", "rrf_score": 0.01282051282051282}
+                                                         [18] {"chunk_id": "2cbdbb27-9efe-42aa-9eb5-8e7394c33caf", "chunk_level": "child", "parent_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.6229424105320935, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\n**Năm 2026, chương trình cung cấp hai định hướng đào", "source": "vector", "rrf_score": 0.012658227848101266}
+                                                         [19] {"chunk_id": "97a68148-db8b-424b-88e8-e726ab1b945f", "chunk_level": "child", "parent_id": "573e8531-8d1a-4c43-b90c-9701ed776991", "section_path": "1. Đối tượng", "program_name": null, "score": 0.620170767918596, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng]\n\n[Phần 1/3]\n- Người học bổ sung kiến thức có bằng ", "source": "vector", "rrf_score": 0.0125}
+                                  rag_context  │  1.{{ SOURCE: ThS QTKD.txt
+PATH (NẰM Ở MỤC: Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [ThS QTKD.txt](/view-document/e7105c5c-d80c-4762-8ea0-6b116d6f45c3) }}
+
+[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]
+ĐIỀU KIỆN XÉT TUYỂN
+
+Ứng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:
+
+* **Về văn bằng:** Đã tốt nghiệp đại học ngành Quản trị kinh doanh hoặc các ngành phù hợp/ngành gần/ngành khác (có bổ sung kiến thức) .
+* **Phương thức tuyển sinh:** Xét tuyển dựa trên hồ sơ văn bằng, kết quả học tập đại học và năng lực ngoại ngữ.
+* **Môn xét tuyển:** Đánh giá năng lực qua hai môn cơ sở ngành là Kinh tế học và Quản trị học.
+* **Trình độ ngoại ngữ:** Ứng viên phải đạt năng lực ngoại ngữ từ Bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc sở hữu các văn bằng, chứng chỉ tương đương.
+
+Đối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Quản trị kinh doanh, Nhà trường tổ chức học bổ sung kiến thức trước khi xét tuyển:
+
+* **Ngành gần:** Bổ sung 02 môn (5 tín chỉ), gồm: Quản trị học (2 TC) và Kinh tế học (3 TC).
+* **Ngành khác:** Bổ sung 04 môn (9 tín chỉ), gồm: Quản trị học (2 TC), Marketing căn bản (2 TC), Kinh tế học (3 TC) và Kinh tế phát triển (2 TC).
+
+---
+
+2.{{ SOURCE: ThS QTKD.txt
+PATH (NẰM Ở MỤC: Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [ThS QTKD.txt](/view-document/93d2c590-32d7-4ce0-a62b-7edd89597ee3) }}
+
+[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]
+CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH
+
+Chương trình đào tạo Thạc sĩ ngành Quản trị kinh doanh tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế linh hoạt theo hệ thống tín chỉ, cập nhật liên tục để đáp ứng nhu cầu của nhà tuyển dụng và xu hướng quản trị hiện đại.
+
+**Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt:**
+
+* **Định hướng Nghiên cứu:** Tập trung vào phát triển tư duy hàn lâm, năng lực nghiên cứu khoa học chuyên sâu và khả năng giải quyết các vấn đề quản trị phức tạp bằng phương pháp luận khoa học. Phù hợp với giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+* **Định hướng Ứng dụng:** Tập trung vào phát triển kỹ năng thực hành, năng lực lãnh đạo và giải quyết các tình huống quản trị thực tiễn tại doanh nghiệp. Phù hợp với các nhà quản lý, điều hành, doanh nhân.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=ig3wGlAYnn1rof8yGKfbBA>
+
+---
+
+3.{{ SOURCE: NCS QTKD gop y.txt
+PATH (NẰM Ở MỤC: Tiến sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH)
+BẬC ĐÀO TẠO: tien_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [NCS QTKD gop y.txt](/view-document/0f397b41-0c89-488f-8b58-a6a18ab62708) }}
+
+[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101]
+CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH
+
+Chương trình đào tạo Tiến sĩ ngành Quản trị kinh doanh tại Trường Đại học Tài chính – Marketing được thiết kế nhằm đào tạo những nhà khoa học, chuyên gia cấp cao có trình độ và năng lực ứng dụng thực tiễn. Chương trình bám sát triết lý giáo dục “Thực chất, đổi mới sáng tạo và hội nhập”, hướng đến việc nâng cao năng lực nghiên cứu độc lập, sáng tạo tri thức mới và giải quyết các thách thức trong môi trường kinh doanh toàn cầu.
+
+Thời gian đào tạo chuẩn là **03 năm** (đối với người có bằng Thạc sĩ) hoặc **04 năm** (đối với người có bằng Đại học loại Giỏi trở lên ngành phù hợp).
+
+---
+
+4.{{ SOURCE: NCS QTKD gop y.txt
+PATH (NẰM Ở MỤC: Tiến sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN)
+BẬC ĐÀO TẠO: tien_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [NCS QTKD gop y.txt](/view-document/dfffb2da-376b-4006-b6e7-fe605871e57f) }}
+
+[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101]
+ĐIỀU KIỆN XÉT TUYỂN
+
+Ứng viên dự tuyển cần đáp ứng các điều kiện sau:
+
+* **Về văn bằng:** Đã tốt nghiệp thạc sĩ hoặc tốt nghiệp đại học hạng giỏi trở lên ngành phù hợp với ngành Quản trị kinh doanh.
+* **Năng lực nghiên cứu:** Có kinh nghiệm nghiên cứu thể hiện qua luận văn thạc sĩ (định hướng nghiên cứu) hoặc các bài báo, báo cáo khoa học đã công bố; hoặc có thời gian công tác từ 02 năm (24 tháng) trở lên là giảng viên, nghiên cứu viên của các cơ sở đào tạo, tổ chức khoa học và công nghệ.
+* **Đề cương nghiên cứu:** Có dự thảo đề cương nghiên cứu và dự kiến kế hoạch học tập, nghiên cứu toàn khóa.
+* **Trình độ ngoại ngữ:** Ứng viên phải có năng lực ngoại ngữ đủ để nghiên cứu tài liệu chuyên sâu và viết bài báo quốc tế (tương đương Bậc 4/6 trở lên, hoặc bằng tốt nghiệp đại học ngành ngôn ngữ tiếng nước ngoài, hoặc bằng tốt nghiệp đại học trở lên do cơ sở đào tạo nước ngoài cấp được công nhận).
+
+---
+
+5.{{ SOURCE: tuyensinh-trinhdo-thacsi-dot1-2026.md
+PATH (NẰM Ở MỤC: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [tuyensinh-trinhdo-thacsi-dot1-2026.md](/view-document/19b53728-72ce-4cf9-ab90-d88a977f1ef8) }}
+
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026
+[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]
+[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ]
+
+Link đăng ký Tuyển sinh Sau đại học trực tuyến: https://tuyensinhsdh.ufm.edu.vn/DangKy/CaoHoc
+Viện Đào tạo sau đại học, Trường Đại học Tài chính – Marketing
+Phòng D006, cơ sở 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.
+Email: tuyensinhsaudaihoc@ufm.edu.vn ĐT: 028 3997 4641
+Thời gian: Sáng: 8g00 – 11g30 Chiều: 13g30 – 16g30
+Chuyên viên phụ trách tuyển sinh:
+
+| STT | Ngành                 | Chuyên viên<br/>phụ trách    | SĐT          | Email                   |
+| --- | --------------------- | ---------------------------- | ------------ | ----------------------- |
+| 1.  | Quản trị kinh doanh   | ThS. Đỗ Minh Hương           | 0983637999   | dmhuong\@ufm.edu.vn     |
+| 2.  | Kế toán               |                              |              |                         |
+| 3.  | Tài chính – Ngân hàng | ThS. Vũ Mạnh Thành           | 0703 216 336 | manhthanhvn\@ufm.edu.vn |
+| 4.  | Luật kinh tế          |                              |              |                         |
+| 5.  | Quản lý kinh tế       | TS. Hoàng Sĩ Nam             | 0343843868   | hs.nam\@ufm.edu.vn      |
+| 6.  | Marketing             | ThS. Nguyễn Ngọc Thảo Nguyên | 0988932803   | nntnguyen\@ufm.edu.vn   |
+| 7.  | Kinh tế học           |                              |              |                         |
+| 8.  | Kinh doanh quốc tế    | ThS. Châu Mỹ Chi             | 0903 848285  | chaumychi\@ufm.edu.vn   |
+| 9.  | Toán kinh tế          |                              |              |                         |
+
+
+Đơn vị, cá nhân đăng ký tại văn phòng Viện Đào tạo sau đại học hoặc qua điện thoại, email như trên.
+                                                      >(7235 chars)
+                           ufm_search_queries  │  null
+                              pr_search_query  │  null
+                           web_search_results  │  null
+                         web_search_citations  │  null
+                           sanitizer_critique  │  null
+                         sanitizer_loop_count  │  0
+                             search_cache_hit  │  ✗ False
+                      search_cache_similarity  │  0.0000
+                               final_response  │  Chào bạn, mình là Trợ lý Tuyển sinh Đại học Tài chính - Marketing (UFM) đây! Rất vui được hỗ trợ bạn tìm hiểu về ngành Quản trị Kinh doanh (QTKD) tại UFM nhé! 🎓
+
+Bạn đang quan tâm đến chương trình QTKD ở bậc Thạc sĩ hay Tiến sĩ vậy ạ? Mình sẽ cung cấp thông tin chi tiết cho cả hai bậc học để bạn tiện tham khảo nhé.
+
+### **1. Chương trình Thạc sĩ Quản trị Kinh doanh (Mã ngành: 8340101)**
+
+Chương trình Thạc sĩ QTKD tại UFM được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập", thiết kế linh hoạt theo hệ thống tín chỉ và luôn cập nhật để đáp ứng nhu cầu thị trường.
+
+**a. Điều kiện xét tuyển:**
+Để tham gia xét tuyển, bạn cần đáp ứng các tiêu chuẩn sau:
+*   **Về văn bằng:** Đã tốt nghiệp đại học ngành Quản trị kinh doanh hoặc các ngành phù hợp/ngành gần/ngành khác (có bổ sung kiến thức).
+*   **Phương thức tuyển sinh:** Xét tuyển dựa trên hồ sơ văn bằng, kết quả học tập đại học và năng lực ngoại ngữ.
+*   **Môn xét tuyển:** Đánh giá năng lực qua hai môn cơ sở ngành là **Kinh tế học** và **Quản trị học**.
+*   **Trình độ ngoại ngữ:** Đạt năng lực ngoại ngữ từ Bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc sở hữu các văn bằng, chứng chỉ tương đương.
+
+**Lưu ý:** Đối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Quản trị kinh doanh, Nhà trường sẽ tổ chức học bổ sung kiến thức trước khi xét tuyển:
+*   **Ngành gần:** Bổ sung 02 môn (5 tín chỉ), gồm: Quản trị học (2 TC) và Kinh tế học (3 TC).
+*   **Ngành khác:** Bổ sung 04 môn (9 tín chỉ), gồm: Quản trị học (2 TC), Marketing căn bản (2 TC), Kinh tế học (3 TC) và Kinh tế phát triển (2 TC).
+
+**b. Chương trình đào tạo:**
+Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt:
+*   **Định hướng Nghiên cứu:** Tập trung phát triển tư duy hàn lâm, năng lực nghiên cứu khoa học chuyên sâu, phù hợp với giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+*   **Định hướng Ứng dụng:** Tập trung phát triển kỹ năng thực hành, năng lực lãnh đạo và giải quyết các tình huống quản trị thực tiễn, phù hợp với các nhà quản lý, điều hành, doanh nhân.
+
+Thời gian đào tạo trung bình là **02 năm** (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là **61 tín chỉ**.
+
+Bạn có thể xem thông tin chi tiết chương trình đào tạo tại: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=ig3wGlAYnn1rof8yGKfbBA>
+
+Nguồn tài liệu: [ThS QTKD.txt](/view-document/e7105c5c-d80c-4762-8ea0-6b116d6f45c3) và [ThS QTKD.txt](/view-document/93d2c590-32d7-4ce0-a62b-7edd89597ee3)
+
+### **2. Chương trình Tiến sĩ Quản trị Kinh doanh (Mã ngành: 9340101)**
+
+Chương trình Tiến sĩ QTKD tại UFM được thiết kế nhằm đào tạo những nhà khoa học, chuyên gia cấp cao có trình độ và năng lực ứng dụng thực tiễn, hướng đến việc nâng cao năng lực nghiên cứu độc lập, sáng tạo tri thức mới.
+
+**a. Điều kiện xét tuyển:**
+Ứng viên dự tuyển cần đáp ứng các điều kiện sau:
+*   **Về văn bằng:** Đã tốt nghiệp thạc sĩ hoặc tốt nghiệp đại học hạng giỏi trở lên ngành phù hợp với ngành Quản trị kinh doanh.
+*   **Năng lực nghiên cứu:** Có kinh nghiệm nghiên cứu thể hiện qua luận văn thạc sĩ (định hướng nghiên cứu) hoặc các bài báo, báo cáo khoa học đã công bố; hoặc có thời gian công tác từ 02 năm (24 tháng) trở lên là giảng viên, nghiên cứu viên của các cơ sở đào tạo, tổ chức khoa học và công nghệ.
+*   **Đề cương nghiên cứu:** Có dự thảo đề cương nghiên cứu và dự kiến kế hoạch học tập, nghiên cứu toàn khóa.
+*   **Trình độ ngoại ngữ:** Có năng lực ngoại ngữ đủ để nghiên cứu tài liệu chuyên sâu và viết bài báo quốc tế (tương đương Bậc 4/6 trở lên, hoặc bằng tốt nghiệp đại học ngành ngôn ngữ tiếng nước ngoài, hoặc bằng tốt nghiệp đại học trở lên do cơ sở đào tạo nước ngoài cấp được công nhận).
+
+**b. Chương trình đào tạo:**
+Thời gian đào tạo chuẩn là **03 năm** (đối với người có bằng Thạc sĩ) hoặc **04 năm** (đối với người có bằng Đại học loại Giỏi trở lên ngành phù hợp).
+
+Nguồn tài liệu: [NCS QTKD gop y.txt](/view-document/0f397b41-0c89-488f-8b58-a6a18ab62708) và [NCS QTKD gop y.txt](/view-document/dfffb2da-376b-4006-b6e7-fe605871e57f)
+
+### **Thông tin liên hệ tuyển sinh sau đại học:**
+
+Nếu bạn cần thêm thông tin chi tiết hoặc muốn đăng ký, bạn có thể liên hệ Viện Đào tạo sau đại học, Trường Đại học Tài chính – Marketing:
+*   **Địa chỉ:** Phòng D006, cơ sở 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.
+*   **Email:** tuyensinhsaudaihoc@ufm.edu.vn
+*   **Điện thoại:** 028 3997 4641
+*   **Thời gian làm việc:** Sáng: 8g00 – 11g30; Chiều: 13g30 – 16g30
+*   **Chuyên viên phụ trách ngành Quản trị kinh doanh:** ThS. Đỗ Minh Hương - SĐT: 0983637999 - Email: dmhuong@ufm.edu.vn
+*   **Link đăng ký Tuyển sinh Sau đại học trực tuyến:** <https://tuyensinhsdh.ufm.edu.vn/DangKy/CaoHoc>
+
+Nguồn tài liệu: [tuyensinh-trinhdo-thacsi-dot1-2026.md](/view-document/19b53728-72ce-4cf9-ab90-d88a977f1ef8)
+
+Hy vọng những thông tin này hữu ích cho bạn! Bạn có muốn mình giải thích thêm về định hướng đào tạo hay điều kiện cụ thể nào không? 🌟
+                                                      >(4940 chars)
+                              response_source  │  rag_db_only_generated
+                                                      >(21 chars)
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : rag_db_only_generated
+  Intent          : THONG_TIN_TUYEN_SINH → PROCEED_RAG_UFM_SEARCH
+  Response Length : 4940 chars
+  Total Time      : 15.76s
+  Nodes Executed  : 9
+──────────────────────────────────────────────────────────────────────────
+
+Chào bạn, mình là Trợ lý Tuyển sinh Đại học Tài chính - Marketing (UFM) đây! Rất vui được hỗ trợ bạn tìm hiểu về ngành Quản trị Kinh doanh (QTKD) tại UFM nhé! 🎓
+
+Bạn đang quan tâm đến chương trình QTKD ở bậc Thạc sĩ hay Tiến sĩ vậy ạ? Mình sẽ cung cấp thông tin chi tiết cho cả hai bậc học để bạn tiện tham khảo nhé.
+
+### **1. Chương trình Thạc sĩ Quản trị Kinh doanh (Mã ngành: 8340101)**
+
+Chương trình Thạc sĩ QTKD tại UFM được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập", thiết kế linh hoạt theo hệ thống tín chỉ và luôn cập nhật để đáp ứng nhu cầu thị trường.
+
+**a. Điều kiện xét tuyển:**
+Để tham gia xét tuyển, bạn cần đáp ứng các tiêu chuẩn sau:
+*   **Về văn bằng:** Đã tốt nghiệp đại học ngành Quản trị kinh doanh hoặc các ngành phù hợp/ngành gần/ngành khác (có bổ sung kiến thức).
+*   **Phương thức tuyển sinh:** Xét tuyển dựa trên hồ sơ văn bằng, kết quả học tập đại học và năng lực ngoại ngữ.
+*   **Môn xét tuyển:** Đánh giá năng lực qua hai môn cơ sở ngành là **Kinh tế học** và **Quản trị học**.
+*   **Trình độ ngoại ngữ:** Đạt năng lực ngoại ngữ từ Bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc sở hữu các văn bằng, chứng chỉ tương đương.
+
+**Lưu ý:** Đối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Quản trị kinh doanh, Nhà trường sẽ tổ chức học bổ sung kiến thức trước khi xét tuyển:
+*   **Ngành gần:** Bổ sung 02 môn (5 tín chỉ), gồm: Quản trị học (2 TC) và Kinh tế học (3 TC).
+*   **Ngành khác:** Bổ sung 04 môn (9 tín chỉ), gồm: Quản trị học (2 TC), Marketing căn bản (2 TC), Kinh tế học (3 TC) và Kinh tế phát triển (2 TC).
+
+**b. Chương trình đào tạo:**
+Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt:
+*   **Định hướng Nghiên cứu:** Tập trung phát triển tư duy hàn lâm, năng lực nghiên cứu khoa học chuyên sâu, phù hợp với giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+*   **Định hướng Ứng dụng:** Tập trung phát triển kỹ năng thực hành, năng lực lãnh đạo và giải quyết các tình huống quản trị thực tiễn, phù hợp với các nhà quản lý, điều hành, doanh nhân.
+
+Thời gian đào tạo trung bình là **02 năm** (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là **61 tín chỉ**.
+
+Bạn có thể xem thông tin chi tiết chương trình đào tạo tại: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=ig3wGlAYnn1rof8yGKfbBA>
+
+Nguồn tài liệu: [ThS QTKD.txt](/view-document/e7105c5c-d80c-4762-8ea0-6b116d6f45c3) và [ThS QTKD.txt](/view-document/93d2c590-32d7-4ce0-a62b-7edd89597ee3)
+
+### **2. Chương trình Tiến sĩ Quản trị Kinh doanh (Mã ngành: 9340101)**
+
+Chương trình Tiến sĩ QTKD tại UFM được thiết kế nhằm đào tạo những nhà khoa học, chuyên gia cấp cao có trình độ và năng lực ứng dụng thực tiễn, hướng đến việc nâng cao năng lực nghiên cứu độc lập, sáng tạo tri thức mới.
+
+**a. Điều kiện xét tuyển:**
+Ứng viên dự tuyển cần đáp ứng các điều kiện sau:
+*   **Về văn bằng:** Đã tốt nghiệp thạc sĩ hoặc tốt nghiệp đại học hạng giỏi trở lên ngành phù hợp với ngành Quản trị kinh doanh.
+*   **Năng lực nghiên cứu:** Có kinh nghiệm nghiên cứu thể hiện qua luận văn thạc sĩ (định hướng nghiên cứu) hoặc các bài báo, báo cáo khoa học đã công bố; hoặc có thời gian công tác từ 02 năm (24 tháng) trở lên là giảng viên, nghiên cứu viên của các cơ sở đào tạo, tổ chức khoa học và công nghệ.
+*   **Đề cương nghiên cứu:** Có dự thảo đề cương nghiên cứu và dự kiến kế hoạch học tập, nghiên cứu toàn khóa.
+*   **Trình độ ngoại ngữ:** Có năng lực ngoại ngữ đủ để nghiên cứu tài liệu chuyên sâu và viết bài báo quốc tế (tương đương Bậc 4/6 trở lên, hoặc bằng tốt nghiệp đại học ngành ngôn ngữ tiếng nước ngoài, hoặc bằng tốt nghiệp đại học trở lên do cơ sở đào tạo nước ngoài cấp được công nhận).
+
+**b. Chương trình đào tạo:**
+Thời gian đào tạo chuẩn là **03 năm** (đối với người có bằng Thạc sĩ) hoặc **04 năm** (đối với người có bằng Đại học loại Giỏi trở lên ngành phù hợp).
+
+Nguồn tài liệu: [NCS QTKD gop y.txt](/view-document/0f397b41-0c89-488f-8b58-a6a18ab62708) và [NCS QTKD gop y.txt](/view-document/dfffb2da-376b-4006-b6e7-fe605871e57f)
+
+### **Thông tin liên hệ tuyển sinh sau đại học:**
+
+Nếu bạn cần thêm thông tin chi tiết hoặc muốn đăng ký, bạn có thể liên hệ Viện Đào tạo sau đại học, Trường Đại học Tài chính – Marketing:
+*   **Địa chỉ:** Phòng D006, cơ sở 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.
+*   **Email:** tuyensinhsaudaihoc@ufm.edu.vn
+*   **Điện thoại:** 028 3997 4641
+*   **Thời gian làm việc:** Sáng: 8g00 – 11g30; Chiều: 13g30 – 16g30
+*   **Chuyên viên phụ trách ngành Quản trị kinh doanh:** ThS. Đỗ Minh Hương - SĐT: 0983637999 - Email: dmhuong@ufm.edu.vn
+*   **Link đăng ký Tuyển sinh Sau đại học trực tuyến:** <https://tuyensinhsdh.ufm.edu.vn/DangKy/CaoHoc>
+
+Nguồn tài liệu: [tuyensinh-trinhdo-thacsi-dot1-2026.md](/view-document/19b53728-72ce-4cf9-ab90-d88a977f1ef8)
+
+Hy vọng những thông tin này hữu ích cho bạn! Bạn có muốn mình giải thích thêm về định hướng đào tạo hay điều kiện cụ thể nào không? 🌟
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.009s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  0.003s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a Llama)     │  1.027s  │   PASS   │
+  │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  3.028s  │   PASS   │
+  │ 🔀 MULTI-QUERY NODE (Sinh biến thể)           │  1.664s  │   PASS   │
+  │ 📊 EMBEDDING NODE (BGE-M3 batch)              │  2.140s  │   PASS   │
+  │ 🗄️ RAG NODE (Hybrid Search DB)               │  0.117s  │   PASS   │
+  │ 🌐 RAG SEARCH PIPELINE (Evaluator + Web Searc │  0.002s  │   PASS   │
+  │ 🎯 RESPONSE NODE (Final Answer)               │  7.703s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  15.76s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260330_003015_ngành_qtkd_tsi.txt
+

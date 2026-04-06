@@ -1,0 +1,410 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-25 02:36:12                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_023612_Điểm_chuẩn_ngành_Logistics_và_Quản_lý_ch.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/qwen/qwen3.5-flash-02-23             │
+  │ ⓫ Form Extract       │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓫ Form Draft         │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : Điểm chuẩn ngành Logistics và Quản lý chuỗi cung ứng năm ngoái lấy bao nhiêu điểm?
+  💬 Chat History : 4 messages
+     👤 Chào buổi sáng, bạn là ai?
+     🤖 Xin chào! Mình là trợ lý tuyển sinh UFM. Bạn cần tư vấn về điều gì — ngành học, 
+     👤 Học phí ngành Marketing chương trình chất lượng cao năm 2024 là bao nhiêu?
+     🤖 Xin lỗi bạn, mình chưa tìm thấy thông tin chính xác cho câu hỏi này trong cơ sở 
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.003s)
+                                        Message  │  [Fast-Scan PASS — 0.000s] Sạch, cho qua Context Node
+                             normalized_query  │  điểm chuẩn ngành logistics và quản lý chuỗi cung ứng năm ngoái lấy bao nhiêu điểm?
+                                                      >(82 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sạch, cho qua Context Node
+                                                      >(52 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.394s)
+                                        Message  │  Reformulated → 'Điểm chuẩn ngành Logistics và Quản lý chuỗi cung ứng năm 2023 là bao nhiêu?'
+                             standalone_query  │  Điểm chuẩn ngành Logistics và Quản lý chuỗi cung ứng năm 2023 là bao nhiêu?
+                                                      >(75 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a+2b)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (5.033s)
+                                        Message  │  [Contextual-Guard PASS — 5.030s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 5.030s] standalone_query an toàn
+                                                      >(57 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [4] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.254s)
+                                        Message  │  intent='THONG_TIN_TUYEN_SINH' → action='PROCEED_RAG_UFM_SEARCH' → next='rag_search'
+                                       intent  │  THONG_TIN_TUYEN_SINH
+                                                      >(20 chars)
+                               intent_summary  │  Điểm chuẩn ngành Logistics và Quản lý chuỗi cung ứng năm 2023
+                                                      >(61 chars)
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                                                      >(22 chars)
+                         program_level_filter  │  null
+                          program_name_filter  │  Logistics
+                                                      >(9 chars)
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+                              response_source  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🔀 [5] MULTI-QUERY NODE (Sinh biến thể)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.223s)
+                                        Message  │  Sinh 3 biến thể
+                                multi_queries  │  [3 items]
+                                                         [0] "Ngưỡng điểm trúng tuyển ngành Logistics và Quản lý chuỗi cung ứng UFM 2023"
+                                                         [1] "Điểm sàn ngành Logistics và Quản lý chuỗi cung ứng Đại học UFM năm 2023"
+                                                         [2] "Bao nhiêu điểm thì đậu ngành Logistics và Quản lý chuỗi cung ứng tại UFM năm 2023"
+
+──────────────────────────────────────────────────────────────────────────
+  📊 [6] EMBEDDING NODE (BGE-M3 batch)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (3.539s)
+                                        Message  │  Nhúng 4 vectors × 1024D
+                             query_embeddings  │  [4 vectors × 1024D]
+
+──────────────────────────────────────────────────────────────────────────
+  🗄️ [7] RAG NODE (Hybrid Search DB)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.205s)
+                                        Message  │  Chunks=20, Top1Cosine=0.5202, Context=8967 chars ⚠️ CONFIDENCE FAILED
+                                  rag_context  │  [Nguồn 1 — Văn bản: phuluc1.md | 1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.2. Thí sinh tốt nghiệp đại học thuộc ngành gần (cùng lĩnh vực kinh doanh và quản lý), ngành khác (khác lĩnh vực nhưng có liên quan trực tiếp đến lĩnh vực quản trị, quản lý) với ngành dự tuyển cần học Bổ sung kiến thức. Danh mục ngành đúng, ngành gần, ngành khác và môn học Bổ sung kiến thức được nêu ở Phụ lục 2. & 1.3. Các văn bằng, chứng chỉ chứng minh năng lực ngoại ngữ từ Bậc 3 trở lên: | Mục: 1.2. Thí sinh tốt nghiệp đại học thuộc ngành gần (cùng lĩnh vực kinh doanh và quản lý), ngành khác (khác lĩnh vực nhưng có liên quan trực tiếp đến lĩnh vực quản trị, quản lý) với ngành dự tuyển cần học Bổ sung kiến thức. Danh mục ngành đúng, ngành gần, ngành khác và môn học Bổ sung kiến thức được nêu ở Phụ lục 2. & 1.3. Các văn bằng, chứng chỉ chứng minh năng lực ngoại ngữ từ Bậc 3 trở lên: | Năm: 2026]
+# PHỤ LỤC 1
+*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*
+[Nguồn: phuluc1.md]
+[Mục: 1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.2. Thí sinh tốt nghiệp đại học thuộc ngành gần (cùng lĩnh vực kinh doanh và quản lý), ngành khác (khác lĩnh vực nhưng có liên quan trực tiếp đến lĩnh vực quản trị, quản lý) với ngành dự tuyển cần học Bổ sung kiến thức. Danh mục ngành đúng, ngành gần, ngành khác và môn học Bổ sung kiến thức được nêu ở Phụ lục 2. & 1.3. Các văn bằng, chứng chỉ chứng minh năng lực ngoại ngữ từ Bậc 3 trở lên:]
+
+1.2. Thí sinh tốt nghiệp đại học thuộc ngành gần (cùng lĩnh vực kinh doanh và quản lý), ngành khác (khác lĩnh vực nhưng có liên quan trực tiếp đến lĩnh vực quản trị, quản lý) với ngành dự tuyển cần học Bổ sung kiến thức. Danh mục ngành đúng, ngành gần, ngành khác và môn học Bổ sung kiến thức được nêu ở Phụ lục 2.
+
+a) Bằng tốt nghiệp trình độ đại học trở lên ngành ngôn ngữ nước ngoài; hoặc bằng tốt nghiệp trình độ đại học trở lên mà chương trình được thực hiện chủ yếu bằng ngôn ngữ nước ngoài;
+b) Bằng tốt nghiệp trình độ đại học trở lên do Trường Đại học Tài chính – Marketing cấp trong thời gian không quá 02 năm mà chuẩn đầu ra của chương trình đã đáp ứng yêu cầu ngoại ngữ đạt trình độ Bậc 3 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam;
+c) Có một trong các văn bằng hoặc chứng chỉ ngoại ngữ đạt trình độ tương đương Bậc 3 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam còn thời hạn 2 năm từ ngày cấp chứng chỉ đến ngày đăng ký dự tuyển: 
+(Thông tin chi tiết xem tại: https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?LoaiTin=8cr7n9Qk1GpeSBRepQ4wzA)
+
+d) Có chứng chỉ trình độ ngoại ngữ từ bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc tương đương trong thời hạn 2 năm từ ngày cấp chứng chỉ đến ngày đăng ký dự tuyển của 38 Trường sau (Danh sách này được cập nhật thường xuyên theo quy định của nhà nước): (1) Trường ĐH Ngoại ngữ - ĐH Quốc gia Hà Nội; (2) Trường ĐH Ngoại ngữ - ĐH Đà Nẵng; (3) Trường ĐH Ngoại ngữ - ĐH Huế; (4) Trường ĐH Sư phạm Tp.HCM, (5) Trường ĐH Sư phạm Hà Nội; (6) Trường ĐH Thái Nguyên; (7) Trường ĐH Cần Thơ; (8) Trường ĐH Hà Nội; (9) Trường ĐH Vinh; (10) Học viện An ninh nhân dân; (11) Trường ĐH Sài Gòn; (12) Trường ĐH Ngân hàng TPHCM; (13) Trường ĐH Trà Vinh, (14) Trường ĐH Văn Lang; (15) Trường ĐH Quy Nhơn; (16) Trường ĐH Tây Nguyên; (17) Trường ĐH Công Nghiệp TP.HCM; (18) Trường ĐH Công nghiệp thực phẩm TP.HCM; (19) Học viện Báo chí và Tuyên truyền; (20) Học viện Khoa học quân sự, (21) Trường ĐH Thương mại, (22) Học viện cảnh sát nhân dân, (23) Trường Đại học Khoa học Xã hội và Nhân văn (ĐH Quốc Gia TP.HCM), (24) Trường Đại học Kinh tế - Tài chính TP.HCM, (25) Trường Đại học Bách khoa Hà Nội, (26) Trường ĐH Nam Cần Thơ, (27) Trường ĐH Ngoại thương, (28) Trường ĐH Kinh tế Quốc Dân, (29) Trường ĐH Kinh tế TP. HCM và (30) Trường ĐH Lạc Hồng, (31) Trường Đại học Đồng Tháp, (32) Trường Đại học Duy Tân, (33) Trường Đại học Phenikaa, (34) Học Viện Ngân hàng, (35) Trường Đại học Tài chính – Marketing, (36) Trường Đại học Thành Đông, (37) Trường Đại học Mở TP. HCM, (38) Trường Đại học Quốc tế Hồng Bàng.
+
+---
+
+[Nguồn 2 — Văn bản: phuluc2.md | 1. Đối tượng | Mục: 1. Đối tượng | Năm: 2026]
+# PHỤ LỤC 2
+*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*
+[Nguồn: phuluc2.md]
+[Mục: 1. Đối tượng]
+
+[Phần 1/3]
+- Người học bổ sung kiến thức có bằng đại học ngành liên quan trực tiếp tới chuyên môn, nghề nghiệp của ngành đăng ký dự tuyển trình độ Thạc sĩ thuộc lĩnh vực quản trị, quản lý.
+- Người dự tuyển đã tốt nghiệp đại học ngành đúng nhưng không có môn xét tuyển theo quy định.
+- Người dự tuyển đã tốt nghiệp đại học ngành đúng có nhu cầu cập nhật kiến thức ngành, chuyên ngành có thể đăng ký học bổ sung kiến thức.
+
+**❖ Đối với ngành Tài chính – Ngân hàng:**
+- ***Ngành gần:*** các ngành đào tạo có cùng nhóm ngành với ngành Tài chính - Ngân hàng theo phân loại danh mục đào tạo cấp III. Môn học bổ sung kiến thức gồm **2 môn (5 tín chỉ)**, cụ thể:
+
+| STT | Môn học             | Số tín chỉ | Lịch học(dự kiến)                             | Học phí:(500.000đ/TC) |
+| --- | ------------------- | ---------- | --------------------------------------------- | --------------------- |
+| 1   | Kinh tế học         | 3          | Các buổi tối trong tuần và<br/>ngày cuối tuần | 1.500.000 đ           |
+| 2   | Tài chính - Tiền tệ | 2          |                                               | 1.000.000 đ           |
+
+- ***Ngành khác:*** các ngành đào tạo trình độ đại học khác không phải ngành đúng, ngành gần, nhưng có cùng lĩnh vực đào tạo theo phân loại danh mục đào tạo cấp II. Môn học bổ sung kiến thức gồm **4 môn (9 tín chỉ)**, cụ thể:
+
+| STT | Môn học                | Số tín chỉ | Lịch học(dự kiến)                             | Học phí(500.000đ/TC) |
+| --- | ---------------------- | ---------- | --------------------------------------------- | -------------------- |
+| 1   | Kinh tế học            | 3          | Các buổi tối trong tuần và ngày cuối tuần     | 1.500.000 đ          |
+| 2   | Tài chính - Tiền tệ    | 2          |                                               | 1.000.000 đ          |
+| 3   | Tài chính doanh nghiệp | 2          |                                               | 1.000.000 đ          |
+| 4   | Nguyên lý kế toán      | 2          |                                               | 1.000.000 đ          |
+
+**❖ Đối với ngành Quản trị Kinh doanh:**
+- ***Ngành gần:*** các ngành đào tạo trình độ đại học thuộc lĩnh vực kinh doanh và quản lý, nhưng không đúng ngành Quản trị kinh doanh. Môn học bổ sung kiến thức gồm **2 môn (5 tín chỉ)**, cụ thể:
+
+| STT | Môn học             | Số tín chỉ | Lịch học(dự kiến)                             | Học phí(500.000đ/TC) |
+| --- | ------------------- | ---------- | --------------------------------------------- | ------------------------- |
+| 1   | Kinh tế học         | 3          | Các buổi tối trong tuần và ngày cuối tuần     | 1.500.000 đ               |
+| 2   | Quản trị học        | 2          |                                               | 1.000.000 đ               |
+
+- ***Ngành khác:*** các ngành đào tạo trình độ đại học khác không phải ngành đúng, ngành gần, nhưng có liên quan trực tiếp tới chuyên môn, nghề nghiệp của ngành Quản trị kinh doanh. Môn học bổ sung kiến thức gồm **4 môn (9 tín chỉ)**, cụ thể:
+
+| STT | Môn học             | Số tín chỉ | Lịch học(dự kiến)                             | Học phí(500.000đ/TC) |
+| --- | ------------------- | ---------- | --------------------------------------------- | ------------------------- |
+| 1   | Kinh tế học         | 3          | Các buổi tối trong tuần và ngày cuối tuần     | 1.500.000 đ               |
+| 2   | Quản trị học        | 2          |                                               | 1.000.000 đ               |
+| 3   | Quản trị vận hành   | 2          |                                               | 1.000.000 đ               |
+| 4   | Quản trị chiến lược | 2          |                                               | 1.000.000 đ               |
+
+❖ **Đối với ngành Quản lý kinh tế:**
+
+- **Ngành gần:** các ngành có cùng nhóm ngành với ngành Quản lý kinh tế theo phân loại danh mục đào tạo cấp III. Môn học bổ sung kiến thức gồm **2 môn (5 tín chỉ)**, cụ thể:
+
+| TT | Môn học      | Số tín chỉ | Lịch học(dự kiến)                         | Học phí(500.000đ/TC) |
+| -- | ------------ | ---------- | ----------------------------------------- | -------------------- |
+| 1  | Kinh tế học  | 3          | Các buổi tối trong tuần và ngày cuối tuần | 1.500.000 đ          |
+| 2  | Quản trị học | 2          |                                           | 1.000.000 đ          |
+
+- **Ngành khác:** các ngành đào tạo trình độ đại học khác không phải ngành đúng, ngành gần, nhưng có cùng lĩnh vực đào tạo theo phân loại danh mục cấp II. Môn học bổ sung kiến thức gồm **4 môn (9 tín chỉ)**, cụ thể:
+
+| TT | Môn học                     | Số tín chỉ | Lịch học(dự kiến)                         | Học phí(500.000đ/TC) |
+| -- | ---...
+                                                      >(8967 chars)
+                             retrieved_chunks  │  [20 items]
+                                                         [0] {"chunk_id": "5788cef2-4004-41ed-815f-8536937468b2", "chunk_level": "child", "parent_id": "cb879016-3d5b-4cb9-a7b3-83a5ef93c92c", "section_path": "1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.2. Thí sinh tốt nghiệp đại học thuộc ngành gần (cùng lĩnh vực kinh doanh và quản lý), ngành khác (khác lĩnh vực nhưng có liên quan trực tiếp đến lĩnh vực quản trị, quản lý) với ngành dự tuyển cần học Bổ sung kiến thức. Danh mục ngành đúng, ngành gần, ngành khác và môn học Bổ sung kiến thức được nêu ở Phụ lục 2. & 1.3. Các văn bằng, chứng chỉ chứng minh năng lực ngoại ngữ từ Bậc 3 trở lên:", "program_name": null, "score": 0.5202200412750244, "content_preview": "# PHỤ LỤC 1\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc1.md]\n[Mục: 1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.2. Thí sinh tốt nghiệp đạ", "source": "vector", "rrf_score": 0.01639344262295082}
+                                                         [1] {"chunk_id": "cb879016-3d5b-4cb9-a7b3-83a5ef93c92c", "chunk_level": "parent", "parent_id": null, "section_path": "1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.2. Thí sinh tốt nghiệp đại học thuộc ngành gần (cùng lĩnh vực kinh doanh và quản lý), ngành khác (khác lĩnh vực nhưng có liên quan trực tiếp đến lĩnh vực quản trị, quản lý) với ngành dự tuyển cần học Bổ sung kiến thức. Danh mục ngành đúng, ngành gần, ngành khác và môn học Bổ sung kiến thức được nêu ở Phụ lục 2. & 1.3. Các văn bằng, chứng chỉ chứng minh năng lực ngoại ngữ từ Bậc 3 trở lên:", "program_name": null, "score": 0.5173370838165283, "content_preview": "# PHỤ LỤC 1\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc1.md]\n[Mục: 1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.2. Thí sinh tốt nghiệp đạ", "source": "vector", "rrf_score": 0.016129032258064516}
+                                                         [2] {"chunk_id": "573e8531-8d1a-4c43-b90c-9701ed776991", "chunk_level": "parent", "parent_id": null, "section_path": "1. Đối tượng", "program_name": null, "score": 0.5065456930724208, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng]\n\n[Phần 1/3]\n- Người học bổ sung kiến thức có bằng ", "source": "vector", "rrf_score": 0.015873015873015872}
+                                                         [3] {"chunk_id": "97a68148-db8b-424b-88e8-e726ab1b945f", "chunk_level": "child", "parent_id": "573e8531-8d1a-4c43-b90c-9701ed776991", "section_path": "1. Đối tượng", "program_name": null, "score": 0.5065456930724208, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng]\n\n[Phần 1/3]\n- Người học bổ sung kiến thức có bằng ", "source": "vector", "rrf_score": 0.015625}
+                                                         [4] {"chunk_id": "eb4549aa-55aa-4978-8730-edde1346077d", "chunk_level": "parent", "parent_id": null, "section_path": "1. Đối tượng > **❖ Đối với ngành Marketing:**", "program_name": null, "score": 0.4989498555660248, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng > **❖ Đối với ngành Marketing:**]\n\n- Ngành gần: các", "source": "vector", "rrf_score": 0.015384615384615385}
+                                                         [5] {"chunk_id": "4206fd8d-0e48-47bc-9d4c-b22d7b8e7ccf", "chunk_level": "child", "parent_id": "eb4549aa-55aa-4978-8730-edde1346077d", "section_path": "1. Đối tượng > **❖ Đối với ngành Marketing:**", "program_name": null, "score": 0.4989498555660248, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng > **❖ Đối với ngành Marketing:**]\n\n- Ngành gần: các", "source": "vector", "rrf_score": 0.015151515151515152}
+                                                         [6] {"chunk_id": "1b70a4c6-7164-44d9-bb4f-2881fc52f77c", "chunk_level": "child", "parent_id": "29916fb7-5780-4c02-888d-5c65fdad70cd", "section_path": "1. Đối tượng", "program_name": null, "score": 0.49741785220557033, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng]\n\n[Phần 2/3]\n| STT | Môn học | Số tín chỉ | Lịch họ", "source": "vector", "rrf_score": 0.014925373134328358}
+                                                         [7] {"chunk_id": "29916fb7-5780-4c02-888d-5c65fdad70cd", "chunk_level": "parent", "parent_id": null, "section_path": "1. Đối tượng", "program_name": null, "score": 0.49741785220557033, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng]\n\n[Phần 2/3]\n| STT | Môn học            | Số tín ch", "source": "vector", "rrf_score": 0.014705882352941176}
+                                                         [8] {"chunk_id": "397fe508-f3e2-486d-a144-d0cde2325371", "chunk_level": "child", "parent_id": "4c1e470d-a2a4-43bb-8654-37ddba0aa3d6", "section_path": "1. NGÀNH ĐÀO TẠO VÀ HÌNH THỨC ĐÀO TẠO > 1.1. Ngành đào tạo và chỉ tiêu tuyển sinh:", "program_name": null, "score": 0.4935170713950958, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 1. NGÀNH ĐÀO TẠO VÀ HÌNH THỨC ĐÀO TẠO > 1.1. Ngành đào tạo và chỉ tiêu tuyển sinh", "source": "vector", "rrf_score": 0.014492753623188406}
+                                                         [9] {"chunk_id": "4c1e470d-a2a4-43bb-8654-37ddba0aa3d6", "chunk_level": "parent", "parent_id": null, "section_path": "1. NGÀNH ĐÀO TẠO VÀ HÌNH THỨC ĐÀO TẠO > 1.1. Ngành đào tạo và chỉ tiêu tuyển sinh:", "program_name": null, "score": 0.4935170713950958, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 1. NGÀNH ĐÀO TẠO VÀ HÌNH THỨC ĐÀO TẠO > 1.1. Ngành đào tạo và chỉ tiêu tuyển sinh", "source": "vector", "rrf_score": 0.014285714285714285}
+                                                         [10] {"chunk_id": "f02de27d-1e68-4c15-a796-baf4c62d7b7e", "chunk_level": "parent", "parent_id": null, "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ", "program_name": null, "score": 0.47913163900375366, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9.", "source": "vector", "rrf_score": 0.014084507042253521}
+                                                         [11] {"chunk_id": "0fb4062a-765a-4f7b-a341-7c5e3c39261b", "chunk_level": "child", "parent_id": "f02de27d-1e68-4c15-a796-baf4c62d7b7e", "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ", "program_name": null, "score": 0.47913163900375366, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9.", "source": "vector", "rrf_score": 0.013888888888888888}
+                                                         [12] {"chunk_id": "ca294833-afe9-42ea-b442-54666fc499fb", "chunk_level": "parent", "parent_id": null, "section_path": "**3. Tài liệu tham khảo**", "program_name": null, "score": 0.4750446990105698, "content_preview": "# QUY TRÌNH CHẤT LƯỢNG\n# ĐÁNH GIÁ LUẬN VĂN/ĐỀ ÁN THẠC SĨ\nMã số quy trình: QT/SĐH/06\n[Nguồn: quytrinhdanhgia-luanvan-thacsi.md]\n[Mục: **3. Tài liệu tham khảo**]\n\n- Thông tư số 23/2021/TT-BGDĐT ngày 30 ", "source": "vector", "rrf_score": 0.0136986301369863}
+                                                         [13] {"chunk_id": "9d82c16f-09c5-41ee-8b33-7fee6962db49", "chunk_level": "parent", "parent_id": null, "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 7. **ĐIỀU KIỆN DỰ TUYỂN; HỒ SƠ DỰ TUYỂN (Xem chi tiết Phụ lục 1)**", "program_name": null, "score": 0.4747174523686606, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 7.", "source": "vector", "rrf_score": 0.013513513513513514}
+                                                         [14] {"chunk_id": "7cbe1ebd-ab8d-444f-a697-29a3ecda2182", "chunk_level": "child", "parent_id": "6646db5c-916d-4327-9692-b0ad5ee4ec63", "section_path": "9. Địa chỉ liên hệ đăng ký và nộp hồ sơ", "program_name": null, "score": 0.4721808416951212, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ]\n\nViện Đào tạo sau đại học – Trườ", "source": "vector", "rrf_score": 0.013333333333333334}
+                                                         [15] {"chunk_id": "6646db5c-916d-4327-9692-b0ad5ee4ec63", "chunk_level": "parent", "parent_id": null, "section_path": "9. Địa chỉ liên hệ đăng ký và nộp hồ sơ", "program_name": null, "score": 0.4721808416951212, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ]\n\nViện Đào tạo sau đại học – Trườ", "source": "vector", "rrf_score": 0.013157894736842105}
+                                                         [16] {"chunk_id": "3f57efc0-566f-46df-9c29-3bca36a9b084", "chunk_level": "parent", "parent_id": null, "section_path": "Giới thiệu", "program_name": null, "score": 0.47097664898494773, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "vector", "rrf_score": 0.012987012987012988}
+                                                         [17] {"chunk_id": "90afc9c1-eccf-4fcd-b6b8-eaa2eb164054", "chunk_level": "parent", "parent_id": null, "section_path": "Giới thiệu > **Điều 4 . Văn bằng, chứng chỉ ngoại ngữ đủ điều kiện xét tốt nghiệp thạc sĩ**", "program_name": null, "score": 0.4702537340077003, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "vector", "rrf_score": 0.01282051282051282}
+                                                         [18] {"chunk_id": "b3ad2640-6d74-4949-a02d-a2b37f6214c4", "chunk_level": "child", "parent_id": "90afc9c1-eccf-4fcd-b6b8-eaa2eb164054", "section_path": "Giới thiệu > **Điều 4 . Văn bằng, chứng chỉ ngoại ngữ đủ điều kiện xét tốt nghiệp thạc sĩ**", "program_name": null, "score": 0.4702537340077003, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "vector", "rrf_score": 0.012658227848101266}
+                                                         [19] {"chunk_id": "4fc9dfef-86e0-4d22-86a9-2028bc338a26", "chunk_level": "child", "parent_id": "9908aae3-d0d3-4459-8d53-f1223f37d41d", "section_path": "1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.1. Yêu cầu đối với người dự tuyển:", "program_name": null, "score": 0.46958698422947753, "content_preview": "# PHỤ LỤC 1\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc1.md]\n[Mục: 1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.1. Yêu cầu đối với người ", "source": "vector", "rrf_score": 0.0125}
+                        rag_confidence_failed  │  ✓ True
+                            top1_cosine_score  │  0.5202
+
+──────────────────────────────────────────────────────────────────────────
+  🌐 [8] RAG SEARCH PIPELINE (Evaluator + Web Search)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (15.209s)
+                                        Message  │  cache=MISS, citations=2
+                           ufm_search_queries  │  [2 items]
+                                                         [0] "Điểm chuẩn Logistics UFM 2023"
+                                                         [1] "Điểm chuẩn ngành Logistics và Quản lý chuỗi cung ứng 2023"
+                              pr_search_query  │  null
+                           web_search_results  │  Mình chưa được cung cấp thông tin cập nhật điểm chuẩn ngành Logistics và Quản lý chuỗi cung ứng của UFM năm 2023 một cách trực tiếp từ các nguồn ưu tiên.
+
+Tuy nhiên, theo thông báo điểm chuẩn năm 2024 của Trường Đại học Tài chính - Marketing (UFM), điểm chuẩn các ngành khác (ngoài Marketing, Kinh doanh quốc tế, Kế toán, Kinh tế, Hệ thống quản lý thông tin) dao động từ 22.0 đến 24.6 điểm. Điểm chuẩn các ngành này biến động khoảng 0.5 điểm so với năm 2023.
+
+Dựa trên thông tin này, có thể suy luận rằng điểm chuẩn ngành Logistics và Quản lý chuỗi cung ứng của UFM năm 2023 sẽ thấp hơn khoảng 0.5 điểm so với mức điểm của ngành này trong năm 2024, và nằm trong khoảng từ 21.5 đến 24.1 điểm.
+                                                      >(691 chars)
+                         web_search_citations  │  [2 items]
+                                                         [0] {"text": "giaoduc.net.vn", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHlpZ8XRXrnALyMSeBk6AaTf_fSqOZm63HQDws15BJFcnAjZFwpZANdC5mtbaqgBKAk6wqje9CQ_waY1SSPmyxETgmhMRHeRtpqKiirAyU2PJyd1-AmD4hLTeb0njIuTVjEXwTTLEI5iQRx9Dk8UACVA2cg2uoZEldu3F_Mb3bOs_MmpnWhrvEbtGdcDaeYhVG_zcD1ygPN1n31SVM_B3qpBl_Eo8Uznt8Xfwfw-w=="}
+                                                         [1] {"text": "tapchicongthuong.vn", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHhcaqfzl0RPa5LyZDJgm3Bu5Kw7D2cBbIaddv-CflVPzPkTYxcXUrT8CI0pmhDr809buHFfeooams6hUmoBPn9VX-qUNh1YZ3p2BTMhpp5BFKP8b3O4V0Lx7j-XzCsJueuvoJ2ZpmuT9i499_7gEp6cRl7rrsdXlRvkUMe8o_nA1AVbIHVSRhoDLrrDsCE65zjGFAh4AI0Slax"}
+                             search_cache_hit  │  ✗ False
+                      search_cache_similarity  │  0.0000
+                               final_response  │  [DỮ LIỆU NỘI BỘ]
+[Nguồn 1 — Văn bản: phuluc1.md | 1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.2. Thí sinh tốt nghiệp đại học thuộc ngành gần (cùng lĩnh vực kinh doanh và quản lý), ngành khác (khác lĩnh vực nhưng có liên quan trực tiếp đến lĩnh vực quản trị, quản lý) với ngành dự tuyển cần học Bổ sung kiến thức. Danh mục ngành đúng, ngành gần, ngành khác và môn học Bổ sung kiến thức được nêu ở Phụ lục 2. & 1.3. Các văn bằng, chứng chỉ chứng minh năng lực ngoại ngữ từ Bậc 3 trở lên: | Mục: 1.2. Thí sinh tốt nghiệp đại học thuộc ngành gần (cùng lĩnh vực kinh doanh và quản lý), ngành khác (khác lĩnh vực nhưng có liên quan trực tiếp đến lĩnh vực quản trị, quản lý) với ngành dự tuyển cần học Bổ sung kiến thức. Danh mục ngành đúng, ngành gần, ngành khác và môn học Bổ sung kiến thức được nêu ở Phụ lục 2. & 1.3. Các văn bằng, chứng chỉ chứng minh năng lực ngoại ngữ từ Bậc 3 trở lên: | Năm: 2026]
+# PHỤ LỤC 1
+*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*
+[Nguồn: phuluc1.md]
+[Mục: 1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.2. Thí sinh tốt nghiệp đại học thuộc ngành gần (cùng lĩnh vực kinh doanh và quản lý), ngành khác (khác lĩnh vực nhưng có liên quan trực tiếp đến lĩnh vực quản trị, quản lý) với ngành dự tuyển cần học Bổ sung kiến thức. Danh mục ngành đúng, ngành gần, ngành khác và môn học Bổ sung kiến thức được nêu ở Phụ lục 2. & 1.3. Các văn bằng, chứng chỉ chứng minh năng lực ngoại ngữ từ Bậc 3 trở lên:]
+
+1.2. Thí sinh tốt nghiệp đại học thuộc ngành gần (cùng lĩnh vực kinh doanh và quản lý), ngành khác (khác lĩnh vực nhưng có liên quan trực tiếp đến lĩnh vực quản trị, quản lý) với ngành dự tuyển cần học Bổ sung kiến thức. Danh mục ngành đúng, ngành gần, ngành khác và môn học Bổ sung kiến thức được nêu ở Phụ lục 2.
+
+a) Bằng tốt nghiệp trình độ đại học trở lên ngành ngôn ngữ nước ngoài; hoặc bằng tốt nghiệp trình độ đại học trở lên mà chương trình được thực hiện chủ yếu bằng ngôn ngữ nước ngoài;
+b) Bằng tốt nghiệp trình độ đại học trở lên do Trường Đại học Tài chính – Marketing cấp trong thời gian không quá 02 năm mà chuẩn đầu ra của chương trình đã đáp ứng yêu cầu ngoại ngữ đạt trình độ Bậc 3 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam;
+c) Có một trong các văn bằng hoặc chứng chỉ ngoại ngữ đạt trình độ tương đương Bậc 3 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam còn thời hạn 2 năm từ ngày cấp chứng chỉ đến ngày đăng ký dự tuyển: 
+(Thông tin chi tiết xem tại: https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?LoaiTin=8cr7n9Qk1GpeSBRepQ4wzA)
+
+d) Có chứng chỉ trình độ ngoại ngữ từ bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc tương đương trong thời hạn 2 năm từ ngày cấp chứng chỉ đến ngày đăng ký dự tuyển của 38 Trường sau (Danh sách này được cập nhật thường xuyên theo quy định của nhà nước): (1) Trường ĐH Ngoại ngữ - ĐH Quốc gia Hà Nội; (2) Trường ĐH Ngoại ngữ - ĐH Đà Nẵng; (3) Trường ĐH Ngoại ngữ - ĐH Huế; (4) Trường ĐH Sư phạm Tp.HCM, (5) Trường ĐH Sư phạm Hà Nội; (6) Trường ĐH Thái Nguyên; (7) Trường ĐH Cần Thơ; (8) Trường ĐH Hà Nội; (9) Trường ĐH Vinh; (10) Học viện An ninh nhân dân; (11) Trường ĐH Sài Gòn; (12) Trường ĐH Ngân hàng TPHCM; (13) Trường ĐH Trà Vinh, (14) Trường ĐH Văn Lang; (15) Trường ĐH Quy Nhơn; (16) Trường ĐH Tây Nguyên; (17) Trường ĐH Công Nghiệp TP.HCM; (18) Trường ĐH Công nghiệp thực phẩm TP.HCM; (19) Học viện Báo chí và Tuyên truyền; (20) Học viện Khoa học quân sự, (21) Trường ĐH Thương mại, (22) Học viện cảnh sát nhân dân, (23) Trường Đại học Khoa học Xã hội và Nhân văn (ĐH Quốc Gia TP.HCM), (24) Trường Đại học Kinh tế - Tài chính TP.HCM, (25) Trường Đại học Bách khoa Hà Nội, (26) Trường ĐH Nam Cần Thơ, (27) Trường ĐH Ngoại thương, (28) Trường ĐH Kinh tế Quốc Dân, (29) Trường ĐH Kinh tế TP. HCM và (30) Trường ĐH Lạc Hồng, (31) Trường Đại học Đồng Tháp, (32) Trường Đại học Duy Tân, (33) Trường Đại học Phenikaa, (34) Học Viện Ngân hàng, (35) Trường Đại học Tài chính – Marketing, (36) Trường Đại học Thành Đông, (37) Trường Đại học Mở TP. HCM, (38) Trường Đại học Quốc tế Hồng Bàng.
+
+---
+
+[Nguồn 2 — Văn bản: phuluc2.md | 1. Đối tượng | Mục: 1. Đối tượng | Năm: 2026]
+# PHỤ LỤC 2
+*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*
+[Nguồn: phuluc2.md]
+[Mục: 1. Đối tượng]
+
+[Phần 1/3]
+- Người học bổ sung kiến thức có bằng đại học ngành liên quan trực tiếp tới chuyên môn, nghề nghiệp của ngành đăng ký dự tuyển trình độ Thạc sĩ thuộc lĩnh vực quản trị, quản lý.
+- Người dự tuyển đã tốt nghiệp đại học ngành đúng nhưng không có môn xét tuyển theo quy định.
+- Người dự tuyển đã tốt nghiệp đại học ngành đúng có nhu cầu cập nhật kiến thức ngành, chuyên ngành có thể đăng ký học bổ sung kiến thức.
+
+**❖ Đối với ngành Tài chính – Ngân hàng:**
+- ***Ngành gần:*** các ngành đào tạo có cùng nhóm ngành với ngành Tài chính - Ngân hàng theo phân loại danh mục đào tạo cấp III. Môn học bổ sung kiến thức gồm **2 môn (5 tín chỉ)**, cụ thể:
+
+| STT | Môn học             | Số tín chỉ | Lịch học(dự kiến)                             | Học phí:(500.000đ/TC) |
+| --- | ------------------- | ---------- | --------------------------------------------- | --------------------- |
+| 1   | Kinh tế học         | 3          | Các buổi tối trong tuần và<br/>ngày cuối tuần | 1.500.000 đ           |
+| 2   | Tài chính - Tiền tệ | 2          |                                               | 1.000.000 đ           |
+
+- ***Ngành khác:*** các ngành đào tạo trình độ đại học khác không phải ngành đúng, ngành gần, nhưng có cùng lĩnh vực đào tạo theo phân loại danh mục đào tạo cấp II. Môn học bổ sung kiến thức gồm **4 môn (9 tín chỉ)**, cụ thể:
+
+| STT | Môn học                | Số tín chỉ | Lịch học(dự kiến)                             | Học phí(500.000đ/TC) |
+| --- | ---------------------- | ---------- | --------------------------------------------- | -------------------- |
+| 1   | Kinh tế học            | 3          | Các buổi tối trong tuần và ngày cuối tuần     | 1.500.000 đ          |
+| 2   | Tài chính - Tiền tệ    | 2          |                                               | 1.000.000 đ          |
+| 3   | Tài chính doanh nghiệp | 2          |                                               | 1.000.000 đ          |
+| 4   | Nguyên lý kế toán      | 2          |                                               | 1.000.000 đ          |
+
+**❖ Đối với ngành Quản trị Kinh doanh:**
+- ***Ngành gần:*** các ngành đào tạo trình độ đại học thuộc lĩnh vực kinh doanh và quản lý, nhưng không đúng ngành Quản trị kinh doanh. Môn học bổ sung kiến thức gồm **2 môn (5 tín chỉ)**, cụ thể:
+
+| STT | Môn học             | Số tín chỉ | Lịch học(dự kiến)                             | Học phí(500.000đ/TC) |
+| --- | ------------------- | ---------- | --------------------------------------------- | ------------------------- |
+| 1   | Kinh tế học         | 3          | Các buổi tối trong tuần và ngày cuối tuần     | 1.500.000 đ               |
+| 2   | Quản trị học        | 2          |                                               | 1.000.000 đ               |
+
+- ***Ngành khác:*** các ngành đào tạo trình độ đại học khác không phải ngành đúng, ngành gần, nhưng có liên quan trực tiếp tới chuyên môn, nghề nghiệp của ngành Quản trị kinh doanh. Môn học bổ sung kiến thức gồm **4 môn (9 tín chỉ)**, cụ thể:
+
+| STT | Môn học             | Số tín chỉ | Lịch học(dự kiến)                             | Học phí(500.000đ/TC) |
+| --- | ------------------- | ---------- | --------------------------------------------- | ------------------------- |
+| 1   | Kinh tế học         | 3          | Các buổi tối trong tuần và ngày cuối tuần     | 1.500.000 đ               |
+| 2   | Quản trị học        | 2          |                                               | 1.000.000 đ               |
+| 3   | Quản trị vận hành   | 2          |                                               | 1.000.000 đ               |
+| 4   | Quản trị chiến lược | 2          |                                               | 1.000.000 đ               |
+
+❖ **Đối với ngành Quản lý kinh tế:**
+
+- **Ngành gần:** các ngành có cùng nhóm ngành với ngành Quản lý kinh tế theo phân loại danh mục đào tạo cấp III. Môn học bổ sung kiến thức gồm **2 môn (5 tín chỉ)**, cụ thể:
+
+| TT | Môn học      | Số tín chỉ | Lịch học(dự kiến)                         | Học phí(500.000đ/TC) |
+| -- | ------------ | ---------- | ----------------------------------------- | -------------------- |
+| 1  | Kinh tế học  | 3          | Các buổi tối trong tuần và ngày cuối tuần | 1.500.000 đ          |
+| 2  | Quản trị học | 2          |                                           | 1.000.000 đ          |
+
+- **Ngành khác:** các ngành đào tạo trình độ đại học khác không phải ngành đúng, ngành gần, nhưng có cùng lĩnh vực đào tạo theo phân loại danh mục cấp II. Môn học bổ sung kiến thức gồm **4 môn (9 tín chỉ)**, cụ thể:
+
+| TT | Môn học                     | Số tín chỉ | Lịch học(dự kiến)                         | Học phí(500.000đ/TC) |
+| -- | ---...
+
+[DỮ LIỆU TỪ WEB]
+Mình chưa được cung cấp thông tin cập nhật điểm chuẩn ngành Logistics và Quản lý chuỗi cung ứng của UFM năm 2023 một cách trực tiếp từ các nguồn ưu tiên.
+
+Tuy nhiên, theo thông báo điểm chuẩn năm 2024 của Trường Đại học Tài chính - Marketing (UFM), điểm chuẩn các ngành khác (ngoài Marketing, Kinh doanh quốc tế, Kế toán, Kinh tế, Hệ thống quản lý thông tin) dao động từ 22.0 đến 24.6 điểm. Điểm chuẩn các ngành này biến động khoảng 0.5 điểm so với năm 2023.
+
+Dựa trên thông tin này, có thể suy luận rằng điểm chuẩn ngành Logistics và Quản lý chuỗi cung ứng của UFM năm 2023 sẽ thấp hơn khoảng 0.5 điểm so với mức điểm của ngành này trong năm 2024, và nằm trong khoảng từ 21.5 đến 24.1 điểm.
+
+[NGUỒN TRÍCH DẪN]
+- [giaoduc.net.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHlpZ8XRXrnALyMSeBk6AaTf_fSqOZm63HQDws15BJFcnAjZFwpZANdC5mtbaqgBKAk6wqje9CQ_waY1SSPmyxETgmhMRHeRtpqKiirAyU2PJyd1-AmD4hLTeb0njIuTVjEXwTTLEI5iQRx9Dk8UACVA2cg2uoZEldu3F_Mb3bOs_MmpnWhrvEbtGdcDaeYhVG_zcD1ygPN1n31SVM_B3qpBl_Eo8Uznt8Xfwfw-w==)
+- [tapchicongthuong.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHhcaqfzl0RPa5LyZDJgm3Bu5Kw7D2cBbIaddv-CflVPzPkTYxcXUrT8CI0pmhDr809buHFfeooams6hUmoBPn9VX-qUNh1YZ3p2BTMhpp5BFKP8b3O4V0Lx7j-XzCsJueuvoJ2ZpmuT9i499_7gEp6cRl7rrsdXlRvkUMe8o_nA1AVbIHVSRhoDLrrDsCE65zjGFAh4AI0Slax)
+                                                      >(10338 chars)
+                              response_source  │  rag_search_context
+                                                      >(18 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [9] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (3.651s)
+                                        Message  │  source='rag_search_context_generated', length=1548 chars
+                               final_response  │  Chào bạn nhé! Mình là Trợ lý Tuyển sinh UFM đây, rất vui được hỗ trợ bạn tìm hiểu về ngành học hot hit này! 🎓
+
+Bạn hỏi về điểm chuẩn ngành **Logistics và Quản lý chuỗi cung ứng năm 2023** đúng không? Đây là một ngành cực kỳ tiềm năng và được nhiều bạn trẻ quan tâm đó!
+
+Hiện tại, mình chưa có thông tin chính xác về điểm chuẩn ngành này của UFM năm 2023 trong dữ liệu nội bộ. Tuy nhiên, mình có thể cung cấp cho bạn một số thông tin hữu ích để bạn có cái nhìn tổng quan hơn nhé:
+
+Theo thông báo điểm chuẩn năm 2024 của Trường Đại học Tài chính - Marketing (UFM), các ngành khác (ngoài Marketing, Kinh doanh quốc tế, Kế toán, Kinh tế, Hệ thống quản lý thông tin) có điểm chuẩn dao động từ **22.0 đến 24.6 điểm**. Đặc biệt, điểm chuẩn các ngành này thường biến động khoảng **0.5 điểm** so với năm 2023.
+
+Dựa trên xu hướng này, mình có thể suy luận rằng điểm chuẩn ngành **Logistics và Quản lý chuỗi cung ứng của UFM năm 2023** có thể sẽ thấp hơn khoảng 0.5 điểm so với mức điểm của ngành này trong năm 2024, và nằm trong khoảng từ **21.5 đến 24.1 điểm**.
+
+Để có thông tin chính xác và cập nhật nhất về điểm chuẩn ngành Logistics và Quản lý chuỗi cung ứng năm 2023, mình khuyên bạn nên:
+- **Truy cập trực tiếp website chính thức của UFM** hoặc cổng thông tin tuyển sinh của trường.
+- **Liên hệ trực tiếp phòng Tuyển sinh của UFM** qua hotline để được tư vấn chi tiết nhất nhé!
+
+Bạn có muốn mình giải thích thêm về chương trình đào tạo hay cơ hội nghề nghiệp của ngành Logistics và Quản lý chuỗi cung ứng tại UFM không? Mình luôn sẵn lòng hỗ trợ bạn! 🌟
+                                                      >(1548 chars)
+                              response_source  │  rag_search_context_generated
+                                                      >(28 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : rag_search_context_generated
+  Intent          : THONG_TIN_TUYEN_SINH → PROCEED_RAG_UFM_SEARCH
+  Response Length : 1548 chars
+  Total Time      : 31.54s
+  Nodes Executed  : 9
+──────────────────────────────────────────────────────────────────────────
+
+Chào bạn nhé! Mình là Trợ lý Tuyển sinh UFM đây, rất vui được hỗ trợ bạn tìm hiểu về ngành học hot hit này! 🎓
+
+Bạn hỏi về điểm chuẩn ngành **Logistics và Quản lý chuỗi cung ứng năm 2023** đúng không? Đây là một ngành cực kỳ tiềm năng và được nhiều bạn trẻ quan tâm đó!
+
+Hiện tại, mình chưa có thông tin chính xác về điểm chuẩn ngành này của UFM năm 2023 trong dữ liệu nội bộ. Tuy nhiên, mình có thể cung cấp cho bạn một số thông tin hữu ích để bạn có cái nhìn tổng quan hơn nhé:
+
+Theo thông báo điểm chuẩn năm 2024 của Trường Đại học Tài chính - Marketing (UFM), các ngành khác (ngoài Marketing, Kinh doanh quốc tế, Kế toán, Kinh tế, Hệ thống quản lý thông tin) có điểm chuẩn dao động từ **22.0 đến 24.6 điểm**. Đặc biệt, điểm chuẩn các ngành này thường biến động khoảng **0.5 điểm** so với năm 2023.
+
+Dựa trên xu hướng này, mình có thể suy luận rằng điểm chuẩn ngành **Logistics và Quản lý chuỗi cung ứng của UFM năm 2023** có thể sẽ thấp hơn khoảng 0.5 điểm so với mức điểm của ngành này trong năm 2024, và nằm trong khoảng từ **21.5 đến 24.1 điểm**.
+
+Để có thông tin chính xác và cập nhật nhất về điểm chuẩn ngành Logistics và Quản lý chuỗi cung ứng năm 2023, mình khuyên bạn nên:
+- **Truy cập trực tiếp website chính thức của UFM** hoặc cổng thông tin tuyển sinh của trường.
+- **Liên hệ trực tiếp phòng Tuyển sinh của UFM** qua hotline để được tư vấn chi tiết nhất nhé!
+
+Bạn có muốn mình giải thích thêm về chương trình đào tạo hay cơ hội nghề nghiệp của ngành Logistics và Quản lý chuỗi cung ứng tại UFM không? Mình luôn sẵn lòng hỗ trợ bạn! 🌟
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.003s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  1.394s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a+2b)        │  5.033s  │   PASS   │
+  │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  1.254s  │   PASS   │
+  │ 🔀 MULTI-QUERY NODE (Sinh biến thể)           │  1.223s  │   PASS   │
+  │ 📊 EMBEDDING NODE (BGE-M3 batch)              │  3.539s  │   PASS   │
+  │ 🗄️ RAG NODE (Hybrid Search DB)               │  0.205s  │   PASS   │
+  │ 🌐 RAG SEARCH PIPELINE (Evaluator + Web Searc │ 15.209s  │   PASS   │
+  │ 🎯 RESPONSE NODE (Final Answer)               │  3.651s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  31.54s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_023612_Điểm_chuẩn_ngành_Logistics_và_Quản_lý_ch.txt
+

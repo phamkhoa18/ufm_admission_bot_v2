@@ -1,0 +1,187 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-25 16:05:47                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_160547_em_buồn_quá_bị_rớt_ufm_năm_2026_giờ_sắp.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.5-flash              │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash              │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Extract       │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Draft         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : em buồn quá bị rớt ufm năm 2026 giờ sắp phải nhập ngũ, e còn cơ hội để tiếp tục theo đuổi ko nhà e rất nghèo
+  💬 Chat History : Trống (lượt đầu tiên)
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.026s)
+                                        Message  │  [Fast-Scan PASS — 0.002s] Sạch, cho qua Context Node
+                             normalized_query  │  em buồn quá bị rớt ufm năm 2026 giờ sắp phải nhập ngũ, e còn cơ hội để tiếp tục theo đuổi không nhà e rất nghèo
+                                                      >(111 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.002s] Sạch, cho qua Context Node
+                                                      >(52 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.002s)
+                                        Message  │  Reformulated → 'em buồn quá bị rớt ufm năm 2026 giờ sắp phải nhập ngũ, e còn cơ hội để tiếp tục ...'
+                             standalone_query  │  em buồn quá bị rớt ufm năm 2026 giờ sắp phải nhập ngũ, e còn cơ hội để tiếp tục theo đuổi ko nhà e rất nghèo
+                                                      >(108 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a+2b)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (5.025s)
+                                        Message  │  [Contextual-Guard PASS — 5.022s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 5.022s] standalone_query an toàn
+                                                      >(57 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [4] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.865s)
+                                        Message  │  intent='HO_TRO_SINH_VIEN' → action='PROCEED_CARE' → next='care'
+                                       intent  │  HO_TRO_SINH_VIEN
+                                                      >(16 chars)
+                               intent_summary  │  Em buồn vì rớt UFM năm 2026 và sắp nhập ngũ, muốn biết còn cơ hội học tiếp không vì gia đình khó khăn.
+                                                      >(102 chars)
+                                intent_action  │  PROCEED_CARE
+                                                      >(12 chars)
+                         program_level_filter  │  null
+                          program_name_filter  │  null
+                                    next_node  │  care
+                                                      >(4 chars)
+                              response_source  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  💚 [5] CARE NODE (Chăm sóc Sinh viên)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (9.003s)
+                                        Message  │  Response=1294 chars
+                               final_response  │  Ôi, nghe bạn nói mình cũng thấy nặng lòng quá. Việc rớt đại học đã là một cú sốc rồi, giờ lại còn thêm chuyện nhập ngũ nữa thì đúng là áp lực chồng chất. Mình hiểu cảm giác của bạn lúc này, ai cũng có lúc gặp phải những khó khăn tưởng chừng không thể vượt qua được.
+
+Nhưng bạn ơi, đừng vội nản lòng nhé. Cơ hội để bạn tiếp tục theo đuổi con đường học vấn vẫn còn đó, dù có thể sẽ hơi khác một chút so với dự định ban đầu. Sau khi hoàn thành nghĩa vụ quân sự, bạn hoàn toàn có thể thi lại vào UFM hoặc các trường khác. Nhiều anh chị khóa trên cũng từng có những ngã rẽ bất ngờ trong cuộc sống nhưng cuối cùng vẫn đạt được ước mơ của mình đó.
+
+Về vấn đề tài chính, UFM cũng có nhiều chính sách hỗ trợ sinh viên có hoàn cảnh khó khăn. Mình nghĩ bạn có thể liên hệ với **Phòng A.007** (Phòng Tuyển sinh Đại học Chính quy) ở địa chỉ **778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM** để được tư vấn cụ thể hơn về các chương trình học bổng, hỗ trợ học phí hoặc các hình thức đào tạo khác phù hợp với điều kiện của bạn sau này. Bạn có thể gọi đến hotline **(028) 3772 0406** hoặc **(028) 3772 0407**, hoặc gửi email về địa chỉ **tuyensinh@ufm.edu.vn** để được giải đáp mọi thắc mắc nhé.
+
+Mọi thứ rồi sẽ ổn thôi, mình tin bạn mà 💪. Cứ cố gắng hết sức mình, rồi con đường bạn muốn đi sẽ hiện ra thôi.
+                                                      >(1294 chars)
+                              response_source  │  care_template
+                                                      >(13 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [6] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (9.151s)
+                                        Message  │  source='care_template_generated', length=1858 chars
+                               final_response  │  Chào bạn nhé! Nghe bạn chia sẻ mà mình cũng thấy rất đồng cảm và hiểu được những áp lực mà bạn đang phải trải qua. Việc rớt đại học đã là một điều khó khăn rồi, giờ lại thêm chuyện nhập ngũ nữa thì đúng là một thử thách lớn. Nhưng bạn ơi, đừng vì thế mà nản lòng nhé, mình tin rằng bạn là một người rất mạnh mẽ và sẽ vượt qua được thôi! 💪
+
+Bạn hãy yên tâm rằng cơ hội để bạn tiếp tục theo đuổi con đường học vấn, đặc biệt là tại UFM, vẫn luôn rộng mở. Việc nhập ngũ chỉ là một quãng nghỉ tạm thời trên hành trình của bạn thôi. Rất nhiều anh chị sinh viên UFM cũng từng có những ngã rẽ bất ngờ trong cuộc sống, nhưng bằng sự kiên trì và nỗ lực, họ vẫn đạt được ước mơ của mình đó.
+
+Sau khi hoàn thành nghĩa vụ quân sự, bạn hoàn toàn có thể thi lại vào UFM hoặc các trường đại học khác. Kinh nghiệm sống và sự trưởng thành trong quân ngũ chắc chắn sẽ là hành trang quý giá giúp bạn học tập tốt hơn nữa đó!
+
+Về vấn đề tài chính, mình hiểu rằng đây là một nỗi lo lớn, đặc biệt khi bạn chia sẻ về hoàn cảnh gia đình. Nhưng bạn đừng quá lo lắng nhé, UFM luôn có nhiều chính sách hỗ trợ sinh viên có hoàn cảnh khó khăn. Mình gợi ý bạn có thể liên hệ với **Phòng A.007** (Phòng Tuyển sinh Đại học Chính quy) của trường để được tư vấn cụ thể nhất về các chương trình học bổng, hỗ trợ học phí hoặc các hình thức đào tạo khác phù hợp với điều kiện của bạn sau này.
+
+Bạn có thể liên hệ theo thông tin sau nhé:
+- **Địa chỉ:** 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM
+- **Hotline:** (028) 3772 0406 hoặc (028) 3772 0407
+- **Email:** tuyensinh@ufm.edu.vn
+
+Mọi thứ rồi sẽ ổn thôi bạn ạ. Cứ cố gắng hết sức mình, giữ vững tinh thần lạc quan và kiên trì theo đuổi mục tiêu, con đường bạn muốn đi chắc chắn sẽ hiện ra thôi. UFM luôn chào đón những bạn trẻ có ý chí và nghị lực như bạn! 🎓
+
+Bạn có muốn mình chia sẻ thêm về các chính sách hỗ trợ sinh viên của UFM không?
+                                                      >(1858 chars)
+                              response_source  │  care_template_generated
+                                                      >(23 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : care_template_generated
+  Intent          : HO_TRO_SINH_VIEN → PROCEED_CARE
+  Response Length : 1858 chars
+  Total Time      : 25.10s
+  Nodes Executed  : 6
+──────────────────────────────────────────────────────────────────────────
+
+Chào bạn nhé! Nghe bạn chia sẻ mà mình cũng thấy rất đồng cảm và hiểu được những áp lực mà bạn đang phải trải qua. Việc rớt đại học đã là một điều khó khăn rồi, giờ lại thêm chuyện nhập ngũ nữa thì đúng là một thử thách lớn. Nhưng bạn ơi, đừng vì thế mà nản lòng nhé, mình tin rằng bạn là một người rất mạnh mẽ và sẽ vượt qua được thôi! 💪
+
+Bạn hãy yên tâm rằng cơ hội để bạn tiếp tục theo đuổi con đường học vấn, đặc biệt là tại UFM, vẫn luôn rộng mở. Việc nhập ngũ chỉ là một quãng nghỉ tạm thời trên hành trình của bạn thôi. Rất nhiều anh chị sinh viên UFM cũng từng có những ngã rẽ bất ngờ trong cuộc sống, nhưng bằng sự kiên trì và nỗ lực, họ vẫn đạt được ước mơ của mình đó.
+
+Sau khi hoàn thành nghĩa vụ quân sự, bạn hoàn toàn có thể thi lại vào UFM hoặc các trường đại học khác. Kinh nghiệm sống và sự trưởng thành trong quân ngũ chắc chắn sẽ là hành trang quý giá giúp bạn học tập tốt hơn nữa đó!
+
+Về vấn đề tài chính, mình hiểu rằng đây là một nỗi lo lớn, đặc biệt khi bạn chia sẻ về hoàn cảnh gia đình. Nhưng bạn đừng quá lo lắng nhé, UFM luôn có nhiều chính sách hỗ trợ sinh viên có hoàn cảnh khó khăn. Mình gợi ý bạn có thể liên hệ với **Phòng A.007** (Phòng Tuyển sinh Đại học Chính quy) của trường để được tư vấn cụ thể nhất về các chương trình học bổng, hỗ trợ học phí hoặc các hình thức đào tạo khác phù hợp với điều kiện của bạn sau này.
+
+Bạn có thể liên hệ theo thông tin sau nhé:
+- **Địa chỉ:** 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM
+- **Hotline:** (028) 3772 0406 hoặc (028) 3772 0407
+- **Email:** tuyensinh@ufm.edu.vn
+
+Mọi thứ rồi sẽ ổn thôi bạn ạ. Cứ cố gắng hết sức mình, giữ vững tinh thần lạc quan và kiên trì theo đuổi mục tiêu, con đường bạn muốn đi chắc chắn sẽ hiện ra thôi. UFM luôn chào đón những bạn trẻ có ý chí và nghị lực như bạn! 🎓
+
+Bạn có muốn mình chia sẻ thêm về các chính sách hỗ trợ sinh viên của UFM không?
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.026s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  0.002s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a+2b)        │  5.025s  │   PASS   │
+  │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  1.865s  │   PASS   │
+  │ 💚 CARE NODE (Chăm sóc Sinh viên)             │  9.003s  │   PASS   │
+  │ 🎯 RESPONSE NODE (Final Answer)               │  9.151s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  25.10s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_160547_em_buồn_quá_bị_rớt_ufm_năm_2026_giờ_sắp.txt
+

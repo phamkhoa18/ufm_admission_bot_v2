@@ -1,0 +1,185 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test Runner                        ║
+║    2026-03-23 00:32:17                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260323_003217_Em_muốn_làm_mẫu_đơn_giấy_cam_đoan_với_tê.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❷ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❹ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❺ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❻ Guard (Deep)       │ openrouter/qwen/qwen3.5-flash-02-23             │
+  │ ❼ Multi-Query        │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❽ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❾a Vector Router     │ openrouter/baai/bge-m3                          │
+  │ ❾b Semantic Rtr      │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫c Web Search        │ openrouter/openai/gpt-4o-mini-search-preview    │
+  │ ⓫d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Care               │ openrouter/qwen/qwen3.5-flash-02-23             │
+  │ ⓭ Form Extract       │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓭ Form Draft         │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓮ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  📝 Input Query  : Em muốn làm mẫu đơn giấy cam đoan với tên là Trần Quốc Giăng ngành học thạc sĩ QTKD sdt 0896370564 địa chỉ 75 tân lập dĩ an
+  💬 Chat History : 2 messages
+     👤 Em muốn tham khảo CTDT KTQT THẠC SĨ
+     🤖 Chào bạn! Mình là Trợ lý Tư vấn Tuyển sinh của UFM. Bạn muốn tham khảo về **Chươ
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.001s)
+                                        Message  │  [Fast-Scan PASS — 0.001s] Sạch, cho qua Context Node
+                             normalized_query  │  em muốn làm mẫu đơn giấy cam đoan với tên là trần quốc giăng ngành học thạc sĩ qtkd sdt 0896370564 địa chỉ 75 tân lập dĩ an
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.001s] Sạch, cho qua Context Node
+                                    next_node  │  context
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.588s)
+                                        Message  │  Reformulated: 'Em muốn làm mẫu đơn giấy cam đoan với tê' → 'Tôi có thể làm mẫu đơn giấy cam đoan với tên Trần Quốc Giăng'
+                             standalone_query  │  Tôi có thể làm mẫu đơn giấy cam đoan với tên Trần Quốc Giăng, ngành học thạc sĩ QTKD, số điện thoại 0896370564, địa chỉ 75 Tân Lập, Dĩ An được không?
+                                    next_node  │  contextual_guard
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a+2b)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (7.249s)
+                                        Message  │  [Contextual-Guard PASS — 7.249s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 7.249s] standalone_query an toàn
+                                    next_node  │  multi_query
+
+──────────────────────────────────────────────────────────────────────────
+  🔀 [4] MULTI-QUERY NODE (Sinh biến thể)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.342s)
+                                multi_queries  │  ["Cho phép tôi tạo một giấy cam đoan với thông tin Trần Quốc G", "Tôi có thể nộp bản giấy cam đoan cho Trần Quốc Giăng, học th", "Có được phép làm giấy cam đoan bằng giấy với tên Trần Quốc G"]
+                                    next_node  │  embedding
+
+──────────────────────────────────────────────────────────────────────────
+  📊 [5] EMBEDDING NODE (BGE-M3 batch)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (3.475s)
+                                        Message  │  Nhúng 4 vectors × 1024D thành công
+                             query_embeddings  │  [4 vectors × 1024D]
+                                    next_node  │  cache
+
+──────────────────────────────────────────────────────────────────────────
+  🗄️ [6] RAG NODE (Hybrid Search DB)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.153s)
+                                        Message  │  Chunks=20, Top1Cosine=0.5861, Context=5868 chars ⚠️ CONFIDENCE FAILED
+                                  rag_context  │  [Nguồn 1 — 3. Hình thức đăng ký, 3.2. Đăng ký trực tiếp & 3.3. Thời hạn đăng ký: đến hết ngày 06/3/2026. | 3.2. Đăng ký trực tiếp & 3.3. Thời hạn đăng ký: đến hết ngày 06/3/2026.]
+# PHỤ LỤC 3
+# HỌC ÔN THI ANH VĂN
+*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHT... (5868 chars)
+                             retrieved_chunks  │  [20 items]
+                        rag_confidence_failed  │  ✓ True
+                            top1_cosine_score  │  0.5861
+                                    next_node  │  intent
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [7] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.333s)
+                                        Message  │  intent='TAO_MAU_DON' → action='PROCEED_FORM' | summary='Tạo mẫu đơn giấy cam đoan với thông tin cá nhân'
+                                       intent  │  TAO_MAU_DON
+                               intent_summary  │  Tạo mẫu đơn giấy cam đoan với thông tin cá nhân
+                                intent_action  │  PROCEED_FORM
+                         program_level_filter  │  thac_si
+                          program_name_filter  │  Quản Trị Kinh Doanh
+                                    next_node  │  form
+                              response_source  │  ""
+
+  🚦 Routing Decision: next_node='form' | intent_action='PROCEED_FORM'
+
+──────────────────────────────────────────────────────────────────────────
+  📝 [8] FORM NODE (Agent Mẫu đơn)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ⛔ BLOCKED  (0.002s)
+                                        Message  │  EXCEPTION: AttributeError: 'FormFieldDef' object has no attribute 'required'
+
+Traceback (most recent call last):
+  File "E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\test_pipeline_e2e.py", line 286, in run_node
+    new_state = node_fn(state)
+                ^^^^^^^^^^^^^^
+  File "E:\UFM - THƯƠNG MẠI\ufm_admission_bot\app\services\langgraph\nodes\proceed_form\graph.py", line 47, in form_node
+    extracted = extract_fields(chat_history, query)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\UFM - THƯƠNG MẠI\ufm_admission_bot\app\services\langgraph\nodes\proceed_form\field_extractor.py", line 31, in extract_fields
+    f"(Bắt buộc: {'Có' if f.required else 'Không'})\n"
+                          ^^^^^^^^^^
+  File "C:\Users\ASUS\anaconda3\Lib\site-packages\pydantic\main.py", line 991, in __getattr__
+    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+AttributeError: 'FormFieldDef' object has no attribute 'required'
+
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [9] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.408s)
+                                        Message  │  source='_generated', length=387 chars
+                               final_response  │  Chào bạn!
+
+Hiện tại mình chưa có thông tin chính xác về việc tạo mẫu đơn giấy cam đoan trực tiếp với các thông tin bạn cung cấp.
+
+Bạn có thể liên hệ Phòng Tuyển sinh UFM qua hotline **1900 6697** hoặc truy cập website chính thức của trường để tìm hiểu thêm về quy trình và các mẫu đơn cần thiết cho c... (387 chars)
+                              response_source  │  _generated
+                                    next_node  │  end
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : _generated
+  Intent          : TAO_MAU_DON → PROCEED_FORM
+  Response Length : 387 chars
+  Total Time      : 17.58s
+  Nodes Executed  : 9
+──────────────────────────────────────────────────────────────────────────
+
+Chào bạn!
+
+Hiện tại mình chưa có thông tin chính xác về việc tạo mẫu đơn giấy cam đoan trực tiếp với các thông tin bạn cung cấp.
+
+Bạn có thể liên hệ Phòng Tuyển sinh UFM qua hotline **1900 6697** hoặc truy cập website chính thức của trường để tìm hiểu thêm về quy trình và các mẫu đơn cần thiết cho chương trình thạc sĩ Quản trị Kinh doanh nhé.
+
+Bạn còn muốn tìm hiểu thêm điều gì không?
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ FAST SCAN NODE (Guard Layer 0-1)             │  0.001s  │   PASS   │
+  │ CONTEXT NODE (Query Reformulation)           │  1.588s  │   PASS   │
+  │ CONTEXTUAL GUARD NODE (Layer 2a+2b)          │  7.249s  │   PASS   │
+  │ MULTI-QUERY NODE (Sinh biến thể)             │  1.342s  │   PASS   │
+  │ EMBEDDING NODE (BGE-M3 batch)                │  3.475s  │   PASS   │
+  │ RAG NODE (Hybrid Search DB)                  │  0.153s  │   PASS   │
+  │ INTENT NODE (Router Phân Loại Ý Định)        │  2.333s  │   PASS   │
+  │ FORM NODE (Agent Mẫu đơn)                    │  0.002s  │ BLOCKED  │
+  │ RESPONSE NODE (Final Answer)                 │  1.408s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  17.58s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260323_003217_Em_muốn_làm_mẫu_đơn_giấy_cam_đoan_với_tê.txt
+

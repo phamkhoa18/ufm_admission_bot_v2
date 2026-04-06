@@ -1,0 +1,341 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-25 19:23:59                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_192359_CHO_TÔI_CTRINH_ĐÀO_TẠO_TIẾN_SĨ_BẠN_ĐANG.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.5-flash              │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash              │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Extract       │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Draft         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : CHO TÔI CTRINH ĐÀO TẠO TIẾN SĨ BẠN ĐANG CÓ
+  💬 Chat History : Trống (lượt đầu tiên)
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.015s)
+                                        Message  │  [Fast-Scan PASS — 0.001s] Sạch, cho qua Context Node
+                             normalized_query  │  cho tôi ctrinh đào tạo tiến sĩ bạn đang có
+                                                      >(42 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.001s] Sạch, cho qua Context Node
+                                                      >(52 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.001s)
+                                        Message  │  Reformulated → 'CHO TÔI CTRINH ĐÀO TẠO TIẾN SĨ BẠN ĐANG CÓ'
+                             standalone_query  │  CHO TÔI CTRINH ĐÀO TẠO TIẾN SĨ BẠN ĐANG CÓ
+                                                      >(42 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a Llama)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.421s)
+                                        Message  │  [Contextual-Guard PASS — 0.417s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 0.417s] standalone_query an toàn
+                                                      >(57 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [4] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.391s)
+                                        Message  │  intent='CHUONG_TRINH_DAO_TAO' → action='PROCEED_RAG_UFM_SEARCH' → next='rag_search'
+                                       intent  │  CHUONG_TRINH_DAO_TAO
+                                                      >(20 chars)
+                               intent_summary  │  Chương trình đào tạo tiến sĩ
+                                                      >(28 chars)
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                                                      >(22 chars)
+                         program_level_filter  │  tien_si
+                                                      >(7 chars)
+                          program_name_filter  │  null
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+                              response_source  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🔀 [5] MULTI-QUERY NODE (Sinh biến thể)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.414s)
+                                        Message  │  Sinh 3 biến thể
+                                multi_queries  │  [3 items]
+                                                         [0] "Các chương trình tiến sĩ hiện có tại UFM"
+                                                         [1] "UFM đang đào tạo những ngành tiến sĩ nào"
+                                                         [2] "Thông tin về các khóa học tiến sĩ của UFM"
+
+──────────────────────────────────────────────────────────────────────────
+  📊 [6] EMBEDDING NODE (BGE-M3 batch)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (3.261s)
+                                        Message  │  Nhúng 4 vectors × 1024D
+                             query_embeddings  │  [4 vectors × 1024D]
+
+──────────────────────────────────────────────────────────────────────────
+  🗄️ [7] RAG NODE (Hybrid Search DB)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (5.071s)
+                                        Message  │  Chunks=4, Context=2588 chars
+                                  rag_context  │  [Nguồn 1 — Tài liệu: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md | Số: /185/TB-ĐHTCM | 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ | Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026
+[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]
+[Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ]
+
+Viện Đào tạo sau đại học – Trường Đại học Tài chính - Marketing
+Phòng D.006, số 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.
+Tư vấn tuyển sinh:
+Ngành Tài chính – Ngân hàng: 0967.657.532 - tvtuan@ufm.edu.vn (Thầy Tuấn)
+Ngành Quản trị kinh doanh: 0909.581.135 - mydieu@ufm.edu.vn (Cô Diệu)
+Ngành Quản lý kinh tế: 0343.843.868 – hs.nam@ufm.edu.vn (Thầy Nam)
+Website: http://daotaosdh.ufm.edu.vn/
+Email: tuyensinhsaudaihoc@ufm.edu.vn.
+Các thông tin chi tiết khác, vui lòng tham khảo từ trang chủ Viện Đào tạo sau đại học, hoặc liên hệ trực tiếp để được tư vấn và giải đáp.
+
+---
+
+[Nguồn 2 — Tài liệu: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md | Số: /185/TB-ĐHTCM | KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH & CÁC PHỤ LỤC | Mục: KẾ HOACH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH & CÁC PHỤ LỤC | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026
+[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]
+[Mục: CÁC PHỤ LỤC > KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH]
+
+Cơ sở đào tạo: [**]
+Họ và tên nghiên cứu sinh: []
+Tên đề tài: [*]
+Ngành đào tạo: []
+Mã ngành đào tạo: [***____________________________________________________________________]
+
+|Năm học|Nội dung học tập, nghiên cứu|Khối lượng học tập, nghiên cứu đăng ký|Kết quả dự kiến|
+|-|-|-|-|
+|Năm thứ 1|*Các học phần về chuyên môn bổ sung (nếu có)*|*10 - 12 tín chỉ*|*Chứng nhận kết thúc học phần*|
+||*Các học phần về phương pháp nghiên cứu*|*04 - 06 tín chỉ*|*Chứng nhận kết thúc học phần*|
+||*Thực hiện phần 1 của Luận án*|*đến 24 tín chỉ*|*Chương Tổng quan về vấn đề nghiên cứu, phương pháp nghiên cứu,...*|
+|Năm thứ 2|*Thực hiện phần 2 của Luận án*|*đến 30 tín chỉ*|*Luận án và các bài công bố,...*|
+|Năm thứ 3|*Thực hiện phần 3 của Luận án*|*Số tín chỉ còn lại của chương trình 04 năm*|*Luận án và các bài công bố,...*|
+
+
+
+<u>*Lưu ý:*</u> *Phần in nghiêng là ví dụ về các nội dung trong kế hoạch học tập, nghiên cứu toàn khóa. Kế hoạch cụ thể của nghiên cứu sinh được xây dựng căn cứ vào quy định của cơ sở đào tạo về chương trình đào tạo tiến sĩ đã công bố.*
+
+**Phụ lục I: Kế hoạch học tập, nghiên cứu toàn khóa của nghiên cứu sinh**
+*(Kèm theo Thông báo số 185 /TB-ĐHTCM ngày 15 /01/2026)*
+                                                      >(2588 chars)
+                             retrieved_chunks  │  [4 items]
+                                                         [0] {"chunk_id": "7cbe1ebd-ab8d-444f-a697-29a3ecda2182", "chunk_level": "child", "parent_id": "6646db5c-916d-4327-9692-b0ad5ee4ec63", "section_path": "9. Địa chỉ liên hệ đăng ký và nộp hồ sơ", "program_name": null, "score": 0.6307902116054434, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ]\n\nViện Đào tạo sau đại học – Trườ", "source": "vector", "rrf_score": 0.01639344262295082}
+                                                         [1] {"chunk_id": "6646db5c-916d-4327-9692-b0ad5ee4ec63", "chunk_level": "parent", "parent_id": null, "section_path": "9. Địa chỉ liên hệ đăng ký và nộp hồ sơ", "program_name": null, "score": 0.6307902116054434, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ]\n\nViện Đào tạo sau đại học – Trườ", "source": "vector", "rrf_score": 0.016129032258064516}
+                                                         [2] {"chunk_id": "5d1a3abf-5cfb-47c9-8a32-72567c21d83b", "chunk_level": "parent", "parent_id": null, "section_path": "KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH & CÁC PHỤ LỤC", "program_name": null, "score": 0.6058663960774912, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: CÁC PHỤ LỤC > KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH]", "source": "vector", "rrf_score": 0.015873015873015872}
+                                                         [3] {"chunk_id": "836727d9-7139-4eca-8956-238e7e24c773", "chunk_level": "child", "parent_id": "5d1a3abf-5cfb-47c9-8a32-72567c21d83b", "section_path": "KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH & CÁC PHỤ LỤC", "program_name": null, "score": 0.580039995313883, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH & CÁC PHỤ LỤC]", "source": "vector", "rrf_score": 0.015625}
+
+──────────────────────────────────────────────────────────────────────────
+  🌐 [8] RAG SEARCH PIPELINE (Evaluator + Web Search)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.002s)
+                                        Message  │  cache=MISS, citations=0
+                           ufm_search_queries  │  null
+                              pr_search_query  │  null
+                           web_search_results  │  null
+                         web_search_citations  │  null
+                             search_cache_hit  │  ✗ False
+                      search_cache_similarity  │  0.0000
+                               final_response  │  [Nguồn 1 — Tài liệu: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md | Số: /185/TB-ĐHTCM | 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ | Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026
+[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]
+[Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ]
+
+Viện Đào tạo sau đại học – Trường Đại học Tài chính - Marketing
+Phòng D.006, số 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.
+Tư vấn tuyển sinh:
+Ngành Tài chính – Ngân hàng: 0967.657.532 - tvtuan@ufm.edu.vn (Thầy Tuấn)
+Ngành Quản trị kinh doanh: 0909.581.135 - mydieu@ufm.edu.vn (Cô Diệu)
+Ngành Quản lý kinh tế: 0343.843.868 – hs.nam@ufm.edu.vn (Thầy Nam)
+Website: http://daotaosdh.ufm.edu.vn/
+Email: tuyensinhsaudaihoc@ufm.edu.vn.
+Các thông tin chi tiết khác, vui lòng tham khảo từ trang chủ Viện Đào tạo sau đại học, hoặc liên hệ trực tiếp để được tư vấn và giải đáp.
+
+---
+
+[Nguồn 2 — Tài liệu: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md | Số: /185/TB-ĐHTCM | KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH & CÁC PHỤ LỤC | Mục: KẾ HOACH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH & CÁC PHỤ LỤC | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026
+[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]
+[Mục: CÁC PHỤ LỤC > KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH]
+
+Cơ sở đào tạo: [**]
+Họ và tên nghiên cứu sinh: []
+Tên đề tài: [*]
+Ngành đào tạo: []
+Mã ngành đào tạo: [***____________________________________________________________________]
+
+|Năm học|Nội dung học tập, nghiên cứu|Khối lượng học tập, nghiên cứu đăng ký|Kết quả dự kiến|
+|-|-|-|-|
+|Năm thứ 1|*Các học phần về chuyên môn bổ sung (nếu có)*|*10 - 12 tín chỉ*|*Chứng nhận kết thúc học phần*|
+||*Các học phần về phương pháp nghiên cứu*|*04 - 06 tín chỉ*|*Chứng nhận kết thúc học phần*|
+||*Thực hiện phần 1 của Luận án*|*đến 24 tín chỉ*|*Chương Tổng quan về vấn đề nghiên cứu, phương pháp nghiên cứu,...*|
+|Năm thứ 2|*Thực hiện phần 2 của Luận án*|*đến 30 tín chỉ*|*Luận án và các bài công bố,...*|
+|Năm thứ 3|*Thực hiện phần 3 của Luận án*|*Số tín chỉ còn lại của chương trình 04 năm*|*Luận án và các bài công bố,...*|
+
+
+
+<u>*Lưu ý:*</u> *Phần in nghiêng là ví dụ về các nội dung trong kế hoạch học tập, nghiên cứu toàn khóa. Kế hoạch cụ thể của nghiên cứu sinh được xây dựng căn cứ vào quy định của cơ sở đào tạo về chương trình đào tạo tiến sĩ đã công bố.*
+
+**Phụ lục I: Kế hoạch học tập, nghiên cứu toàn khóa của nghiên cứu sinh**
+*(Kèm theo Thông báo số 185 /TB-ĐHTCM ngày 15 /01/2026)*
+                                                      >(2588 chars)
+                              response_source  │  rag_db_only
+                                                      >(11 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [9] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (5.644s)
+                                        Message  │  source='rag_db_only_generated', length=2368 chars
+                               final_response  │  Chào bạn nhé! 🎓 Mình là Trợ lý Tuyển sinh UFM đây, rất vui được hỗ trợ bạn tìm hiểu về chương trình đào tạo tiến sĩ của trường mình.
+
+UFM hiện đang tuyển sinh trình độ tiến sĩ với các ngành học hấp dẫn, tập trung vào lĩnh vực kinh tế và tài chính. Cụ thể, bạn có thể tham khảo các ngành sau:
+
+*   **Tài chính – Ngân hàng**
+*   **Quản trị kinh doanh**
+*   **Quản lý kinh tế**
+
+Về kế hoạch học tập và nghiên cứu, chương trình tiến sĩ tại UFM được thiết kế để trang bị cho nghiên cứu sinh kiến thức chuyên sâu và kỹ năng nghiên cứu đỉnh cao. Dưới đây là khung kế hoạch học tập dự kiến mà bạn có thể tham khảo [Nguồn 2 — Tài liệu: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]:
+
+*   **Năm thứ 1:**
+    *   Học các học phần chuyên môn bổ sung (nếu có): khoảng **10 - 12 tín chỉ**.
+    *   Học các học phần về phương pháp nghiên cứu: khoảng **04 - 06 tín chỉ**.
+    *   Bắt đầu thực hiện phần 1 của Luận án (Chương Tổng quan về vấn đề nghiên cứu, phương pháp nghiên cứu,...): lên đến **24 tín chỉ**.
+*   **Năm thứ 2:**
+    *   Tiếp tục thực hiện phần 2 của Luận án (Luận án và các bài công bố,...): lên đến **30 tín chỉ**.
+*   **Năm thứ 3:**
+    *   Hoàn thành phần 3 của Luận án (Luận án và các bài công bố,...) với số tín chỉ còn lại của chương trình 04 năm.
+
+**Lưu ý:** Đây là kế hoạch học tập mẫu. Kế hoạch cụ thể của từng nghiên cứu sinh sẽ được xây dựng dựa trên quy định của UFM về chương trình đào tạo tiến sĩ đã công bố.
+
+Để có thông tin chi tiết nhất về chương trình đào tạo, quy trình tuyển sinh, và các yêu cầu cụ thể cho từng ngành, mình khuyến khích bạn liên hệ trực tiếp với Viện Đào tạo sau đại học của UFM nhé. Các thầy cô sẽ tư vấn rất tận tình đó!
+
+Bạn có thể liên hệ theo thông tin sau [Nguồn 1 — Tài liệu: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]:
+*   **Địa chỉ:** Phòng D.006, số 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.
+*   **Tư vấn tuyển sinh:**
+    *   Ngành Tài chính – Ngân hàng: **0967.657.532** (Thầy Tuấn) - tvtuan@ufm.edu.vn
+    *   Ngành Quản trị kinh doanh: **0909.581.135** (Cô Diệu) - mydieu@ufm.edu.vn
+    *   Ngành Quản lý kinh tế: **0343.843.868** (Thầy Nam) - hs.nam@ufm.edu.vn
+*   **Website:** [http://daotaosdh.ufm.edu.vn/](http://daotaosdh.ufm.edu.vn/)
+*   **Email chung:** tuyensinhsaudaihoc@ufm.edu.vn
+
+Bạn có muốn mình giải thích thêm về ngành nào cụ thể không? Hoặc có câu hỏi nào khác về UFM không nè? 🌟
+                                                      >(2368 chars)
+                              response_source  │  rag_db_only_generated
+                                                      >(21 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : rag_db_only_generated
+  Intent          : CHUONG_TRINH_DAO_TAO → PROCEED_RAG_UFM_SEARCH
+  Response Length : 2368 chars
+  Total Time      : 18.25s
+  Nodes Executed  : 9
+──────────────────────────────────────────────────────────────────────────
+
+Chào bạn nhé! 🎓 Mình là Trợ lý Tuyển sinh UFM đây, rất vui được hỗ trợ bạn tìm hiểu về chương trình đào tạo tiến sĩ của trường mình.
+
+UFM hiện đang tuyển sinh trình độ tiến sĩ với các ngành học hấp dẫn, tập trung vào lĩnh vực kinh tế và tài chính. Cụ thể, bạn có thể tham khảo các ngành sau:
+
+*   **Tài chính – Ngân hàng**
+*   **Quản trị kinh doanh**
+*   **Quản lý kinh tế**
+
+Về kế hoạch học tập và nghiên cứu, chương trình tiến sĩ tại UFM được thiết kế để trang bị cho nghiên cứu sinh kiến thức chuyên sâu và kỹ năng nghiên cứu đỉnh cao. Dưới đây là khung kế hoạch học tập dự kiến mà bạn có thể tham khảo [Nguồn 2 — Tài liệu: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]:
+
+*   **Năm thứ 1:**
+    *   Học các học phần chuyên môn bổ sung (nếu có): khoảng **10 - 12 tín chỉ**.
+    *   Học các học phần về phương pháp nghiên cứu: khoảng **04 - 06 tín chỉ**.
+    *   Bắt đầu thực hiện phần 1 của Luận án (Chương Tổng quan về vấn đề nghiên cứu, phương pháp nghiên cứu,...): lên đến **24 tín chỉ**.
+*   **Năm thứ 2:**
+    *   Tiếp tục thực hiện phần 2 của Luận án (Luận án và các bài công bố,...): lên đến **30 tín chỉ**.
+*   **Năm thứ 3:**
+    *   Hoàn thành phần 3 của Luận án (Luận án và các bài công bố,...) với số tín chỉ còn lại của chương trình 04 năm.
+
+**Lưu ý:** Đây là kế hoạch học tập mẫu. Kế hoạch cụ thể của từng nghiên cứu sinh sẽ được xây dựng dựa trên quy định của UFM về chương trình đào tạo tiến sĩ đã công bố.
+
+Để có thông tin chi tiết nhất về chương trình đào tạo, quy trình tuyển sinh, và các yêu cầu cụ thể cho từng ngành, mình khuyến khích bạn liên hệ trực tiếp với Viện Đào tạo sau đại học của UFM nhé. Các thầy cô sẽ tư vấn rất tận tình đó!
+
+Bạn có thể liên hệ theo thông tin sau [Nguồn 1 — Tài liệu: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]:
+*   **Địa chỉ:** Phòng D.006, số 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.
+*   **Tư vấn tuyển sinh:**
+    *   Ngành Tài chính – Ngân hàng: **0967.657.532** (Thầy Tuấn) - tvtuan@ufm.edu.vn
+    *   Ngành Quản trị kinh doanh: **0909.581.135** (Cô Diệu) - mydieu@ufm.edu.vn
+    *   Ngành Quản lý kinh tế: **0343.843.868** (Thầy Nam) - hs.nam@ufm.edu.vn
+*   **Website:** [http://daotaosdh.ufm.edu.vn/](http://daotaosdh.ufm.edu.vn/)
+*   **Email chung:** tuyensinhsaudaihoc@ufm.edu.vn
+
+Bạn có muốn mình giải thích thêm về ngành nào cụ thể không? Hoặc có câu hỏi nào khác về UFM không nè? 🌟
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.015s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  0.001s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a Llama)     │  0.421s  │   PASS   │
+  │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  2.391s  │   PASS   │
+  │ 🔀 MULTI-QUERY NODE (Sinh biến thể)           │  1.414s  │   PASS   │
+  │ 📊 EMBEDDING NODE (BGE-M3 batch)              │  3.261s  │   PASS   │
+  │ 🗄️ RAG NODE (Hybrid Search DB)               │  5.071s  │   PASS   │
+  │ 🌐 RAG SEARCH PIPELINE (Evaluator + Web Searc │  0.002s  │   PASS   │
+  │ 🎯 RESPONSE NODE (Final Answer)               │  5.644s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  18.25s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_192359_CHO_TÔI_CTRINH_ĐÀO_TẠO_TIẾN_SĨ_BẠN_ĐANG.txt
+

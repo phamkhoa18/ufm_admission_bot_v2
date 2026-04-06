@@ -1,0 +1,477 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-25 04:30:53                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_043053_điểm_chuẩn_2026.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/qwen/qwen3.5-flash-02-23             │
+  │ ⓫ Form Extract       │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓫ Form Draft         │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : điểm chuẩn 2026
+  💬 Chat History : Trống (lượt đầu tiên)
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.008s)
+                                        Message  │  [Fast-Scan PASS — 0.001s] Sạch, cho qua Context Node
+                             normalized_query  │  điểm chuẩn 2026
+                                                      >(15 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.001s] Sạch, cho qua Context Node
+                                                      >(52 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.001s)
+                                        Message  │  Reformulated → 'điểm chuẩn 2026'
+                             standalone_query  │  điểm chuẩn 2026
+                                                      >(15 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a+2b)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.764s)
+                                        Message  │  [Contextual-Guard PASS — 1.761s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.761s] standalone_query an toàn
+                                                      >(57 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [4] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.374s)
+                                        Message  │  intent='THONG_TIN_TUYEN_SINH' → action='PROCEED_RAG_UFM_SEARCH' → next='rag_search'
+                                       intent  │  THONG_TIN_TUYEN_SINH
+                                                      >(20 chars)
+                               intent_summary  │  điểm chuẩn 2026
+                                                      >(15 chars)
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                                                      >(22 chars)
+                         program_level_filter  │  null
+                          program_name_filter  │  null
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+                              response_source  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🔀 [5] MULTI-QUERY NODE (Sinh biến thể)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.327s)
+                                        Message  │  Sinh 3 biến thể
+                                multi_queries  │  [3 items]
+                                                         [0] "Điểm trúng tuyển Đại học UFM năm 2026"
+                                                         [1] "Ngưỡng điểm xét tuyển vào UFM năm 2026"
+                                                         [2] "Điểm sàn Đại học Tài chính - Marketing 2026"
+
+──────────────────────────────────────────────────────────────────────────
+  📊 [6] EMBEDDING NODE (BGE-M3 batch)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.827s)
+                                        Message  │  Nhúng 4 vectors × 1024D
+                             query_embeddings  │  [4 vectors × 1024D]
+
+──────────────────────────────────────────────────────────────────────────
+  🗄️ [7] RAG NODE (Hybrid Search DB)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (10.546s)
+                                        Message  │  Chunks=20, Context=7970 chars
+                                  rag_context  │  [Nguồn 1 — Tài liệu: dieukien-ngoaingu-xettuyen-ths-ts-sdh.md | Giới thiệu | Mục: Giới thiệu | Năm: 2026]
+**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**
+*(Ban hành kèm theo Quyết định số 537/QĐ-ĐHTCM ngày 24 tháng 02 năm 2026 của Hiệu trưởng Trường Đại học Tài chính – Marketing)*
+[Nguồn: dieukien-ngoaingu-xettuyen-ths-ts-sdh.md]
+[Mục: Giới thiệu]
+
+**Điều 1. Phạm vi điều chỉnh và đối tượng áp dụng**
+Văn bản này hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ đối với các khóa tuyển sinh từ năm 2026 và điều kiện tốt nghiệp đối với học viên cao học các khóa đang học tại Trường Đại học Tài chính – Marketing (sau đây gọi tắt là Trường).
+
+**Điều 2. Quy định chung**
+1. Thời hạn giá trị của các chứng chỉ tiếng Anh quốc tế là 2 năm tính từ ngày thi đến ngày học viên nộp chứng chỉ theo thông báo của Nhà trường.
+2. Các chứng chỉ tiếng Anh được quy định tại Điều 4 chỉ xuất trình và nộp một lần để được xét công nhận đạt chuẩn đầu ra.
+3. Hằng năm, Trường ban hành thông báo thể hiện các mốc thời gian xét đạt chuẩn đầu ra về năng lực ngoại ngữ. Sau khi học viên nộp văn bằng, chứng chỉ theo thông báo và được Nhà trường kiểm tra tính xác thực, Hiệu trưởng ra quyết định công nhận đạt chuẩn đầu ra về năng lực ngoại ngữ cho học viên, đáp ứng.
+
+**Điều 3. Văn bằng, chứng chỉ ngoại ngữ đủ điều kiện xét tuyển sinh đầu vào tiến sĩ**
+1. Học viên có các văn bằng, chứng chỉ đạt mức điểm được quy định tại các Khoản 2, 3, 4, 5 Điều này đủ điều kiện ngoại ngữ xét tuyển sinh đầu vào theo quy định.
+2. Bằng tốt nghiệp trình độ đại học trở lên do một cơ sở đào tạo nước ngoài, phân hiệu của cơ sở đào tạo nước ngoài ở Việt Nam hoặc cơ sở đào tạo của Việt Nam cấp cho người học toàn thời gian bằng tiếng nước ngoài;
+3. Bằng tốt nghiệp trình độ đại học ngành ngôn ngữ tiếng nước ngoài do các cơ sở đào tạo của Việt Nam cấp;
+4. Các chứng chỉ ngoại ngữ khác tương đương trình độ bậc 4 (theo khung năng ngoại ngữ 6 bậc dùng cho Việt Nam) do Bộ Giáo dục và Đào tạo công bố.
+5. Có một trong các chứng chỉ ngoại ngữ còn hiệu lực tính đến ngày đăng ký dự tuyển theo Phụ lục 1.
+
+**Điều 4. Văn bằng, chứng chỉ ngoại ngữ đủ điều kiện xét tuyển sinh đầu vào thạc sĩ**
+1. Học viên có các văn bằng, chứng chỉ đạt mức điểm được quy định tại các Khoản 2, 3, 4, 5 Điều này đủ điều kiện ngoại ngữ xét tuyển sinh đầu vào theo quy định.
+2. Bằng tốt nghiệp trình độ đại học trở lên ngành ngôn ngữ nước ngoài; hoặc bằng tốt nghiệp trình độ đại học trở lên mà chương trình được thực hiện chủ yếu bằng ngôn ngữ nước ngoài;
+
+3. Bằng tốt nghiệp trình độ đại học trở lên do Trường Đại học Tài chính – Marketing cấp trong thời gian không quá 02 năm mà chuẩn đầu ra của chương trình đã đáp ứng yêu cầu ngoại ngữ đạt trình độ Bậc 3 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam;
+
+4. Có một trong các chứng chỉ ngoại ngữ còn hiệu lực tính đến ngày đăng ký dự tuyển theo Phụ lục 2.
+
+5. Các chứng chỉ ngoại ngữ khác tương đương trình độ bậc 3 (theo khung năng ngoại ngữ 6 bậc dùng cho Việt Nam) do Bộ Giáo dục và Đào tạo công bố.
+
+---
+
+[Nguồn 2 — Tài liệu: dieukien-ngoaingu-xettuyen-ths-ts-sdh.md | Giới thiệu > **Điều 4 . Văn bằng, chứng chỉ ngoại ngữ đủ điều kiện xét tốt nghiệp thạc sĩ** | Mục: **Điều 4 . Văn bằng, chứng chỉ ngoại ngữ đủ điều kiện xét tốt nghiệp thạc sĩ** | Năm: 2026]
+**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**
+*(Ban hành kèm theo Quyết định số 537/QĐ-ĐHTCM ngày 24 tháng 02 năm 2026 của Hiệu trưởng Trường Đại học Tài chính – Marketing)*
+[Nguồn: dieukien-ngoaingu-xettuyen-ths-ts-sdh.md]
+[Mục: Giới thiệu > **Điều 4 . Văn bằng, chứng chỉ ngoại ngữ đủ điều kiện xét tốt nghiệp thạc sĩ**]
+
+1. Học viên có các văn bằng, chứng chỉ đạt mức điểm thuộc Khoản 2, Khoản 3 và Khoản 4 Điều này đủ điều kiện tốt nghiệp về ngoại ngữ theo quy định.
+
+2. Có một trong các chứng chỉ ngoại ngữ còn hiệu lực tính đến ngày đăng ký dự tuyển theo Phụ lục 3.
+
+3. Các chứng chỉ ngoại ngữ khác tương đương trình độ bậc 4 (theo khung năng ngoại ngữ 6 bậc dùng cho Việt Nam) do Bộ Giáo dục và Đào tạo công bố.
+
+4. Bằng tốt nghiệp trình độ đại học trở lên ngành ngôn ngữ nước ngoài; hoặc bằng tốt nghiệp trình độ đại học trở lên ngành khác mà chương trình được thực hiện hoàn toàn bằng ngôn ngữ nước ngoài.
+
+---
+
+[Nguồn 3 — Tài liệu: tuyensinh-trinhdo-thacsi-dot1-2026.md | Số: 186/TB-ĐHTCM | 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 7. **ĐIỀU KIỆN DỰ TUYỂN; HỒ SƠ DỰ TUYỂN (Xem chi tiết Phụ lục 1)** | Mục: 7. **ĐIỀU KIỆN DỰ TUYỂN; HỒ SƠ DỰ TUYỂN (Xem chi tiết Phụ lục 1)** | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026
+[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]
+[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 7. **ĐIỀU KIỆN DỰ TUYỂN; HỒ SƠ DỰ TUYỂN (Xem chi tiết Phụ lục 1)**]
+
+Đường dẫn xem chi tiết: https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?LoaiTin=v1UjoAIA40d2Nl0tc5EwAA
+
+---
+
+[Nguồn 4 — Tài liệu: ThS Marketing.txt | Thạc sĩ Marketing > GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING | Mục: GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING | Ngành: Marketing | Mã ngành: 8340115 | Năm: 2026]
+[Chương trình: Thạc sĩ Marketing (MKT, mkt, Marketing) | Mã ngành: 8340115]
+GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING
+
+Chương trình đào tạo Thạc sĩ ngành Marketing tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế theo hệ thống tín chỉ, cập nhật liên tục để đáp ứng nhu cầu thực tiễn của doanh nghiệp và xã hội.
+
+Năm 2026, chương trình cung cấp hai định hướng đào tạo riêng biệt để người học lựa chọn phù hợp với mục tiêu nghề nghiệp:
+
+* Định hướng Nghiên cứu: Tập trung vào năng lực nghiên cứu chuyên sâu, phát triển tư duy lý luận, phù hợp cho giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+* Định hướng Ứng dụng: Tập trung vào kỹ năng thực hành, giải quyết vấn đề thực tiễn trong kinh doanh, phù hợp cho các nhà quản lý, điều hành doanh nghiệp.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=SDmYi_9tWDH1CNuBz184Tw>
+
+---
+
+[Nguồn 5 — Tài liệu: ThS Tai chinh - Ngan hang.txt | Thạc sĩ Tài Chính – Ngân Hàng > GIỚI THƯƠNG CHƯƠNG TRÌNH NGÀNH TÀI CHÍNH – NGÂN HÀNG | Mục: GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH TÀI CHÍNH – NGÂN HÀNG | Ngành: Tài Chính – Ngân Hàng | Mã ngành: 8340201 | Năm: 2026]
+[Chương trình: Thạc sĩ Tài Chính – Ngân Hàng (TC-NH, TCNH, tc-nh, tcnh, Tài chính Ngân hàng) | Mã ngành: 8340201]
+GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH TÀI CHÍNH – NGÂN HÀNG
+
+Chương trình đào tạo thạc sĩ ngành Tài chính - Ngân hàng tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế linh hoạt theo hệ thống tín chỉ, cập nhật liên tục nhằm đáp ứng nhu cầu của người học và nhà tuyển dụng trong bối cảnh kinh tế toàn cầu.
+
+Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt để người học lựa chọn phù hợp với mục tiêu nghề nghiệp:
+
+* Định hướng Nghiên cứu: Tập trung vào phát triển tư duy hàn lâm, năng lực nghiên cứu độc lập, phát hiện và giải quyết các vấn đề lý luận chuyên sâu. Phù hợp với giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+* Định hướng Ứng dụng: Tập trung vào kỹ năng thực hành, năng lực quản trị và giải quyết các vấn đề thực tiễn tại doanh nghiệp và tổ chức. Phù hợp với các nhà quản lý, điều hành doanh nghiệp, chuyên gia tư vấn.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=SLmQz9rXVZhHO-AyP4wbRg>
+                                                      >(7970 chars)
+                             retrieved_chunks  │  [20 items]
+                                                         [0] {"chunk_id": "bcedbcdc-e13c-4dca-8084-d0c56090e367", "chunk_level": "child", "parent_id": "3f57efc0-566f-46df-9c29-3bca36a9b084", "section_path": "Giới thiệu", "program_name": null, "score": 0.5869274735450787, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "vector", "rrf_score": 0.0315136476426799}
+                                                         [1] {"chunk_id": "3f57efc0-566f-46df-9c29-3bca36a9b084", "chunk_level": "parent", "parent_id": null, "section_path": "Giới thiệu", "program_name": null, "score": 0.5844908778521181, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "vector", "rrf_score": 0.03131881575727918}
+                                                         [2] {"chunk_id": "4fb7dde6-8a5d-44f1-be90-c1d9aa058015", "chunk_level": "child", "parent_id": "3f57efc0-566f-46df-9c29-3bca36a9b084", "section_path": "Giới thiệu", "program_name": null, "score": 0.6094594830596766, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "vector", "rrf_score": 0.01639344262295082}
+                                                         [3] {"chunk_id": "90afc9c1-eccf-4fcd-b6b8-eaa2eb164054", "chunk_level": "parent", "parent_id": null, "section_path": "Giới thiệu > **Điều 4 . Văn bằng, chứng chỉ ngoại ngữ đủ điều kiện xét tốt nghiệp thạc sĩ**", "program_name": null, "score": 0.6016931354494972, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "vector", "rrf_score": 0.016129032258064516}
+                                                         [4] {"chunk_id": "b3ad2640-6d74-4949-a02d-a2b37f6214c4", "chunk_level": "child", "parent_id": "90afc9c1-eccf-4fcd-b6b8-eaa2eb164054", "section_path": "Giới thiệu > **Điều 4 . Văn bằng, chứng chỉ ngoại ngữ đủ điều kiện xét tốt nghiệp thạc sĩ**", "program_name": null, "score": 0.6016931354494972, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "vector", "rrf_score": 0.015873015873015872}
+                                                         [5] {"chunk_id": "9d82c16f-09c5-41ee-8b33-7fee6962db49", "chunk_level": "parent", "parent_id": null, "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 7. **ĐIỀU KIỆN DỰ TUYỂN; HỒ SƠ DỰ TUYỂN (Xem chi tiết Phụ lục 1)**", "program_name": null, "score": 0.5928919315338135, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 7.", "source": "vector", "rrf_score": 0.015625}
+                                                         [6] {"chunk_id": "1e42db23-57b9-42aa-9dff-bada5875089b", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Marketing > GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING", "program_name": "Marketing", "score": 0.5857707406692383, "content_preview": "[Chương trình: Thạc sĩ Marketing (MKT, mkt, Marketing) | Mã ngành: 8340115]\nGIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING\n\nChương trình đào tạo Thạc sĩ ngành Marketing tại Trường Đại học Tài chính – Marketi", "source": "vector", "rrf_score": 0.015151515151515152}
+                                                         [7] {"chunk_id": "18135cd9-fda7-4ddf-92a9-689f14b9bd1e", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Tài Chính – Ngân Hàng > GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH TÀI CHÍNH – NGÂN HÀNG", "program_name": "Tài Chính – Ngân Hàng", "score": 0.5840204606044028, "content_preview": "[Chương trình: Thạc sĩ Tài Chính – Ngân Hàng (TC-NH, TCNH, tc-nh, tcnh, Tài chính Ngân hàng) | Mã ngành: 8340201]\nGIỚI THIỆU CHƯƠNG TRÌNH NGÀNH TÀI CHÍNH – NGÂN HÀNG\n\nChương trình đào tạo thạc sĩ ngàn", "source": "vector", "rrf_score": 0.014705882352941176}
+                                                         [8] {"chunk_id": "17449e37-fb73-4365-aaaa-b2253e6f3aad", "chunk_level": "child", "parent_id": "1e42db23-57b9-42aa-9dff-bada5875089b", "section_path": "Thạc sĩ Marketing > GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING", "program_name": "Marketing", "score": 0.576618815862012, "content_preview": "[Chương trình: Thạc sĩ Marketing (MKT, mkt, Marketing) | Mã ngành: 8340115] — GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING\n\nChương trình đào tạo Thạc sĩ ngành Marketing tại Trường Đại học Tài chính – Marke", "source": "vector", "rrf_score": 0.014492753623188406}
+                                                         [9] {"chunk_id": "eb4549aa-55aa-4978-8730-edde1346077d", "chunk_level": "parent", "parent_id": null, "section_path": "1. Đối tượng > **❖ Đối với ngành Marketing:**", "program_name": null, "score": 0.5707364338197459, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng > **❖ Đối với ngành Marketing:**]\n\n- Ngành gần: các", "source": "vector", "rrf_score": 0.014285714285714285}
+                                                         [10] {"chunk_id": "4206fd8d-0e48-47bc-9d4c-b22d7b8e7ccf", "chunk_level": "child", "parent_id": "eb4549aa-55aa-4978-8730-edde1346077d", "section_path": "1. Đối tượng > **❖ Đối với ngành Marketing:**", "program_name": null, "score": 0.5707364338197459, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng > **❖ Đối với ngành Marketing:**]\n\n- Ngành gần: các", "source": "vector", "rrf_score": 0.014084507042253521}
+                                                         [11] {"chunk_id": "e4a96bc1-aba3-4620-9f82-487a76f91e62", "chunk_level": "parent", "parent_id": null, "section_path": "Giới thiệu > **Điều 6. Điều khoản thi hành**", "program_name": null, "score": 0.5706485169739425, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "vector", "rrf_score": 0.013888888888888888}
+                                                         [12] {"chunk_id": "47f2322e-013c-4547-b754-b87ccb3ef974", "chunk_level": "child", "parent_id": "e4a96bc1-aba3-4620-9f82-487a76f91e62", "section_path": "Giới thiệu > **Điều 6. Điều khoản thi hành**", "program_name": null, "score": 0.5706485169739425, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "vector", "rrf_score": 0.0136986301369863}
+                                                         [13] {"chunk_id": "a892760f-1681-4b16-aba8-def839fc5e72", "chunk_level": "parent", "parent_id": null, "section_path": "3. Hình thức đăng ký > 3.2. Đăng ký trực tiếp & 3.3. Thời hạn đăng ký: đến hết ngày 06/3/2026.", "program_name": null, "score": 0.5695936340335835, "content_preview": "# PHỤ LỤC 3\n# HỌC ÔN THI ANH VĂN\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc3.md]\n[Mục: 3. Hình thức đăng ký > 3.2. Đăng ký trực ti", "source": "vector", "rrf_score": 0.013513513513513514}
+                                                         [14] {"chunk_id": "bb027c0c-b2db-4f7e-933d-d31963154a8f", "chunk_level": "parent", "parent_id": null, "section_path": "Giới thiệu > **Điều 5. Xử lý vi phạm**", "program_name": null, "score": 0.5644611120224039, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "vector", "rrf_score": 0.013333333333333334}
+                                                         [15] {"chunk_id": "cb879016-3d5b-4cb9-a7b3-83a5ef93c92c", "chunk_level": "parent", "parent_id": null, "section_path": "1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.2. Thí sinh tốt nghiệp đại học thuộc ngành gần (cùng lĩnh vực kinh doanh và quản lý), ngành khác (khác lĩnh vực nhưng có liên quan trực tiếp đến lĩnh vực quản trị, quản lý) với ngành dự tuyển cần học Bổ sung kiến thức. Danh mục ngành đúng, ngành gần, ngành khác và môn học Bổ sung kiến thức được nêu ở Phụ lục 2. & 1.3. Các văn bằng, chứng chỉ chứng minh năng lực ngoại ngữ từ Bậc 3 trở lên:", "program_name": null, "score": 0.5631951354029704, "content_preview": "# PHỤ LỤC 1\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc1.md]\n[Mục: 1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.2. Thí sinh tốt nghiệp đạ", "source": "vector", "rrf_score": 0.013157894736842105}
+                                                         [16] {"chunk_id": "c3628a96-d39d-4538-b7c3-5f15062f260e", "chunk_level": "child", "parent_id": "18135cd9-fda7-4ddf-92a9-689f14b9bd1e", "section_path": "Thạc sĩ Tài Chính – Ngân Hàng > GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH TÀI CHÍNH – NGÂN HÀNG", "program_name": "Tài Chính – Ngân Hàng", "score": 0.563180830289077, "content_preview": "[Chương trình: Thạc sĩ Tài Chính – Ngân Hàng (TC-NH, TCNH, tc-nh, tcnh, Tài chính Ngân hàng) | Mã ngành: 8340201] — GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH TÀI CHÍNH – NGÂN HÀNG\n\nChương trình đào tạo thạc sĩ ng", "source": "vector", "rrf_score": 0.012987012987012988}
+                                                         [17] {"chunk_id": "7cbe1ebd-ab8d-444f-a697-29a3ecda2182", "chunk_level": "child", "parent_id": "6646db5c-916d-4327-9692-b0ad5ee4ec63", "section_path": "9. Địa chỉ liên hệ đăng ký và nộp hồ sơ", "program_name": null, "score": 0.5617718696594278, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ]\n\nViện Đào tạo sau đại học – Trườ", "source": "vector", "rrf_score": 0.01282051282051282}
+                                                         [18] {"chunk_id": "6646db5c-916d-4327-9692-b0ad5ee4ec63", "chunk_level": "parent", "parent_id": null, "section_path": "9. Địa chỉ liên hệ đăng ký và nộp hồ sơ", "program_name": null, "score": 0.5617718696594278, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ]\n\nViện Đào tạo sau đại học – Trườ", "source": "vector", "rrf_score": 0.012658227848101266}
+                                                         [19] {"chunk_id": "f092955d-1e19-4d43-b54e-35c04067f09d", "chunk_level": "parent", "parent_id": null, "section_path": "5. Hồ sơ dự tuyển", "program_name": null, "score": 0.5608639048500215, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 5. Hồ sơ dự tuyển]\n\na) Đơn xin dự tuyển *(theo mẫu do Trường quy định)*.\n", "source": "vector", "rrf_score": 0.0125}
+
+──────────────────────────────────────────────────────────────────────────
+  🌐 [8] RAG SEARCH PIPELINE (Evaluator + Web Search)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (14.766s)
+                                        Message  │  cache=MISS, citations=4
+                           ufm_search_queries  │  [2 items]
+                                                         [0] "Điểm chuẩn tuyển sinh 2026"
+                                                         [1] "Thông báo điểm trúng tuyển 2026"
+                              pr_search_query  │  null
+                           web_search_results  │  Tính đến tháng 3 năm 2026, Trường Đại học Tài chính - Marketing (UFM) đã công bố thông tin tuyển sinh đại học chính quy năm 2026, bao gồm các phương thức xét tuyển và ngưỡng đầu vào, nhưng *chưa có thông báo chính thức về điểm chuẩn trúng tuyển cụ thể cho từng ngành năm 2026*.
+
+Dưới đây là các thông tin đã được công bố:
+
+*   **Tổng chỉ tiêu tuyển sinh dự kiến năm 2026** là 8.000 chỉ tiêu, áp dụng 05 phương thức xét tuyển.
+*   **Ngưỡng đầu vào (điểm sàn) năm 2026**:
+    *   16 điểm theo thang điểm 30 cho tất cả các phương thức xét tuyển (trừ ngành Luật Kinh tế theo quy định của Bộ GD&ĐT).
+    *   Tổng điểm 03 môn thi kỳ thi tốt nghiệp THPT năm 2026 theo tổ hợp xét tuyển đạt tối thiểu 15 điểm theo thang điểm 30.
+*   **Phương thức xét tuyển năm 2026** bao gồm 5 phương thức:
+    1.  Xét tuyển thẳng theo quy định của Bộ Giáo dục và Đào tạo (mã phương thức: 301).
+    2.  Xét tuyển dựa trên kết quả học tập cấp THPT (học bạ) (mã phương thức: 200).
+    3.  Xét tuyển dựa vào kết quả kỳ thi Đánh giá năng lực của Đại học Quốc gia Thành phố Hồ Chí Minh năm 2026 (mã phương thức: 402).
+    4.  Xét tuyển dựa vào kết quả kỳ thi Đánh giá đầu vào đại học trên máy tính (Kỳ thi V-SAT) năm 2026 (mã phương thức: 416).
+    5.  Xét tuyển dựa vào kết quả kỳ thi tốt nghiệp THPT năm 2026 (mã phương thức: 100).
+*   **Cách tính điểm xét tuyển**: Điểm xét tuyển được tính theo thang điểm 30 và không vượt quá 30 điểm; các loại điểm trong công thức được làm tròn đến hai chữ số thập phân; áp dụng điểm ưu tiên đối tượng, khu vực và điểm cộng (nếu có) theo quy định.
+*   **Môn Toán nhân hệ số 2**: Tất cả các tổ hợp tuyển sinh năm 2026 của UFM đều có môn Toán, và điểm môn Toán sẽ được nhân hệ số 2. Thang điểm xét tuyển chuyển sang 40 thay vì 30 như những năm trước. Riêng ngành Luật Kinh tế, thí sinh phải có điểm môn Toán (chưa nhân hệ số) đạt từ 6 trở lên.
+
+**Lưu ý**: Thông tin về điểm chuẩn trúng tuyển cụ thể cho từng ngành năm 2026 hiện đang được cập nhật và sẽ được công bố sau khi các kỳ thi và đợt xét tuyển diễn ra.
+                                                      >(2016 chars)
+                         web_search_citations  │  [4 items]
+                                                         [0] {"text": "ufm.edu.vn", "url": "https://ufm.edu.vn/ufm-cong-bo-thong-tin-tuyen-sinh-dai-hoc-chinh-quy-nam-2026-1964.html"}
+                                                         [1] {"text": "tuyensinh247.com", "url": "https://diemthi.tuyensinh247.com/de-an-tuyen-sinh/dai-hoc-tai-chinh-marketing-DMS.html"}
+                                                         [2] {"text": "laodong.vn", "url": "https://laodong.vn/tuyen-sinh/tuyen-sinh-2026-loat-truong-dai-hoc-cong-bo-phuong-an-xet-tuyen-1648630.ldo"}
+                                                         [3] {"text": "giaphugroup.com", "url": "https://diemthi.giaphugroup.com/diem-chuan/truong-dai-hoc-tai-chinh-marketing-dms/2026/"}
+                             search_cache_hit  │  ✗ False
+                      search_cache_similarity  │  0.0000
+                               final_response  │  [DỮ LIỆU NỘI BỘ]
+[Nguồn 1 — Tài liệu: dieukien-ngoaingu-xettuyen-ths-ts-sdh.md | Giới thiệu | Mục: Giới thiệu | Năm: 2026]
+**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**
+*(Ban hành kèm theo Quyết định số 537/QĐ-ĐHTCM ngày 24 tháng 02 năm 2026 của Hiệu trưởng Trường Đại học Tài chính – Marketing)*
+[Nguồn: dieukien-ngoaingu-xettuyen-ths-ts-sdh.md]
+[Mục: Giới thiệu]
+
+**Điều 1. Phạm vi điều chỉnh và đối tượng áp dụng**
+Văn bản này hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ đối với các khóa tuyển sinh từ năm 2026 và điều kiện tốt nghiệp đối với học viên cao học các khóa đang học tại Trường Đại học Tài chính – Marketing (sau đây gọi tắt là Trường).
+
+**Điều 2. Quy định chung**
+1. Thời hạn giá trị của các chứng chỉ tiếng Anh quốc tế là 2 năm tính từ ngày thi đến ngày học viên nộp chứng chỉ theo thông báo của Nhà trường.
+2. Các chứng chỉ tiếng Anh được quy định tại Điều 4 chỉ xuất trình và nộp một lần để được xét công nhận đạt chuẩn đầu ra.
+3. Hằng năm, Trường ban hành thông báo thể hiện các mốc thời gian xét đạt chuẩn đầu ra về năng lực ngoại ngữ. Sau khi học viên nộp văn bằng, chứng chỉ theo thông báo và được Nhà trường kiểm tra tính xác thực, Hiệu trưởng ra quyết định công nhận đạt chuẩn đầu ra về năng lực ngoại ngữ cho học viên, đáp ứng.
+
+**Điều 3. Văn bằng, chứng chỉ ngoại ngữ đủ điều kiện xét tuyển sinh đầu vào tiến sĩ**
+1. Học viên có các văn bằng, chứng chỉ đạt mức điểm được quy định tại các Khoản 2, 3, 4, 5 Điều này đủ điều kiện ngoại ngữ xét tuyển sinh đầu vào theo quy định.
+2. Bằng tốt nghiệp trình độ đại học trở lên do một cơ sở đào tạo nước ngoài, phân hiệu của cơ sở đào tạo nước ngoài ở Việt Nam hoặc cơ sở đào tạo của Việt Nam cấp cho người học toàn thời gian bằng tiếng nước ngoài;
+3. Bằng tốt nghiệp trình độ đại học ngành ngôn ngữ tiếng nước ngoài do các cơ sở đào tạo của Việt Nam cấp;
+4. Các chứng chỉ ngoại ngữ khác tương đương trình độ bậc 4 (theo khung năng ngoại ngữ 6 bậc dùng cho Việt Nam) do Bộ Giáo dục và Đào tạo công bố.
+5. Có một trong các chứng chỉ ngoại ngữ còn hiệu lực tính đến ngày đăng ký dự tuyển theo Phụ lục 1.
+
+**Điều 4. Văn bằng, chứng chỉ ngoại ngữ đủ điều kiện xét tuyển sinh đầu vào thạc sĩ**
+1. Học viên có các văn bằng, chứng chỉ đạt mức điểm được quy định tại các Khoản 2, 3, 4, 5 Điều này đủ điều kiện ngoại ngữ xét tuyển sinh đầu vào theo quy định.
+2. Bằng tốt nghiệp trình độ đại học trở lên ngành ngôn ngữ nước ngoài; hoặc bằng tốt nghiệp trình độ đại học trở lên mà chương trình được thực hiện chủ yếu bằng ngôn ngữ nước ngoài;
+
+3. Bằng tốt nghiệp trình độ đại học trở lên do Trường Đại học Tài chính – Marketing cấp trong thời gian không quá 02 năm mà chuẩn đầu ra của chương trình đã đáp ứng yêu cầu ngoại ngữ đạt trình độ Bậc 3 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam;
+
+4. Có một trong các chứng chỉ ngoại ngữ còn hiệu lực tính đến ngày đăng ký dự tuyển theo Phụ lục 2.
+
+5. Các chứng chỉ ngoại ngữ khác tương đương trình độ bậc 3 (theo khung năng ngoại ngữ 6 bậc dùng cho Việt Nam) do Bộ Giáo dục và Đào tạo công bố.
+
+---
+
+[Nguồn 2 — Tài liệu: dieukien-ngoaingu-xettuyen-ths-ts-sdh.md | Giới thiệu > **Điều 4 . Văn bằng, chứng chỉ ngoại ngữ đủ điều kiện xét tốt nghiệp thạc sĩ** | Mục: **Điều 4 . Văn bằng, chứng chỉ ngoại ngữ đủ điều kiện xét tốt nghiệp thạc sĩ** | Năm: 2026]
+**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**
+*(Ban hành kèm theo Quyết định số 537/QĐ-ĐHTCM ngày 24 tháng 02 năm 2026 của Hiệu trưởng Trường Đại học Tài chính – Marketing)*
+[Nguồn: dieukien-ngoaingu-xettuyen-ths-ts-sdh.md]
+[Mục: Giới thiệu > **Điều 4 . Văn bằng, chứng chỉ ngoại ngữ đủ điều kiện xét tốt nghiệp thạc sĩ**]
+
+1. Học viên có các văn bằng, chứng chỉ đạt mức điểm thuộc Khoản 2, Khoản 3 và Khoản 4 Điều này đủ điều kiện tốt nghiệp về ngoại ngữ theo quy định.
+
+2. Có một trong các chứng chỉ ngoại ngữ còn hiệu lực tính đến ngày đăng ký dự tuyển theo Phụ lục 3.
+
+3. Các chứng chỉ ngoại ngữ khác tương đương trình độ bậc 4 (theo khung năng ngoại ngữ 6 bậc dùng cho Việt Nam) do Bộ Giáo dục và Đào tạo công bố.
+
+4. Bằng tốt nghiệp trình độ đại học trở lên ngành ngôn ngữ nước ngoài; hoặc bằng tốt nghiệp trình độ đại học trở lên ngành khác mà chương trình được thực hiện hoàn toàn bằng ngôn ngữ nước ngoài.
+
+---
+
+[Nguồn 3 — Tài liệu: tuyensinh-trinhdo-thacsi-dot1-2026.md | Số: 186/TB-ĐHTCM | 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 7. **ĐIỀU KIỆN DỰ TUYỂN; HỒ SƠ DỰ TUYỂN (Xem chi tiết Phụ lục 1)** | Mục: 7. **ĐIỀU KIỆN DỰ TUYỂN; HỒ SƠ DỰ TUYỂN (Xem chi tiết Phụ lục 1)** | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026
+[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]
+[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 7. **ĐIỀU KIỆN DỰ TUYỂN; HỒ SƠ DỰ TUYỂN (Xem chi tiết Phụ lục 1)**]
+
+Đường dẫn xem chi tiết: https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?LoaiTin=v1UjoAIA40d2Nl0tc5EwAA
+
+---
+
+[Nguồn 4 — Tài liệu: ThS Marketing.txt | Thạc sĩ Marketing > GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING | Mục: GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING | Ngành: Marketing | Mã ngành: 8340115 | Năm: 2026]
+[Chương trình: Thạc sĩ Marketing (MKT, mkt, Marketing) | Mã ngành: 8340115]
+GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING
+
+Chương trình đào tạo Thạc sĩ ngành Marketing tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế theo hệ thống tín chỉ, cập nhật liên tục để đáp ứng nhu cầu thực tiễn của doanh nghiệp và xã hội.
+
+Năm 2026, chương trình cung cấp hai định hướng đào tạo riêng biệt để người học lựa chọn phù hợp với mục tiêu nghề nghiệp:
+
+* Định hướng Nghiên cứu: Tập trung vào năng lực nghiên cứu chuyên sâu, phát triển tư duy lý luận, phù hợp cho giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+* Định hướng Ứng dụng: Tập trung vào kỹ năng thực hành, giải quyết vấn đề thực tiễn trong kinh doanh, phù hợp cho các nhà quản lý, điều hành doanh nghiệp.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=SDmYi_9tWDH1CNuBz184Tw>
+
+---
+
+[Nguồn 5 — Tài liệu: ThS Tai chinh - Ngan hang.txt | Thạc sĩ Tài Chính – Ngân Hàng > GIỚI THƯƠNG CHƯƠNG TRÌNH NGÀNH TÀI CHÍNH – NGÂN HÀNG | Mục: GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH TÀI CHÍNH – NGÂN HÀNG | Ngành: Tài Chính – Ngân Hàng | Mã ngành: 8340201 | Năm: 2026]
+[Chương trình: Thạc sĩ Tài Chính – Ngân Hàng (TC-NH, TCNH, tc-nh, tcnh, Tài chính Ngân hàng) | Mã ngành: 8340201]
+GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH TÀI CHÍNH – NGÂN HÀNG
+
+Chương trình đào tạo thạc sĩ ngành Tài chính - Ngân hàng tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế linh hoạt theo hệ thống tín chỉ, cập nhật liên tục nhằm đáp ứng nhu cầu của người học và nhà tuyển dụng trong bối cảnh kinh tế toàn cầu.
+
+Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt để người học lựa chọn phù hợp với mục tiêu nghề nghiệp:
+
+* Định hướng Nghiên cứu: Tập trung vào phát triển tư duy hàn lâm, năng lực nghiên cứu độc lập, phát hiện và giải quyết các vấn đề lý luận chuyên sâu. Phù hợp với giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+* Định hướng Ứng dụng: Tập trung vào kỹ năng thực hành, năng lực quản trị và giải quyết các vấn đề thực tiễn tại doanh nghiệp và tổ chức. Phù hợp với các nhà quản lý, điều hành doanh nghiệp, chuyên gia tư vấn.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=SLmQz9rXVZhHO-AyP4wbRg>
+
+[DỮ LIỆU TỪ WEB]
+Tính đến tháng 3 năm 2026, Trường Đại học Tài chính - Marketing (UFM) đã công bố thông tin tuyển sinh đại học chính quy năm 2026, bao gồm các phương thức xét tuyển và ngưỡng đầu vào, nhưng *chưa có thông báo chính thức về điểm chuẩn trúng tuyển cụ thể cho từng ngành năm 2026*.
+
+Dưới đây là các thông tin đã được công bố:
+
+*   **Tổng chỉ tiêu tuyển sinh dự kiến năm 2026** là 8.000 chỉ tiêu, áp dụng 05 phương thức xét tuyển.
+*   **Ngưỡng đầu vào (điểm sàn) năm 2026**:
+    *   16 điểm theo thang điểm 30 cho tất cả các phương thức xét tuyển (trừ ngành Luật Kinh tế theo quy định của Bộ GD&ĐT).
+    *   Tổng điểm 03 môn thi kỳ thi tốt nghiệp THPT năm 2026 theo tổ hợp xét tuyển đạt tối thiểu 15 điểm theo thang điểm 30.
+*   **Phương thức xét tuyển năm 2026** bao gồm 5 phương thức:
+    1.  Xét tuyển thẳng theo quy định của Bộ Giáo dục và Đào tạo (mã phương thức: 301).
+    2.  Xét tuyển dựa trên kết quả học tập cấp THPT (học bạ) (mã phương thức: 200).
+    3.  Xét tuyển dựa vào kết quả kỳ thi Đánh giá năng lực của Đại học Quốc gia Thành phố Hồ Chí Minh năm 2026 (mã phương thức: 402).
+    4.  Xét tuyển dựa vào kết quả kỳ thi Đánh giá đầu vào đại học trên máy tính (Kỳ thi V-SAT) năm 2026 (mã phương thức: 416).
+    5.  Xét tuyển dựa vào kết quả kỳ thi tốt nghiệp THPT năm 2026 (mã phương thức: 100).
+*   **Cách tính điểm xét tuyển**: Điểm xét tuyển được tính theo thang điểm 30 và không vượt quá 30 điểm; các loại điểm trong công thức được làm tròn đến hai chữ số thập phân; áp dụng điểm ưu tiên đối tượng, khu vực và điểm cộng (nếu có) theo quy định.
+*   **Môn Toán nhân hệ số 2**: Tất cả các tổ hợp tuyển sinh năm 2026 của UFM đều có môn Toán, và điểm môn Toán sẽ được nhân hệ số 2. Thang điểm xét tuyển chuyển sang 40 thay vì 30 như những năm trước. Riêng ngành Luật Kinh tế, thí sinh phải có điểm môn Toán (chưa nhân hệ số) đạt từ 6 trở lên.
+
+**Lưu ý**: Thông tin về điểm chuẩn trúng tuyển cụ thể cho từng ngành năm 2026 hiện đang được cập nhật và sẽ được công bố sau khi các kỳ thi và đợt xét tuyển diễn ra.
+
+[NGUỒN TRÍCH DẪN]
+- [ufm.edu.vn](https://ufm.edu.vn/ufm-cong-bo-thong-tin-tuyen-sinh-dai-hoc-chinh-quy-nam-2026-1964.html)
+- [tuyensinh247.com](https://diemthi.tuyensinh247.com/de-an-tuyen-sinh/dai-hoc-tai-chinh-marketing-DMS.html)
+- [laodong.vn](https://laodong.vn/tuyen-sinh/tuyen-sinh-2026-loat-truong-dai-hoc-cong-bo-phuong-an-xet-tuyen-1648630.ldo)
+- [giaphugroup.com](https://diemthi.giaphugroup.com/diem-chuan/truong-dai-hoc-tai-chinh-marketing-dms/2026/)
+                                                      >(10486 chars)
+                              response_source  │  rag_search_context
+                                                      >(18 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [9] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (5.856s)
+                                        Message  │  source='rag_search_context_generated', length=3284 chars
+                               final_response  │  Chào bạn nhé! Mình là Trợ lý Tuyển sinh UFM đây. Mình rất vui được hỗ trợ bạn tìm hiểu thông tin tuyển sinh của trường.
+
+Về câu hỏi **điểm chuẩn năm 2026**, hiện tại Trường Đại học Tài chính - Marketing (UFM) đã công bố thông tin tuyển sinh đại học chính quy năm 2026, bao gồm các phương thức xét tuyển và ngưỡng đầu vào, nhưng **chưa có thông báo chính thức về điểm chuẩn trúng tuyển cụ thể cho từng ngành năm 2026** đâu bạn nhé [ufm.edu.vn](https://ufm.edu.vn/ufm-cong-bo-thong-tin-tuyen-sinh-dai-hoc-chinh-quy-nam-2026-1964.html).
+
+Tuy nhiên, mình có thể cung cấp cho bạn một số thông tin quan trọng về tuyển sinh đại học chính quy năm 2026 mà UFM đã công bố để bạn tham khảo và chuẩn bị tốt nhất:
+
+*   **Tổng chỉ tiêu tuyển sinh dự kiến năm 2026** là **8.000 chỉ tiêu**, áp dụng **05 phương thức xét tuyển** [ufm.edu.vn](https://ufm.edu.vn/ufm-cong-bo-thong-tin-tuyen-sinh-dai-hoc-chinh-quy-nam-2026-1964.html).
+*   **Ngưỡng đầu vào (điểm sàn) năm 2026**:
+    *   **16 điểm** theo thang điểm 30 cho tất cả các phương thức xét tuyển (trừ ngành Luật Kinh tế theo quy định của Bộ GD&ĐT) [ufm.edu.vn](https://ufm.edu.vn/ufm-cong-bo-thong-tin-tuyen-sinh-dai-hoc-chinh-quy-nam-2026-1964.html).
+    *   Tổng điểm 03 môn thi kỳ thi tốt nghiệp THPT năm 2026 theo tổ hợp xét tuyển đạt tối thiểu **15 điểm** theo thang điểm 30 [ufm.edu.vn](https://ufm.edu.vn/ufm-cong-bo-thong-tin-tuyen-sinh-dai-hoc-chinh-quy-nam-2026-1964.html).
+*   **Các phương thức xét tuyển năm 2026** bao gồm [ufm.edu.vn](https://ufm.edu.vn/ufm-cong-bo-thong-tin-tuyen-sinh-dai-hoc-chinh-quy-nam-2026-1964.html):
+    1.  Xét tuyển thẳng theo quy định của Bộ Giáo dục và Đào tạo (mã phương thức: 301).
+    2.  Xét tuyển dựa trên kết quả học tập cấp THPT (học bạ) (mã phương thức: 200).
+    3.  Xét tuyển dựa vào kết quả kỳ thi Đánh giá năng lực của Đại học Quốc gia Thành phố Hồ Chí Minh năm 2026 (mã phương thức: 402).
+    4.  Xét tuyển dựa vào kết quả kỳ thi Đánh giá đầu vào đại học trên máy tính (Kỳ thi V-SAT) năm 2026 (mã phương thức: 416).
+    5.  Xét tuyển dựa vào kết quả kỳ thi tốt nghiệp THPT năm 2026 (mã phương thức: 100).
+*   **Cách tính điểm xét tuyển**: Điểm xét tuyển được tính theo thang điểm 30 và không vượt quá 30 điểm; các loại điểm trong công thức được làm tròn đến hai chữ số thập phân; áp dụng điểm ưu tiên đối tượng, khu vực và điểm cộng (nếu có) theo quy định [ufm.edu.vn](https://ufm.edu.vn/ufm-cong-bo-thong-tin-tuyen-sinh-dai-hoc-chinh-quy-nam-2026-1964.html).
+*   **Môn Toán nhân hệ số 2**: Tất cả các tổ hợp tuyển sinh năm 2026 của UFM đều có môn Toán, và điểm môn Toán sẽ được nhân hệ số 2. Thang điểm xét tuyển chuyển sang 40 thay vì 30 như những năm trước. Riêng ngành Luật Kinh tế, thí sinh phải có điểm môn Toán (chưa nhân hệ số) đạt từ 6 trở lên [ufm.edu.vn](https://ufm.edu.vn/ufm-cong-bo-thong-tin-tuyen-sinh-dai-hoc-chinh-quy-nam-2026-1964.html).
+
+**Lưu ý quan trọng**: Thông tin về điểm chuẩn trúng tuyển cụ thể cho từng ngành năm 2026 hiện đang được cập nhật và sẽ được công bố sau khi các kỳ thi và đợt xét tuyển diễn ra. Bạn hãy thường xuyên theo dõi các kênh thông tin chính thức của UFM để không bỏ lỡ nhé!
+
+Bạn có muốn mình giải thích thêm về các phương thức xét tuyển hay ngưỡng đầu vào không? Hoặc bạn quan tâm đến ngành học cụ thể nào để mình tìm thêm thông tin nhé! 🎓
+                                                      >(3284 chars)
+                              response_source  │  rag_search_context_generated
+                                                      >(28 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : rag_search_context_generated
+  Intent          : THONG_TIN_TUYEN_SINH → PROCEED_RAG_UFM_SEARCH
+  Response Length : 3284 chars
+  Total Time      : 38.51s
+  Nodes Executed  : 9
+──────────────────────────────────────────────────────────────────────────
+
+Chào bạn nhé! Mình là Trợ lý Tuyển sinh UFM đây. Mình rất vui được hỗ trợ bạn tìm hiểu thông tin tuyển sinh của trường.
+
+Về câu hỏi **điểm chuẩn năm 2026**, hiện tại Trường Đại học Tài chính - Marketing (UFM) đã công bố thông tin tuyển sinh đại học chính quy năm 2026, bao gồm các phương thức xét tuyển và ngưỡng đầu vào, nhưng **chưa có thông báo chính thức về điểm chuẩn trúng tuyển cụ thể cho từng ngành năm 2026** đâu bạn nhé [ufm.edu.vn](https://ufm.edu.vn/ufm-cong-bo-thong-tin-tuyen-sinh-dai-hoc-chinh-quy-nam-2026-1964.html).
+
+Tuy nhiên, mình có thể cung cấp cho bạn một số thông tin quan trọng về tuyển sinh đại học chính quy năm 2026 mà UFM đã công bố để bạn tham khảo và chuẩn bị tốt nhất:
+
+*   **Tổng chỉ tiêu tuyển sinh dự kiến năm 2026** là **8.000 chỉ tiêu**, áp dụng **05 phương thức xét tuyển** [ufm.edu.vn](https://ufm.edu.vn/ufm-cong-bo-thong-tin-tuyen-sinh-dai-hoc-chinh-quy-nam-2026-1964.html).
+*   **Ngưỡng đầu vào (điểm sàn) năm 2026**:
+    *   **16 điểm** theo thang điểm 30 cho tất cả các phương thức xét tuyển (trừ ngành Luật Kinh tế theo quy định của Bộ GD&ĐT) [ufm.edu.vn](https://ufm.edu.vn/ufm-cong-bo-thong-tin-tuyen-sinh-dai-hoc-chinh-quy-nam-2026-1964.html).
+    *   Tổng điểm 03 môn thi kỳ thi tốt nghiệp THPT năm 2026 theo tổ hợp xét tuyển đạt tối thiểu **15 điểm** theo thang điểm 30 [ufm.edu.vn](https://ufm.edu.vn/ufm-cong-bo-thong-tin-tuyen-sinh-dai-hoc-chinh-quy-nam-2026-1964.html).
+*   **Các phương thức xét tuyển năm 2026** bao gồm [ufm.edu.vn](https://ufm.edu.vn/ufm-cong-bo-thong-tin-tuyen-sinh-dai-hoc-chinh-quy-nam-2026-1964.html):
+    1.  Xét tuyển thẳng theo quy định của Bộ Giáo dục và Đào tạo (mã phương thức: 301).
+    2.  Xét tuyển dựa trên kết quả học tập cấp THPT (học bạ) (mã phương thức: 200).
+    3.  Xét tuyển dựa vào kết quả kỳ thi Đánh giá năng lực của Đại học Quốc gia Thành phố Hồ Chí Minh năm 2026 (mã phương thức: 402).
+    4.  Xét tuyển dựa vào kết quả kỳ thi Đánh giá đầu vào đại học trên máy tính (Kỳ thi V-SAT) năm 2026 (mã phương thức: 416).
+    5.  Xét tuyển dựa vào kết quả kỳ thi tốt nghiệp THPT năm 2026 (mã phương thức: 100).
+*   **Cách tính điểm xét tuyển**: Điểm xét tuyển được tính theo thang điểm 30 và không vượt quá 30 điểm; các loại điểm trong công thức được làm tròn đến hai chữ số thập phân; áp dụng điểm ưu tiên đối tượng, khu vực và điểm cộng (nếu có) theo quy định [ufm.edu.vn](https://ufm.edu.vn/ufm-cong-bo-thong-tin-tuyen-sinh-dai-hoc-chinh-quy-nam-2026-1964.html).
+*   **Môn Toán nhân hệ số 2**: Tất cả các tổ hợp tuyển sinh năm 2026 của UFM đều có môn Toán, và điểm môn Toán sẽ được nhân hệ số 2. Thang điểm xét tuyển chuyển sang 40 thay vì 30 như những năm trước. Riêng ngành Luật Kinh tế, thí sinh phải có điểm môn Toán (chưa nhân hệ số) đạt từ 6 trở lên [ufm.edu.vn](https://ufm.edu.vn/ufm-cong-bo-thong-tin-tuyen-sinh-dai-hoc-chinh-quy-nam-2026-1964.html).
+
+**Lưu ý quan trọng**: Thông tin về điểm chuẩn trúng tuyển cụ thể cho từng ngành năm 2026 hiện đang được cập nhật và sẽ được công bố sau khi các kỳ thi và đợt xét tuyển diễn ra. Bạn hãy thường xuyên theo dõi các kênh thông tin chính thức của UFM để không bỏ lỡ nhé!
+
+Bạn có muốn mình giải thích thêm về các phương thức xét tuyển hay ngưỡng đầu vào không? Hoặc bạn quan tâm đến ngành học cụ thể nào để mình tìm thêm thông tin nhé! 🎓
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.008s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  0.001s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a+2b)        │  1.764s  │   PASS   │
+  │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  1.374s  │   PASS   │
+  │ 🔀 MULTI-QUERY NODE (Sinh biến thể)           │  1.327s  │   PASS   │
+  │ 📊 EMBEDDING NODE (BGE-M3 batch)              │  2.827s  │   PASS   │
+  │ 🗄️ RAG NODE (Hybrid Search DB)               │ 10.546s  │   PASS   │
+  │ 🌐 RAG SEARCH PIPELINE (Evaluator + Web Searc │ 14.766s  │   PASS   │
+  │ 🎯 RESPONSE NODE (Final Answer)               │  5.856s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  38.51s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_043053_điểm_chuẩn_2026.txt
+

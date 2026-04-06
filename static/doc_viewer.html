@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UFM - Trích Dẫn Tài Liệu</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Marked.js for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        /* Custom styles for rendered markdown */
+        .markdown-body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .markdown-body h1,
+        .markdown-body h2,
+        .markdown-body h3 {
+            color: #1a202c;
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+            font-weight: 600;
+        }
+
+        .markdown-body p {
+            margin-bottom: 1em;
+        }
+
+        .markdown-body ul,
+        .markdown-body ol {
+            margin-left: 2em;
+            margin-bottom: 1em;
+        }
+
+        .markdown-body li {
+            margin-bottom: 0.25em;
+        }
+
+        .markdown-body a {
+            color: #3182ce;
+            text-decoration: none;
+        }
+
+        .markdown-body a:hover {
+            text-decoration: underline;
+        }
+
+        .markdown-body blockquote {
+            border-left: 4px solid #cbd5e0;
+            padding-left: 1em;
+            color: #4a5568;
+            margin: 1em 0;
+            background-color: #f7fafc;
+            padding: 10px;
+        }
+
+        /* ── Table & Code Styling (Mới Thêm) ── */
+        .markdown-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5em 0;
+            font-size: 15px;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 0 0 1px #e2e8f0;
+        }
+
+        .markdown-body th, .markdown-body td {
+            border: 1px solid #e2e8f0;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .markdown-body th {
+            background-color: #f1f5f9;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        .markdown-body tbody tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .markdown-body tbody tr:hover {
+            background-color: #e2e8f0;
+        }
+
+        .markdown-body pre {
+            background-color: #1e293b;
+            color: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1em 0;
+        }
+
+        .markdown-body code {
+            background-color: #f1f5f9;
+            color: #ef4444;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-size: 85%;
+            font-family: monospace;
+        }
+
+        .markdown-body img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1.5em auto;
+            display: block;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        #loading {
+            display: flex;
+        }
+
+        #content-area {
+            display: none;
+        }
+
+        #error-area {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col items-center p-4 md:p-8">
+
+    <!-- Header -->
+    <div
+        class="w-full max-w-4xl bg-white rounded-t-xl shadow-md p-6 border-b-4 border-blue-700 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <div
+                class="w-10 h-10 bg-blue-700 text-white rounded-full flex items-center justify-center font-bold text-xl shadow">
+                U
+            </div>
+            <div>
+                <h1 class="text-xl font-bold text-gray-800">UFM Admission</h1>
+                <p class="text-xs text-gray-500">Tài liệu tham khảo (Phiên xem tạm thời)</p>
+            </div>
+        </div>
+        <div class="text-right">
+            <span
+                class="inline-block bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded border border-yellow-300">
+                🔒 Tự động hủy sau 5 phút
+            </span>
+        </div>
+    </div>
+
+    <!-- Main Content Box -->
+    <div class="w-full max-w-4xl bg-white rounded-b-xl shadow-md p-6 md:p-10 min-h-[50vh] relative">
+
+        <!-- Loading State -->
+        <div id="loading" class="flex-col items-center justify-center h-full py-20 text-gray-500">
+            <svg class="animate-spin h-10 w-10 text-blue-600 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                </path>
+            </svg>
+            <p>Đang tải tài liệu bảo mật...</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="error-area" class="flex-col items-center justify-center h-full py-20 text-center">
+            <div class="text-red-500 mb-4">
+                <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">Đường dẫn đã hết hạn</h2>
+            <p id="error-message" class="text-gray-600 max-w-md mx-auto mb-6">
+                Phiên xem tài liệu này chỉ tồn tại trong 5 phút để bảo mật thông tin.
+            </p>
+            <button onclick="window.close()"
+                class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded shadow">
+                Đóng trang này
+            </button>
+        </div>
+
+        <!-- Content Area -->
+        <div id="content-area">
+            <!-- Metadata Header -->
+            <div class="mb-8 pb-6 border-b border-gray-200">
+                <h2 id="doc-title" class="text-2xl md:text-3xl font-extrabold text-blue-900 mb-3">Tên tài liệu</h2>
+
+                <div id="doc-metadata" class="flex flex-wrap gap-2 text-sm text-gray-600 mt-4">
+                    <!-- Metadata tags will be injected here -->
+                </div>
+            </div>
+
+            <!-- Markdown Document Content -->
+            <div id="doc-body" class="markdown-body">
+                <!-- Content injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="mt-8 text-center text-sm text-gray-500 pb-8">
+        Hệ thống Tư vấn Tuyển sinh UFM - Bot AI dựa trên RAG<br>
+        Tài liệu chỉ có tính chất tham khảo trích xuất từ cơ sở dữ liệu.
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            // Get session_id from the URL path: /view-document/{session_id}
+            const pathParts = window.location.pathname.split('/');
+            const sessionId = pathParts[pathParts.length - 1];
+
+            const loadingEl = document.getElementById('loading');
+            const errorArea = document.getElementById('error-area');
+            const errorMessageEl = document.getElementById('error-message');
+            const contentArea = document.getElementById('content-area');
+
+            if (!sessionId || sessionId === 'view-document') {
+                showError("Không tìm thấy mã phiên tài liệu trong đường dẫn.");
+                return;
+            }
+
+            try {
+                // Call API to get session data
+                const response = await fetch(`/api/v1/chat/document/${sessionId}`);
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.detail || "Không thể tải tài liệu hoặc link đã quá hạn 5 phút.");
+                }
+
+                // Render Content
+                renderDocument(data.data);
+
+            } catch (error) {
+                showError(error.message);
+            }
+
+            function showError(message) {
+                loadingEl.style.display = 'none';
+                contentArea.style.display = 'none';
+                errorArea.style.display = 'flex';
+                errorMessageEl.textContent = message;
+            }
+
+            function renderDocument(docData) {
+                loadingEl.style.display = 'none';
+                contentArea.style.display = 'block';
+
+                // Set Title
+                document.getElementById('doc-title').textContent = docData.title || "Tài liệu không xác định";
+
+                // Set Metadata
+                const metaContainer = document.getElementById('doc-metadata');
+                const meta = docData.metadata || {};
+
+                const metaTags = [];
+                if (meta.academic_year) metaTags.push(`Năm: ${meta.academic_year}`);
+                if (meta.program_name) metaTags.push(`Ngành: ${meta.program_name}`);
+                if (meta.program_level) metaTags.push(`Bậc: ${meta.program_level}`);
+                if (meta.section_name) metaTags.push(`Chuyên mục: ${meta.section_name}`);
+
+                metaContainer.innerHTML = metaTags.map(tag =>
+                    `<span class="bg-blue-50 text-blue-700 px-2 py-1 rounded border border-blue-100">${tag}</span>`
+                ).join('');
+
+                // Render Markdown Content
+                const docBody = document.getElementById('doc-body');
+                if (docData.content) {
+                    docBody.innerHTML = marked.parse(docData.content);
+                } else {
+                    docBody.innerHTML = "<p class='italic text-gray-500'>Không có nội dung hiển thị.</p>";
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1028 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-30 02:04:11                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260330_020411_học_UFM__cao__RA_TRUONG_CÓ_VIỆC_LÀM_KO.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.5-flash              │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash              │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Extract       │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ⓫ Form Draft         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : học UFM % cao  RA TRUONG CÓ VIỆC LÀM KO 100%?
+  💬 Chat History : 4 messages
+     👤 cao học qtkd
+     🤖 Cho mình hỏi thêm xíu, bạn đang quan tâm đến ngành học cụ thể nào hay thắc mắc v
+     👤 thong tin cao hoc qtkd
+     🤖 Chào bạn, mình là Trợ lý Tuyển sinh Đại học Tài chính - Marketing (UFM) đây! Mìn
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.003s)
+                                        Message  │  [Fast-Scan PASS — 0.000s] Sach, cho qua Context Node
+                                 chat_history  │  [4 items]
+                                                         [0] {"role": "user", "content": "cao học qtkd"}
+                                                         [1] {"role": "assistant", "content": "Cho mình hỏi thêm xíu, bạn đang quan tâm đến ngành học cụ thể nào hay thắc mắc về vấn đề nào ở UFM vậy ạ? Bạn gõ rõ hơn giúp mình nhé!\n---\n🌟 **Kênh Hỗ trợ Tư vấn Tuyển sinh UFM**\n\n🔹 **Tuyển sinh Đại học Chính quy (Cử nhân)**\n📍 *Địa chỉ:* Phòng A.007, 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM\n📞 *Hotline:* (028) 3772 0406 | (028) 3772 0407\n📧 *Email:* [tuyensinh@ufm.edu.vn](mailto:tuyensinh@ufm.edu.vn)\n🌐 *Website:* [tuyensinh.ufm.edu.vn](https://tuyensinh.ufm.edu.vn)\n💬 *Zalo:* [zalo.me/ufmhcm](https://zalo.me/ufmhcm) | *Fanpage:* [tuyensinhufm](https://www.facebook.com/tuyensinhufm)\n\n🔹 **Tuyển sinh Sau đại học (Thạc sĩ, Tiến sĩ)**\n📍 *Địa chỉ:* Viện Đào tạo Sau đại học (Phòng D.006)\n📞 *Hotline:* 0967 657 532 (Thầy Tuấn) | 0966 286 386 (Thầy Thành)\n📧 *Email:* [daotaosdh@ufm.edu.vn](mailto:daotaosdh@ufm.edu.vn)\n🌐 *Website:* [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn)\n\n🔹 **Các hệ đào tạo khác**\n💻 **Từ xa (E-Learning):** 0394 494 931 (Cô Ngân) | 🌐 [ufm-elearning.edu.vn](https://ufm-elearning.edu.vn)\n🏢 **Vừa làm vừa học:** Hotline: 0986 08 42 42 | 🌐 [ice.ufm.edu.vn](http://ice.ufm.edu.vn)\n🌍 **Liên kết Quốc tế ISFM:** Hotline: 0983 373 450 | 🌐 [isfm.ufm.edu.vn](https://isfm.ufm.edu.vn)"}
+                                                         [2] {"role": "user", "content": "thong tin cao hoc qtkd"}
+                                                         [3] {"role": "assistant", "content": "Chào bạn, mình là Trợ lý Tuyển sinh Đại học Tài chính - Marketing (UFM) đây! Mình rất vui được cung cấp cho bạn những thông tin chi tiết về chương trình **Thạc sĩ ngành Quản trị kinh doanh (QTKD)** tại UFM nhé! 🎓\n\nChương trình Thạc sĩ QTKD tại UFM được xây dựng dựa trên triết lý giáo dục \"Thực chất, đổi mới sáng tạo và hội nhập\", với thiết kế linh hoạt theo hệ thống tín chỉ, luôn cập nhật để đáp ứng nhu cầu thị trường lao động và xu hướng quản trị hiện đại.\n\n**1. Định hướng đào tạo:**\nNăm 2026, chương trình cung cấp hai định hướng chuyên biệt để bạn lựa chọn phù hợp với mục tiêu nghề nghiệp của mình:\n\n*   **Định hướng Nghiên cứu:** Tập trung phát triển tư duy hàn lâm, năng lực nghiên cứu khoa học chuyên sâu và khả năng giải quyết các vấn đề quản trị phức tạp bằng phương pháp luận khoa học. Định hướng này rất phù hợp với những bạn muốn trở thành giảng viên, nghiên cứu viên hoặc có định hướng học lên Tiến sĩ.\n*   **Định hướng Ứng dụng:** Tập trung phát triển kỹ năng thực hành, năng lực lãnh đạo và giải quyết các tình huống quản trị thực tiễn tại doanh nghiệp. Đây là lựa chọn lý tưởng cho các nhà quản lý, điều hành, doanh nhân.\n\nThời gian đào tạo trung bình là **02 năm** (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là **61 tín chỉ**.\n\nBạn có thể xem thông tin chi tiết chương trình đào tạo tại: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=ig3wGlAYnn1rof8yGKfbBA>\n\nNguồn tài liệu: [ThS QTKD.txt](/view-document/f1b4438f-76a9-4a40-941a-57a2388590ca)\n\n**2. Điều kiện xét tuyển:**\nĐể tham gia xét tuyển chương trình Thạc sĩ QTKD, bạn cần đáp ứng các tiêu chuẩn sau:\n\n*   **Về văn bằng:** Đã tốt nghiệp đại học ngành Quản trị kinh doanh hoặc các ngành phù hợp/ngành gần/ngành khác (có bổ sung kiến thức).\n*   **Phương thức tuyển sinh:** Xét tuyển dựa trên hồ sơ văn bằng, kết quả học tập đại học và năng lực ngoại ngữ.\n*   **Môn xét tuyển:** Đánh giá năng lực qua hai môn cơ sở ngành là **Kinh tế học** và **Quản trị học**.\n*   **Trình độ ngoại ngữ:** Ứng viên phải đạt năng lực ngoại ngữ từ Bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc sở hữu các văn bằng, chứng chỉ tương đương.\n\n**Lưu ý đặc biệt:** Đối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Quản trị kinh doanh, Nhà trường sẽ tổ chức học bổ sung kiến thức trước khi xét tuyển:\n*   **Ngành gần:** Bổ sung 02 môn (5 tín chỉ), gồm: Quản trị học (2 TC) và Kinh tế học (3 TC).\n*   **Ngành khác:** Bổ sung 04 môn (9 tín chỉ), gồm: Quản trị học (2 TC), Marketing căn bản (2 TC), Kinh tế học (3 TC) và Kinh tế phát triển (2 TC).\n\nNguồn tài liệu: [ThS QTKD.txt](/view-document/678d39ce-6eb4-4457-8ddc-7594b3dd0e4f)\n\n**3. Hồ sơ đăng ký dự tuyển:**\nĐể đăng ký dự tuyển, bạn cần chuẩn bị các giấy tờ sau:\n\n*   01 Phiếu đăng ký dự tuyển (theo mẫu).\n*   01 Lý lịch khoa học (theo mẫu) có xác nhận của thủ trưởng cơ quan hoặc chính quyền địa phương.\n*   02 Bản sao có công chứng (hoặc đối chiếu bản gốc) các giấy tờ sau:\n    *   Bằng và bảng điểm tốt nghiệp đại học; Bằng và bảng điểm Cao đẳng đối với thí sinh học hệ liên thông.\n    *   Văn bằng, chứng chỉ minh chứng trình độ ngoại ngữ bậc 3 (nếu có).\n    *   Bảng điểm bổ sung kiến thức (nếu thuộc đối tượng phải bổ sung kiến thức).\n    *   Các văn bằng, chứng chỉ khác (nếu có).\n*   01 Giấy chứng nhận đủ sức khỏe để học tập của bệnh viện hoặc phòng khám đa khoa thời gian không quá 6 tháng.\n*   04 Ảnh màu cỡ 3x4 (ghi rõ họ tên và ngày sinh của bạn ở mặt sau).\n\nNguồn tài liệu: [phuluc1.md](/view-document/01499ae0-25e1-4728-8f8f-2d2033410dbf)\n\n**4. Địa chỉ liên hệ và đăng ký:**\nBạn có thể đăng ký Tuyển sinh Sau đại học trực tuyến tại: <https://tuyensinhsdh.ufm.edu.vn/DangKy/CaoHoc>\n\nHoặc liên hệ trực tiếp Viện Đào tạo sau đại học, Trường Đại học Tài chính – Marketing:\n*   **Địa chỉ:** Phòng D006, cơ sở 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.\n*   **Email:** tuyensinhsaudaihoc@ufm.edu.vn\n*   **Điện thoại:** 028 3997 4641\n*   **Thời gian làm việc:** Sáng: 8g00 – 11g30 | Chiều: 13g30 – 16g30\n\nĐặc biệt, nếu bạn có thắc mắc cụ thể về ngành Quản trị kinh doanh, bạn có thể liên hệ trực tiếp với chuyên viên phụ trách tuyển sinh:\n*   **ThS. Đỗ Minh Hương**\n*   **SĐT:** 0983637999\n*   **Email:** dmhuong@ufm.edu.vn\n\nNguồn tài liệu: [tuyensinh-trinhdo-thacsi-dot1-2026.md](/view-document/7ac4cacc-3b18-4199-bdd2-8d1855b479a9)\n\nHy vọng những thông tin này hữu ích cho bạn! Bạn có muốn mình giải thích thêm về các môn học hoặc quy trình xét tuyển chi tiết hơn không? 🌟"}
+                                   user_query  │  học UFM % cao  RA TRUONG CÓ VIỆC LÀM KO 100%?
+                                                      >(45 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  học ufm % cao  ra truong có việc làm không 100%?
+                                                      >(48 chars)
+                             standalone_query  │  ""
+                                multi_queries  │  []
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  null
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  ""
+                             query_embeddings  │  []
+                                       intent  │  ""
+                               intent_summary  │  ""
+                                intent_action  │  ""
+                         program_level_filter  │  null
+                          program_name_filter  │  null
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                               final_response  │  ""
+                              response_source  │  ""
+                                    next_node  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (4.143s)
+                                        Message  │  Reformulated → 'Tỷ lệ có việc làm sau khi tốt nghiệp ngành Quản trị kinh doanh hệ cao học tại UF...'
+                                 chat_history  │  [4 items]
+                                                         [0] {"role": "user", "content": "cao học qtkd"}
+                                                         [1] {"role": "assistant", "content": "Cho mình hỏi thêm xíu, bạn đang quan tâm đến ngành học cụ thể nào hay thắc mắc về vấn đề nào ở UFM vậy ạ? Bạn gõ rõ hơn giúp mình nhé!\n---\n🌟 **Kênh Hỗ trợ Tư vấn Tuyển sinh UFM**\n\n🔹 **Tuyển sinh Đại học Chính quy (Cử nhân)**\n📍 *Địa chỉ:* Phòng A.007, 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM\n📞 *Hotline:* (028) 3772 0406 | (028) 3772 0407\n📧 *Email:* [tuyensinh@ufm.edu.vn](mailto:tuyensinh@ufm.edu.vn)\n🌐 *Website:* [tuyensinh.ufm.edu.vn](https://tuyensinh.ufm.edu.vn)\n💬 *Zalo:* [zalo.me/ufmhcm](https://zalo.me/ufmhcm) | *Fanpage:* [tuyensinhufm](https://www.facebook.com/tuyensinhufm)\n\n🔹 **Tuyển sinh Sau đại học (Thạc sĩ, Tiến sĩ)**\n📍 *Địa chỉ:* Viện Đào tạo Sau đại học (Phòng D.006)\n📞 *Hotline:* 0967 657 532 (Thầy Tuấn) | 0966 286 386 (Thầy Thành)\n📧 *Email:* [daotaosdh@ufm.edu.vn](mailto:daotaosdh@ufm.edu.vn)\n🌐 *Website:* [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn)\n\n🔹 **Các hệ đào tạo khác**\n💻 **Từ xa (E-Learning):** 0394 494 931 (Cô Ngân) | 🌐 [ufm-elearning.edu.vn](https://ufm-elearning.edu.vn)\n🏢 **Vừa làm vừa học:** Hotline: 0986 08 42 42 | 🌐 [ice.ufm.edu.vn](http://ice.ufm.edu.vn)\n🌍 **Liên kết Quốc tế ISFM:** Hotline: 0983 373 450 | 🌐 [isfm.ufm.edu.vn](https://isfm.ufm.edu.vn)"}
+                                                         [2] {"role": "user", "content": "thong tin cao hoc qtkd"}
+                                                         [3] {"role": "assistant", "content": "Chào bạn, mình là Trợ lý Tuyển sinh Đại học Tài chính - Marketing (UFM) đây! Mình rất vui được cung cấp cho bạn những thông tin chi tiết về chương trình **Thạc sĩ ngành Quản trị kinh doanh (QTKD)** tại UFM nhé! 🎓\n\nChương trình Thạc sĩ QTKD tại UFM được xây dựng dựa trên triết lý giáo dục \"Thực chất, đổi mới sáng tạo và hội nhập\", với thiết kế linh hoạt theo hệ thống tín chỉ, luôn cập nhật để đáp ứng nhu cầu thị trường lao động và xu hướng quản trị hiện đại.\n\n**1. Định hướng đào tạo:**\nNăm 2026, chương trình cung cấp hai định hướng chuyên biệt để bạn lựa chọn phù hợp với mục tiêu nghề nghiệp của mình:\n\n*   **Định hướng Nghiên cứu:** Tập trung phát triển tư duy hàn lâm, năng lực nghiên cứu khoa học chuyên sâu và khả năng giải quyết các vấn đề quản trị phức tạp bằng phương pháp luận khoa học. Định hướng này rất phù hợp với những bạn muốn trở thành giảng viên, nghiên cứu viên hoặc có định hướng học lên Tiến sĩ.\n*   **Định hướng Ứng dụng:** Tập trung phát triển kỹ năng thực hành, năng lực lãnh đạo và giải quyết các tình huống quản trị thực tiễn tại doanh nghiệp. Đây là lựa chọn lý tưởng cho các nhà quản lý, điều hành, doanh nhân.\n\nThời gian đào tạo trung bình là **02 năm** (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là **61 tín chỉ**.\n\nBạn có thể xem thông tin chi tiết chương trình đào tạo tại: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=ig3wGlAYnn1rof8yGKfbBA>\n\nNguồn tài liệu: [ThS QTKD.txt](/view-document/f1b4438f-76a9-4a40-941a-57a2388590ca)\n\n**2. Điều kiện xét tuyển:**\nĐể tham gia xét tuyển chương trình Thạc sĩ QTKD, bạn cần đáp ứng các tiêu chuẩn sau:\n\n*   **Về văn bằng:** Đã tốt nghiệp đại học ngành Quản trị kinh doanh hoặc các ngành phù hợp/ngành gần/ngành khác (có bổ sung kiến thức).\n*   **Phương thức tuyển sinh:** Xét tuyển dựa trên hồ sơ văn bằng, kết quả học tập đại học và năng lực ngoại ngữ.\n*   **Môn xét tuyển:** Đánh giá năng lực qua hai môn cơ sở ngành là **Kinh tế học** và **Quản trị học**.\n*   **Trình độ ngoại ngữ:** Ứng viên phải đạt năng lực ngoại ngữ từ Bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc sở hữu các văn bằng, chứng chỉ tương đương.\n\n**Lưu ý đặc biệt:** Đối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Quản trị kinh doanh, Nhà trường sẽ tổ chức học bổ sung kiến thức trước khi xét tuyển:\n*   **Ngành gần:** Bổ sung 02 môn (5 tín chỉ), gồm: Quản trị học (2 TC) và Kinh tế học (3 TC).\n*   **Ngành khác:** Bổ sung 04 môn (9 tín chỉ), gồm: Quản trị học (2 TC), Marketing căn bản (2 TC), Kinh tế học (3 TC) và Kinh tế phát triển (2 TC).\n\nNguồn tài liệu: [ThS QTKD.txt](/view-document/678d39ce-6eb4-4457-8ddc-7594b3dd0e4f)\n\n**3. Hồ sơ đăng ký dự tuyển:**\nĐể đăng ký dự tuyển, bạn cần chuẩn bị các giấy tờ sau:\n\n*   01 Phiếu đăng ký dự tuyển (theo mẫu).\n*   01 Lý lịch khoa học (theo mẫu) có xác nhận của thủ trưởng cơ quan hoặc chính quyền địa phương.\n*   02 Bản sao có công chứng (hoặc đối chiếu bản gốc) các giấy tờ sau:\n    *   Bằng và bảng điểm tốt nghiệp đại học; Bằng và bảng điểm Cao đẳng đối với thí sinh học hệ liên thông.\n    *   Văn bằng, chứng chỉ minh chứng trình độ ngoại ngữ bậc 3 (nếu có).\n    *   Bảng điểm bổ sung kiến thức (nếu thuộc đối tượng phải bổ sung kiến thức).\n    *   Các văn bằng, chứng chỉ khác (nếu có).\n*   01 Giấy chứng nhận đủ sức khỏe để học tập của bệnh viện hoặc phòng khám đa khoa thời gian không quá 6 tháng.\n*   04 Ảnh màu cỡ 3x4 (ghi rõ họ tên và ngày sinh của bạn ở mặt sau).\n\nNguồn tài liệu: [phuluc1.md](/view-document/01499ae0-25e1-4728-8f8f-2d2033410dbf)\n\n**4. Địa chỉ liên hệ và đăng ký:**\nBạn có thể đăng ký Tuyển sinh Sau đại học trực tuyến tại: <https://tuyensinhsdh.ufm.edu.vn/DangKy/CaoHoc>\n\nHoặc liên hệ trực tiếp Viện Đào tạo sau đại học, Trường Đại học Tài chính – Marketing:\n*   **Địa chỉ:** Phòng D006, cơ sở 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.\n*   **Email:** tuyensinhsaudaihoc@ufm.edu.vn\n*   **Điện thoại:** 028 3997 4641\n*   **Thời gian làm việc:** Sáng: 8g00 – 11g30 | Chiều: 13g30 – 16g30\n\nĐặc biệt, nếu bạn có thắc mắc cụ thể về ngành Quản trị kinh doanh, bạn có thể liên hệ trực tiếp với chuyên viên phụ trách tuyển sinh:\n*   **ThS. Đỗ Minh Hương**\n*   **SĐT:** 0983637999\n*   **Email:** dmhuong@ufm.edu.vn\n\nNguồn tài liệu: [tuyensinh-trinhdo-thacsi-dot1-2026.md](/view-document/7ac4cacc-3b18-4199-bdd2-8d1855b479a9)\n\nHy vọng những thông tin này hữu ích cho bạn! Bạn có muốn mình giải thích thêm về các môn học hoặc quy trình xét tuyển chi tiết hơn không? 🌟"}
+                                   user_query  │  học UFM % cao  RA TRUONG CÓ VIỆC LÀM KO 100%?
+                                                      >(45 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  học ufm % cao  ra truong có việc làm không 100%?
+                                                      >(48 chars)
+                             standalone_query  │  Tỷ lệ có việc làm sau khi tốt nghiệp ngành Quản trị kinh doanh hệ cao học tại UFM là bao nhiêu?
+                                                      >(95 chars)
+                                multi_queries  │  []
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  null
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  ""
+                             query_embeddings  │  []
+                                       intent  │  ""
+                               intent_summary  │  ""
+                                intent_action  │  ""
+                         program_level_filter  │  null
+                          program_name_filter  │  null
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                               final_response  │  ""
+                              response_source  │  ""
+                                    next_node  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a Llama)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.552s)
+                                        Message  │  [Contextual-Guard PASS — 1.552s] standalone_query an toan
+                                 chat_history  │  [4 items]
+                                                         [0] {"role": "user", "content": "cao học qtkd"}
+                                                         [1] {"role": "assistant", "content": "Cho mình hỏi thêm xíu, bạn đang quan tâm đến ngành học cụ thể nào hay thắc mắc về vấn đề nào ở UFM vậy ạ? Bạn gõ rõ hơn giúp mình nhé!\n---\n🌟 **Kênh Hỗ trợ Tư vấn Tuyển sinh UFM**\n\n🔹 **Tuyển sinh Đại học Chính quy (Cử nhân)**\n📍 *Địa chỉ:* Phòng A.007, 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM\n📞 *Hotline:* (028) 3772 0406 | (028) 3772 0407\n📧 *Email:* [tuyensinh@ufm.edu.vn](mailto:tuyensinh@ufm.edu.vn)\n🌐 *Website:* [tuyensinh.ufm.edu.vn](https://tuyensinh.ufm.edu.vn)\n💬 *Zalo:* [zalo.me/ufmhcm](https://zalo.me/ufmhcm) | *Fanpage:* [tuyensinhufm](https://www.facebook.com/tuyensinhufm)\n\n🔹 **Tuyển sinh Sau đại học (Thạc sĩ, Tiến sĩ)**\n📍 *Địa chỉ:* Viện Đào tạo Sau đại học (Phòng D.006)\n📞 *Hotline:* 0967 657 532 (Thầy Tuấn) | 0966 286 386 (Thầy Thành)\n📧 *Email:* [daotaosdh@ufm.edu.vn](mailto:daotaosdh@ufm.edu.vn)\n🌐 *Website:* [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn)\n\n🔹 **Các hệ đào tạo khác**\n💻 **Từ xa (E-Learning):** 0394 494 931 (Cô Ngân) | 🌐 [ufm-elearning.edu.vn](https://ufm-elearning.edu.vn)\n🏢 **Vừa làm vừa học:** Hotline: 0986 08 42 42 | 🌐 [ice.ufm.edu.vn](http://ice.ufm.edu.vn)\n🌍 **Liên kết Quốc tế ISFM:** Hotline: 0983 373 450 | 🌐 [isfm.ufm.edu.vn](https://isfm.ufm.edu.vn)"}
+                                                         [2] {"role": "user", "content": "thong tin cao hoc qtkd"}
+                                                         [3] {"role": "assistant", "content": "Chào bạn, mình là Trợ lý Tuyển sinh Đại học Tài chính - Marketing (UFM) đây! Mình rất vui được cung cấp cho bạn những thông tin chi tiết về chương trình **Thạc sĩ ngành Quản trị kinh doanh (QTKD)** tại UFM nhé! 🎓\n\nChương trình Thạc sĩ QTKD tại UFM được xây dựng dựa trên triết lý giáo dục \"Thực chất, đổi mới sáng tạo và hội nhập\", với thiết kế linh hoạt theo hệ thống tín chỉ, luôn cập nhật để đáp ứng nhu cầu thị trường lao động và xu hướng quản trị hiện đại.\n\n**1. Định hướng đào tạo:**\nNăm 2026, chương trình cung cấp hai định hướng chuyên biệt để bạn lựa chọn phù hợp với mục tiêu nghề nghiệp của mình:\n\n*   **Định hướng Nghiên cứu:** Tập trung phát triển tư duy hàn lâm, năng lực nghiên cứu khoa học chuyên sâu và khả năng giải quyết các vấn đề quản trị phức tạp bằng phương pháp luận khoa học. Định hướng này rất phù hợp với những bạn muốn trở thành giảng viên, nghiên cứu viên hoặc có định hướng học lên Tiến sĩ.\n*   **Định hướng Ứng dụng:** Tập trung phát triển kỹ năng thực hành, năng lực lãnh đạo và giải quyết các tình huống quản trị thực tiễn tại doanh nghiệp. Đây là lựa chọn lý tưởng cho các nhà quản lý, điều hành, doanh nhân.\n\nThời gian đào tạo trung bình là **02 năm** (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là **61 tín chỉ**.\n\nBạn có thể xem thông tin chi tiết chương trình đào tạo tại: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=ig3wGlAYnn1rof8yGKfbBA>\n\nNguồn tài liệu: [ThS QTKD.txt](/view-document/f1b4438f-76a9-4a40-941a-57a2388590ca)\n\n**2. Điều kiện xét tuyển:**\nĐể tham gia xét tuyển chương trình Thạc sĩ QTKD, bạn cần đáp ứng các tiêu chuẩn sau:\n\n*   **Về văn bằng:** Đã tốt nghiệp đại học ngành Quản trị kinh doanh hoặc các ngành phù hợp/ngành gần/ngành khác (có bổ sung kiến thức).\n*   **Phương thức tuyển sinh:** Xét tuyển dựa trên hồ sơ văn bằng, kết quả học tập đại học và năng lực ngoại ngữ.\n*   **Môn xét tuyển:** Đánh giá năng lực qua hai môn cơ sở ngành là **Kinh tế học** và **Quản trị học**.\n*   **Trình độ ngoại ngữ:** Ứng viên phải đạt năng lực ngoại ngữ từ Bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc sở hữu các văn bằng, chứng chỉ tương đương.\n\n**Lưu ý đặc biệt:** Đối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Quản trị kinh doanh, Nhà trường sẽ tổ chức học bổ sung kiến thức trước khi xét tuyển:\n*   **Ngành gần:** Bổ sung 02 môn (5 tín chỉ), gồm: Quản trị học (2 TC) và Kinh tế học (3 TC).\n*   **Ngành khác:** Bổ sung 04 môn (9 tín chỉ), gồm: Quản trị học (2 TC), Marketing căn bản (2 TC), Kinh tế học (3 TC) và Kinh tế phát triển (2 TC).\n\nNguồn tài liệu: [ThS QTKD.txt](/view-document/678d39ce-6eb4-4457-8ddc-7594b3dd0e4f)\n\n**3. Hồ sơ đăng ký dự tuyển:**\nĐể đăng ký dự tuyển, bạn cần chuẩn bị các giấy tờ sau:\n\n*   01 Phiếu đăng ký dự tuyển (theo mẫu).\n*   01 Lý lịch khoa học (theo mẫu) có xác nhận của thủ trưởng cơ quan hoặc chính quyền địa phương.\n*   02 Bản sao có công chứng (hoặc đối chiếu bản gốc) các giấy tờ sau:\n    *   Bằng và bảng điểm tốt nghiệp đại học; Bằng và bảng điểm Cao đẳng đối với thí sinh học hệ liên thông.\n    *   Văn bằng, chứng chỉ minh chứng trình độ ngoại ngữ bậc 3 (nếu có).\n    *   Bảng điểm bổ sung kiến thức (nếu thuộc đối tượng phải bổ sung kiến thức).\n    *   Các văn bằng, chứng chỉ khác (nếu có).\n*   01 Giấy chứng nhận đủ sức khỏe để học tập của bệnh viện hoặc phòng khám đa khoa thời gian không quá 6 tháng.\n*   04 Ảnh màu cỡ 3x4 (ghi rõ họ tên và ngày sinh của bạn ở mặt sau).\n\nNguồn tài liệu: [phuluc1.md](/view-document/01499ae0-25e1-4728-8f8f-2d2033410dbf)\n\n**4. Địa chỉ liên hệ và đăng ký:**\nBạn có thể đăng ký Tuyển sinh Sau đại học trực tuyến tại: <https://tuyensinhsdh.ufm.edu.vn/DangKy/CaoHoc>\n\nHoặc liên hệ trực tiếp Viện Đào tạo sau đại học, Trường Đại học Tài chính – Marketing:\n*   **Địa chỉ:** Phòng D006, cơ sở 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.\n*   **Email:** tuyensinhsaudaihoc@ufm.edu.vn\n*   **Điện thoại:** 028 3997 4641\n*   **Thời gian làm việc:** Sáng: 8g00 – 11g30 | Chiều: 13g30 – 16g30\n\nĐặc biệt, nếu bạn có thắc mắc cụ thể về ngành Quản trị kinh doanh, bạn có thể liên hệ trực tiếp với chuyên viên phụ trách tuyển sinh:\n*   **ThS. Đỗ Minh Hương**\n*   **SĐT:** 0983637999\n*   **Email:** dmhuong@ufm.edu.vn\n\nNguồn tài liệu: [tuyensinh-trinhdo-thacsi-dot1-2026.md](/view-document/7ac4cacc-3b18-4199-bdd2-8d1855b479a9)\n\nHy vọng những thông tin này hữu ích cho bạn! Bạn có muốn mình giải thích thêm về các môn học hoặc quy trình xét tuyển chi tiết hơn không? 🌟"}
+                                   user_query  │  học UFM % cao  RA TRUONG CÓ VIỆC LÀM KO 100%?
+                                                      >(45 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  học ufm % cao  ra truong có việc làm không 100%?
+                                                      >(48 chars)
+                             standalone_query  │  Tỷ lệ có việc làm sau khi tốt nghiệp ngành Quản trị kinh doanh hệ cao học tại UFM là bao nhiêu?
+                                                      >(95 chars)
+                                multi_queries  │  []
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.552s] standalone_query an toan
+                                                      >(57 chars)
+                             query_embeddings  │  []
+                                       intent  │  ""
+                               intent_summary  │  ""
+                                intent_action  │  ""
+                         program_level_filter  │  null
+                          program_name_filter  │  null
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                               final_response  │  ""
+                              response_source  │  ""
+                                    next_node  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [4] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.463s)
+                                        Message  │  intent='CO_HOI_VIEC_LAM' → action='PROCEED_RAG_PR_SEARCH' → next='rag_search'
+                                 chat_history  │  [4 items]
+                                                         [0] {"role": "user", "content": "cao học qtkd"}
+                                                         [1] {"role": "assistant", "content": "Cho mình hỏi thêm xíu, bạn đang quan tâm đến ngành học cụ thể nào hay thắc mắc về vấn đề nào ở UFM vậy ạ? Bạn gõ rõ hơn giúp mình nhé!\n---\n🌟 **Kênh Hỗ trợ Tư vấn Tuyển sinh UFM**\n\n🔹 **Tuyển sinh Đại học Chính quy (Cử nhân)**\n📍 *Địa chỉ:* Phòng A.007, 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM\n📞 *Hotline:* (028) 3772 0406 | (028) 3772 0407\n📧 *Email:* [tuyensinh@ufm.edu.vn](mailto:tuyensinh@ufm.edu.vn)\n🌐 *Website:* [tuyensinh.ufm.edu.vn](https://tuyensinh.ufm.edu.vn)\n💬 *Zalo:* [zalo.me/ufmhcm](https://zalo.me/ufmhcm) | *Fanpage:* [tuyensinhufm](https://www.facebook.com/tuyensinhufm)\n\n🔹 **Tuyển sinh Sau đại học (Thạc sĩ, Tiến sĩ)**\n📍 *Địa chỉ:* Viện Đào tạo Sau đại học (Phòng D.006)\n📞 *Hotline:* 0967 657 532 (Thầy Tuấn) | 0966 286 386 (Thầy Thành)\n📧 *Email:* [daotaosdh@ufm.edu.vn](mailto:daotaosdh@ufm.edu.vn)\n🌐 *Website:* [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn)\n\n🔹 **Các hệ đào tạo khác**\n💻 **Từ xa (E-Learning):** 0394 494 931 (Cô Ngân) | 🌐 [ufm-elearning.edu.vn](https://ufm-elearning.edu.vn)\n🏢 **Vừa làm vừa học:** Hotline: 0986 08 42 42 | 🌐 [ice.ufm.edu.vn](http://ice.ufm.edu.vn)\n🌍 **Liên kết Quốc tế ISFM:** Hotline: 0983 373 450 | 🌐 [isfm.ufm.edu.vn](https://isfm.ufm.edu.vn)"}
+                                                         [2] {"role": "user", "content": "thong tin cao hoc qtkd"}
+                                                         [3] {"role": "assistant", "content": "Chào bạn, mình là Trợ lý Tuyển sinh Đại học Tài chính - Marketing (UFM) đây! Mình rất vui được cung cấp cho bạn những thông tin chi tiết về chương trình **Thạc sĩ ngành Quản trị kinh doanh (QTKD)** tại UFM nhé! 🎓\n\nChương trình Thạc sĩ QTKD tại UFM được xây dựng dựa trên triết lý giáo dục \"Thực chất, đổi mới sáng tạo và hội nhập\", với thiết kế linh hoạt theo hệ thống tín chỉ, luôn cập nhật để đáp ứng nhu cầu thị trường lao động và xu hướng quản trị hiện đại.\n\n**1. Định hướng đào tạo:**\nNăm 2026, chương trình cung cấp hai định hướng chuyên biệt để bạn lựa chọn phù hợp với mục tiêu nghề nghiệp của mình:\n\n*   **Định hướng Nghiên cứu:** Tập trung phát triển tư duy hàn lâm, năng lực nghiên cứu khoa học chuyên sâu và khả năng giải quyết các vấn đề quản trị phức tạp bằng phương pháp luận khoa học. Định hướng này rất phù hợp với những bạn muốn trở thành giảng viên, nghiên cứu viên hoặc có định hướng học lên Tiến sĩ.\n*   **Định hướng Ứng dụng:** Tập trung phát triển kỹ năng thực hành, năng lực lãnh đạo và giải quyết các tình huống quản trị thực tiễn tại doanh nghiệp. Đây là lựa chọn lý tưởng cho các nhà quản lý, điều hành, doanh nhân.\n\nThời gian đào tạo trung bình là **02 năm** (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là **61 tín chỉ**.\n\nBạn có thể xem thông tin chi tiết chương trình đào tạo tại: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=ig3wGlAYnn1rof8yGKfbBA>\n\nNguồn tài liệu: [ThS QTKD.txt](/view-document/f1b4438f-76a9-4a40-941a-57a2388590ca)\n\n**2. Điều kiện xét tuyển:**\nĐể tham gia xét tuyển chương trình Thạc sĩ QTKD, bạn cần đáp ứng các tiêu chuẩn sau:\n\n*   **Về văn bằng:** Đã tốt nghiệp đại học ngành Quản trị kinh doanh hoặc các ngành phù hợp/ngành gần/ngành khác (có bổ sung kiến thức).\n*   **Phương thức tuyển sinh:** Xét tuyển dựa trên hồ sơ văn bằng, kết quả học tập đại học và năng lực ngoại ngữ.\n*   **Môn xét tuyển:** Đánh giá năng lực qua hai môn cơ sở ngành là **Kinh tế học** và **Quản trị học**.\n*   **Trình độ ngoại ngữ:** Ứng viên phải đạt năng lực ngoại ngữ từ Bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc sở hữu các văn bằng, chứng chỉ tương đương.\n\n**Lưu ý đặc biệt:** Đối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Quản trị kinh doanh, Nhà trường sẽ tổ chức học bổ sung kiến thức trước khi xét tuyển:\n*   **Ngành gần:** Bổ sung 02 môn (5 tín chỉ), gồm: Quản trị học (2 TC) và Kinh tế học (3 TC).\n*   **Ngành khác:** Bổ sung 04 môn (9 tín chỉ), gồm: Quản trị học (2 TC), Marketing căn bản (2 TC), Kinh tế học (3 TC) và Kinh tế phát triển (2 TC).\n\nNguồn tài liệu: [ThS QTKD.txt](/view-document/678d39ce-6eb4-4457-8ddc-7594b3dd0e4f)\n\n**3. Hồ sơ đăng ký dự tuyển:**\nĐể đăng ký dự tuyển, bạn cần chuẩn bị các giấy tờ sau:\n\n*   01 Phiếu đăng ký dự tuyển (theo mẫu).\n*   01 Lý lịch khoa học (theo mẫu) có xác nhận của thủ trưởng cơ quan hoặc chính quyền địa phương.\n*   02 Bản sao có công chứng (hoặc đối chiếu bản gốc) các giấy tờ sau:\n    *   Bằng và bảng điểm tốt nghiệp đại học; Bằng và bảng điểm Cao đẳng đối với thí sinh học hệ liên thông.\n    *   Văn bằng, chứng chỉ minh chứng trình độ ngoại ngữ bậc 3 (nếu có).\n    *   Bảng điểm bổ sung kiến thức (nếu thuộc đối tượng phải bổ sung kiến thức).\n    *   Các văn bằng, chứng chỉ khác (nếu có).\n*   01 Giấy chứng nhận đủ sức khỏe để học tập của bệnh viện hoặc phòng khám đa khoa thời gian không quá 6 tháng.\n*   04 Ảnh màu cỡ 3x4 (ghi rõ họ tên và ngày sinh của bạn ở mặt sau).\n\nNguồn tài liệu: [phuluc1.md](/view-document/01499ae0-25e1-4728-8f8f-2d2033410dbf)\n\n**4. Địa chỉ liên hệ và đăng ký:**\nBạn có thể đăng ký Tuyển sinh Sau đại học trực tuyến tại: <https://tuyensinhsdh.ufm.edu.vn/DangKy/CaoHoc>\n\nHoặc liên hệ trực tiếp Viện Đào tạo sau đại học, Trường Đại học Tài chính – Marketing:\n*   **Địa chỉ:** Phòng D006, cơ sở 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.\n*   **Email:** tuyensinhsaudaihoc@ufm.edu.vn\n*   **Điện thoại:** 028 3997 4641\n*   **Thời gian làm việc:** Sáng: 8g00 – 11g30 | Chiều: 13g30 – 16g30\n\nĐặc biệt, nếu bạn có thắc mắc cụ thể về ngành Quản trị kinh doanh, bạn có thể liên hệ trực tiếp với chuyên viên phụ trách tuyển sinh:\n*   **ThS. Đỗ Minh Hương**\n*   **SĐT:** 0983637999\n*   **Email:** dmhuong@ufm.edu.vn\n\nNguồn tài liệu: [tuyensinh-trinhdo-thacsi-dot1-2026.md](/view-document/7ac4cacc-3b18-4199-bdd2-8d1855b479a9)\n\nHy vọng những thông tin này hữu ích cho bạn! Bạn có muốn mình giải thích thêm về các môn học hoặc quy trình xét tuyển chi tiết hơn không? 🌟"}
+                                   user_query  │  học UFM % cao  RA TRUONG CÓ VIỆC LÀM KO 100%?
+                                                      >(45 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  học ufm % cao  ra truong có việc làm không 100%?
+                                                      >(48 chars)
+                             standalone_query  │  Tỷ lệ có việc làm sau khi tốt nghiệp ngành Quản trị kinh doanh hệ cao học tại UFM là bao nhiêu?
+                                                      >(95 chars)
+                                multi_queries  │  []
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.552s] standalone_query an toan
+                                                      >(57 chars)
+                             query_embeddings  │  []
+                                       intent  │  CO_HOI_VIEC_LAM
+                                                      >(15 chars)
+                               intent_summary  │  ""
+                                intent_action  │  PROCEED_RAG_PR_SEARCH
+                                                      >(21 chars)
+                         program_level_filter  │  thac_si
+                                                      >(7 chars)
+                          program_name_filter  │  Quản Trị Kinh Doanh
+                                                      >(19 chars)
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                               final_response  │  ""
+                              response_source  │  ""
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔀 [5] MULTI-QUERY NODE (Sinh biến thể)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.152s)
+                                        Message  │  Sinh 2 biến thể
+                                 chat_history  │  [4 items]
+                                                         [0] {"role": "user", "content": "cao học qtkd"}
+                                                         [1] {"role": "assistant", "content": "Cho mình hỏi thêm xíu, bạn đang quan tâm đến ngành học cụ thể nào hay thắc mắc về vấn đề nào ở UFM vậy ạ? Bạn gõ rõ hơn giúp mình nhé!\n---\n🌟 **Kênh Hỗ trợ Tư vấn Tuyển sinh UFM**\n\n🔹 **Tuyển sinh Đại học Chính quy (Cử nhân)**\n📍 *Địa chỉ:* Phòng A.007, 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM\n📞 *Hotline:* (028) 3772 0406 | (028) 3772 0407\n📧 *Email:* [tuyensinh@ufm.edu.vn](mailto:tuyensinh@ufm.edu.vn)\n🌐 *Website:* [tuyensinh.ufm.edu.vn](https://tuyensinh.ufm.edu.vn)\n💬 *Zalo:* [zalo.me/ufmhcm](https://zalo.me/ufmhcm) | *Fanpage:* [tuyensinhufm](https://www.facebook.com/tuyensinhufm)\n\n🔹 **Tuyển sinh Sau đại học (Thạc sĩ, Tiến sĩ)**\n📍 *Địa chỉ:* Viện Đào tạo Sau đại học (Phòng D.006)\n📞 *Hotline:* 0967 657 532 (Thầy Tuấn) | 0966 286 386 (Thầy Thành)\n📧 *Email:* [daotaosdh@ufm.edu.vn](mailto:daotaosdh@ufm.edu.vn)\n🌐 *Website:* [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn)\n\n🔹 **Các hệ đào tạo khác**\n💻 **Từ xa (E-Learning):** 0394 494 931 (Cô Ngân) | 🌐 [ufm-elearning.edu.vn](https://ufm-elearning.edu.vn)\n🏢 **Vừa làm vừa học:** Hotline: 0986 08 42 42 | 🌐 [ice.ufm.edu.vn](http://ice.ufm.edu.vn)\n🌍 **Liên kết Quốc tế ISFM:** Hotline: 0983 373 450 | 🌐 [isfm.ufm.edu.vn](https://isfm.ufm.edu.vn)"}
+                                                         [2] {"role": "user", "content": "thong tin cao hoc qtkd"}
+                                                         [3] {"role": "assistant", "content": "Chào bạn, mình là Trợ lý Tuyển sinh Đại học Tài chính - Marketing (UFM) đây! Mình rất vui được cung cấp cho bạn những thông tin chi tiết về chương trình **Thạc sĩ ngành Quản trị kinh doanh (QTKD)** tại UFM nhé! 🎓\n\nChương trình Thạc sĩ QTKD tại UFM được xây dựng dựa trên triết lý giáo dục \"Thực chất, đổi mới sáng tạo và hội nhập\", với thiết kế linh hoạt theo hệ thống tín chỉ, luôn cập nhật để đáp ứng nhu cầu thị trường lao động và xu hướng quản trị hiện đại.\n\n**1. Định hướng đào tạo:**\nNăm 2026, chương trình cung cấp hai định hướng chuyên biệt để bạn lựa chọn phù hợp với mục tiêu nghề nghiệp của mình:\n\n*   **Định hướng Nghiên cứu:** Tập trung phát triển tư duy hàn lâm, năng lực nghiên cứu khoa học chuyên sâu và khả năng giải quyết các vấn đề quản trị phức tạp bằng phương pháp luận khoa học. Định hướng này rất phù hợp với những bạn muốn trở thành giảng viên, nghiên cứu viên hoặc có định hướng học lên Tiến sĩ.\n*   **Định hướng Ứng dụng:** Tập trung phát triển kỹ năng thực hành, năng lực lãnh đạo và giải quyết các tình huống quản trị thực tiễn tại doanh nghiệp. Đây là lựa chọn lý tưởng cho các nhà quản lý, điều hành, doanh nhân.\n\nThời gian đào tạo trung bình là **02 năm** (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là **61 tín chỉ**.\n\nBạn có thể xem thông tin chi tiết chương trình đào tạo tại: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=ig3wGlAYnn1rof8yGKfbBA>\n\nNguồn tài liệu: [ThS QTKD.txt](/view-document/f1b4438f-76a9-4a40-941a-57a2388590ca)\n\n**2. Điều kiện xét tuyển:**\nĐể tham gia xét tuyển chương trình Thạc sĩ QTKD, bạn cần đáp ứng các tiêu chuẩn sau:\n\n*   **Về văn bằng:** Đã tốt nghiệp đại học ngành Quản trị kinh doanh hoặc các ngành phù hợp/ngành gần/ngành khác (có bổ sung kiến thức).\n*   **Phương thức tuyển sinh:** Xét tuyển dựa trên hồ sơ văn bằng, kết quả học tập đại học và năng lực ngoại ngữ.\n*   **Môn xét tuyển:** Đánh giá năng lực qua hai môn cơ sở ngành là **Kinh tế học** và **Quản trị học**.\n*   **Trình độ ngoại ngữ:** Ứng viên phải đạt năng lực ngoại ngữ từ Bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc sở hữu các văn bằng, chứng chỉ tương đương.\n\n**Lưu ý đặc biệt:** Đối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Quản trị kinh doanh, Nhà trường sẽ tổ chức học bổ sung kiến thức trước khi xét tuyển:\n*   **Ngành gần:** Bổ sung 02 môn (5 tín chỉ), gồm: Quản trị học (2 TC) và Kinh tế học (3 TC).\n*   **Ngành khác:** Bổ sung 04 môn (9 tín chỉ), gồm: Quản trị học (2 TC), Marketing căn bản (2 TC), Kinh tế học (3 TC) và Kinh tế phát triển (2 TC).\n\nNguồn tài liệu: [ThS QTKD.txt](/view-document/678d39ce-6eb4-4457-8ddc-7594b3dd0e4f)\n\n**3. Hồ sơ đăng ký dự tuyển:**\nĐể đăng ký dự tuyển, bạn cần chuẩn bị các giấy tờ sau:\n\n*   01 Phiếu đăng ký dự tuyển (theo mẫu).\n*   01 Lý lịch khoa học (theo mẫu) có xác nhận của thủ trưởng cơ quan hoặc chính quyền địa phương.\n*   02 Bản sao có công chứng (hoặc đối chiếu bản gốc) các giấy tờ sau:\n    *   Bằng và bảng điểm tốt nghiệp đại học; Bằng và bảng điểm Cao đẳng đối với thí sinh học hệ liên thông.\n    *   Văn bằng, chứng chỉ minh chứng trình độ ngoại ngữ bậc 3 (nếu có).\n    *   Bảng điểm bổ sung kiến thức (nếu thuộc đối tượng phải bổ sung kiến thức).\n    *   Các văn bằng, chứng chỉ khác (nếu có).\n*   01 Giấy chứng nhận đủ sức khỏe để học tập của bệnh viện hoặc phòng khám đa khoa thời gian không quá 6 tháng.\n*   04 Ảnh màu cỡ 3x4 (ghi rõ họ tên và ngày sinh của bạn ở mặt sau).\n\nNguồn tài liệu: [phuluc1.md](/view-document/01499ae0-25e1-4728-8f8f-2d2033410dbf)\n\n**4. Địa chỉ liên hệ và đăng ký:**\nBạn có thể đăng ký Tuyển sinh Sau đại học trực tuyến tại: <https://tuyensinhsdh.ufm.edu.vn/DangKy/CaoHoc>\n\nHoặc liên hệ trực tiếp Viện Đào tạo sau đại học, Trường Đại học Tài chính – Marketing:\n*   **Địa chỉ:** Phòng D006, cơ sở 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.\n*   **Email:** tuyensinhsaudaihoc@ufm.edu.vn\n*   **Điện thoại:** 028 3997 4641\n*   **Thời gian làm việc:** Sáng: 8g00 – 11g30 | Chiều: 13g30 – 16g30\n\nĐặc biệt, nếu bạn có thắc mắc cụ thể về ngành Quản trị kinh doanh, bạn có thể liên hệ trực tiếp với chuyên viên phụ trách tuyển sinh:\n*   **ThS. Đỗ Minh Hương**\n*   **SĐT:** 0983637999\n*   **Email:** dmhuong@ufm.edu.vn\n\nNguồn tài liệu: [tuyensinh-trinhdo-thacsi-dot1-2026.md](/view-document/7ac4cacc-3b18-4199-bdd2-8d1855b479a9)\n\nHy vọng những thông tin này hữu ích cho bạn! Bạn có muốn mình giải thích thêm về các môn học hoặc quy trình xét tuyển chi tiết hơn không? 🌟"}
+                                   user_query  │  học UFM % cao  RA TRUONG CÓ VIỆC LÀM KO 100%?
+                                                      >(45 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  học ufm % cao  ra truong có việc làm không 100%?
+                                                      >(48 chars)
+                             standalone_query  │  Tỷ lệ có việc làm sau khi tốt nghiệp ngành Quản trị kinh doanh hệ cao học tại UFM là bao nhiêu?
+                                                      >(95 chars)
+                                multi_queries  │  [2 items]
+                                                         [0] "Tỷ lệ sinh viên có việc làm sau khi hoàn thành chương trình thạc sĩ Quản trị kinh doanh tại UFM là bao nhiêu?"
+                                                         [1] "Khả năng tìm được việc làm của học viên cao học ngành Quản trị kinh doanh sau khi ra trường từ UFM là bao nhiêu phần trăm?"
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.552s] standalone_query an toan
+                                                      >(57 chars)
+                             query_embeddings  │  []
+                                       intent  │  CO_HOI_VIEC_LAM
+                                                      >(15 chars)
+                               intent_summary  │  ""
+                                intent_action  │  PROCEED_RAG_PR_SEARCH
+                                                      >(21 chars)
+                         program_level_filter  │  thac_si
+                                                      >(7 chars)
+                          program_name_filter  │  Quản Trị Kinh Doanh
+                                                      >(19 chars)
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                               final_response  │  ""
+                              response_source  │  ""
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  📊 [6] EMBEDDING NODE (BGE-M3 batch)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.696s)
+                                        Message  │  Nhúng 3 vectors × 1024D
+                                 chat_history  │  [4 items]
+                                                         [0] {"role": "user", "content": "cao học qtkd"}
+                                                         [1] {"role": "assistant", "content": "Cho mình hỏi thêm xíu, bạn đang quan tâm đến ngành học cụ thể nào hay thắc mắc về vấn đề nào ở UFM vậy ạ? Bạn gõ rõ hơn giúp mình nhé!\n---\n🌟 **Kênh Hỗ trợ Tư vấn Tuyển sinh UFM**\n\n🔹 **Tuyển sinh Đại học Chính quy (Cử nhân)**\n📍 *Địa chỉ:* Phòng A.007, 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM\n📞 *Hotline:* (028) 3772 0406 | (028) 3772 0407\n📧 *Email:* [tuyensinh@ufm.edu.vn](mailto:tuyensinh@ufm.edu.vn)\n🌐 *Website:* [tuyensinh.ufm.edu.vn](https://tuyensinh.ufm.edu.vn)\n💬 *Zalo:* [zalo.me/ufmhcm](https://zalo.me/ufmhcm) | *Fanpage:* [tuyensinhufm](https://www.facebook.com/tuyensinhufm)\n\n🔹 **Tuyển sinh Sau đại học (Thạc sĩ, Tiến sĩ)**\n📍 *Địa chỉ:* Viện Đào tạo Sau đại học (Phòng D.006)\n📞 *Hotline:* 0967 657 532 (Thầy Tuấn) | 0966 286 386 (Thầy Thành)\n📧 *Email:* [daotaosdh@ufm.edu.vn](mailto:daotaosdh@ufm.edu.vn)\n🌐 *Website:* [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn)\n\n🔹 **Các hệ đào tạo khác**\n💻 **Từ xa (E-Learning):** 0394 494 931 (Cô Ngân) | 🌐 [ufm-elearning.edu.vn](https://ufm-elearning.edu.vn)\n🏢 **Vừa làm vừa học:** Hotline: 0986 08 42 42 | 🌐 [ice.ufm.edu.vn](http://ice.ufm.edu.vn)\n🌍 **Liên kết Quốc tế ISFM:** Hotline: 0983 373 450 | 🌐 [isfm.ufm.edu.vn](https://isfm.ufm.edu.vn)"}
+                                                         [2] {"role": "user", "content": "thong tin cao hoc qtkd"}
+                                                         [3] {"role": "assistant", "content": "Chào bạn, mình là Trợ lý Tuyển sinh Đại học Tài chính - Marketing (UFM) đây! Mình rất vui được cung cấp cho bạn những thông tin chi tiết về chương trình **Thạc sĩ ngành Quản trị kinh doanh (QTKD)** tại UFM nhé! 🎓\n\nChương trình Thạc sĩ QTKD tại UFM được xây dựng dựa trên triết lý giáo dục \"Thực chất, đổi mới sáng tạo và hội nhập\", với thiết kế linh hoạt theo hệ thống tín chỉ, luôn cập nhật để đáp ứng nhu cầu thị trường lao động và xu hướng quản trị hiện đại.\n\n**1. Định hướng đào tạo:**\nNăm 2026, chương trình cung cấp hai định hướng chuyên biệt để bạn lựa chọn phù hợp với mục tiêu nghề nghiệp của mình:\n\n*   **Định hướng Nghiên cứu:** Tập trung phát triển tư duy hàn lâm, năng lực nghiên cứu khoa học chuyên sâu và khả năng giải quyết các vấn đề quản trị phức tạp bằng phương pháp luận khoa học. Định hướng này rất phù hợp với những bạn muốn trở thành giảng viên, nghiên cứu viên hoặc có định hướng học lên Tiến sĩ.\n*   **Định hướng Ứng dụng:** Tập trung phát triển kỹ năng thực hành, năng lực lãnh đạo và giải quyết các tình huống quản trị thực tiễn tại doanh nghiệp. Đây là lựa chọn lý tưởng cho các nhà quản lý, điều hành, doanh nhân.\n\nThời gian đào tạo trung bình là **02 năm** (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là **61 tín chỉ**.\n\nBạn có thể xem thông tin chi tiết chương trình đào tạo tại: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=ig3wGlAYnn1rof8yGKfbBA>\n\nNguồn tài liệu: [ThS QTKD.txt](/view-document/f1b4438f-76a9-4a40-941a-57a2388590ca)\n\n**2. Điều kiện xét tuyển:**\nĐể tham gia xét tuyển chương trình Thạc sĩ QTKD, bạn cần đáp ứng các tiêu chuẩn sau:\n\n*   **Về văn bằng:** Đã tốt nghiệp đại học ngành Quản trị kinh doanh hoặc các ngành phù hợp/ngành gần/ngành khác (có bổ sung kiến thức).\n*   **Phương thức tuyển sinh:** Xét tuyển dựa trên hồ sơ văn bằng, kết quả học tập đại học và năng lực ngoại ngữ.\n*   **Môn xét tuyển:** Đánh giá năng lực qua hai môn cơ sở ngành là **Kinh tế học** và **Quản trị học**.\n*   **Trình độ ngoại ngữ:** Ứng viên phải đạt năng lực ngoại ngữ từ Bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc sở hữu các văn bằng, chứng chỉ tương đương.\n\n**Lưu ý đặc biệt:** Đối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Quản trị kinh doanh, Nhà trường sẽ tổ chức học bổ sung kiến thức trước khi xét tuyển:\n*   **Ngành gần:** Bổ sung 02 môn (5 tín chỉ), gồm: Quản trị học (2 TC) và Kinh tế học (3 TC).\n*   **Ngành khác:** Bổ sung 04 môn (9 tín chỉ), gồm: Quản trị học (2 TC), Marketing căn bản (2 TC), Kinh tế học (3 TC) và Kinh tế phát triển (2 TC).\n\nNguồn tài liệu: [ThS QTKD.txt](/view-document/678d39ce-6eb4-4457-8ddc-7594b3dd0e4f)\n\n**3. Hồ sơ đăng ký dự tuyển:**\nĐể đăng ký dự tuyển, bạn cần chuẩn bị các giấy tờ sau:\n\n*   01 Phiếu đăng ký dự tuyển (theo mẫu).\n*   01 Lý lịch khoa học (theo mẫu) có xác nhận của thủ trưởng cơ quan hoặc chính quyền địa phương.\n*   02 Bản sao có công chứng (hoặc đối chiếu bản gốc) các giấy tờ sau:\n    *   Bằng và bảng điểm tốt nghiệp đại học; Bằng và bảng điểm Cao đẳng đối với thí sinh học hệ liên thông.\n    *   Văn bằng, chứng chỉ minh chứng trình độ ngoại ngữ bậc 3 (nếu có).\n    *   Bảng điểm bổ sung kiến thức (nếu thuộc đối tượng phải bổ sung kiến thức).\n    *   Các văn bằng, chứng chỉ khác (nếu có).\n*   01 Giấy chứng nhận đủ sức khỏe để học tập của bệnh viện hoặc phòng khám đa khoa thời gian không quá 6 tháng.\n*   04 Ảnh màu cỡ 3x4 (ghi rõ họ tên và ngày sinh của bạn ở mặt sau).\n\nNguồn tài liệu: [phuluc1.md](/view-document/01499ae0-25e1-4728-8f8f-2d2033410dbf)\n\n**4. Địa chỉ liên hệ và đăng ký:**\nBạn có thể đăng ký Tuyển sinh Sau đại học trực tuyến tại: <https://tuyensinhsdh.ufm.edu.vn/DangKy/CaoHoc>\n\nHoặc liên hệ trực tiếp Viện Đào tạo sau đại học, Trường Đại học Tài chính – Marketing:\n*   **Địa chỉ:** Phòng D006, cơ sở 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.\n*   **Email:** tuyensinhsaudaihoc@ufm.edu.vn\n*   **Điện thoại:** 028 3997 4641\n*   **Thời gian làm việc:** Sáng: 8g00 – 11g30 | Chiều: 13g30 – 16g30\n\nĐặc biệt, nếu bạn có thắc mắc cụ thể về ngành Quản trị kinh doanh, bạn có thể liên hệ trực tiếp với chuyên viên phụ trách tuyển sinh:\n*   **ThS. Đỗ Minh Hương**\n*   **SĐT:** 0983637999\n*   **Email:** dmhuong@ufm.edu.vn\n\nNguồn tài liệu: [tuyensinh-trinhdo-thacsi-dot1-2026.md](/view-document/7ac4cacc-3b18-4199-bdd2-8d1855b479a9)\n\nHy vọng những thông tin này hữu ích cho bạn! Bạn có muốn mình giải thích thêm về các môn học hoặc quy trình xét tuyển chi tiết hơn không? 🌟"}
+                                   user_query  │  học UFM % cao  RA TRUONG CÓ VIỆC LÀM KO 100%?
+                                                      >(45 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  học ufm % cao  ra truong có việc làm không 100%?
+                                                      >(48 chars)
+                             standalone_query  │  Tỷ lệ có việc làm sau khi tốt nghiệp ngành Quản trị kinh doanh hệ cao học tại UFM là bao nhiêu?
+                                                      >(95 chars)
+                                multi_queries  │  [2 items]
+                                                         [0] "Tỷ lệ sinh viên có việc làm sau khi hoàn thành chương trình thạc sĩ Quản trị kinh doanh tại UFM là bao nhiêu?"
+                                                         [1] "Khả năng tìm được việc làm của học viên cao học ngành Quản trị kinh doanh sau khi ra trường từ UFM là bao nhiêu phần trăm?"
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.552s] standalone_query an toan
+                                                      >(57 chars)
+                             query_embeddings  │  [3 vectors × 1024D]
+                                       intent  │  CO_HOI_VIEC_LAM
+                                                      >(15 chars)
+                               intent_summary  │  ""
+                                intent_action  │  PROCEED_RAG_PR_SEARCH
+                                                      >(21 chars)
+                         program_level_filter  │  thac_si
+                                                      >(7 chars)
+                          program_name_filter  │  Quản Trị Kinh Doanh
+                                                      >(19 chars)
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                               final_response  │  ""
+                              response_source  │  ""
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🗄️ [7] RAG NODE (Hybrid Search DB)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.110s)
+                                        Message  │  Chunks=10, Context=5969 chars
+                                 chat_history  │  [4 items]
+                                                         [0] {"role": "user", "content": "cao học qtkd"}
+                                                         [1] {"role": "assistant", "content": "Cho mình hỏi thêm xíu, bạn đang quan tâm đến ngành học cụ thể nào hay thắc mắc về vấn đề nào ở UFM vậy ạ? Bạn gõ rõ hơn giúp mình nhé!\n---\n🌟 **Kênh Hỗ trợ Tư vấn Tuyển sinh UFM**\n\n🔹 **Tuyển sinh Đại học Chính quy (Cử nhân)**\n📍 *Địa chỉ:* Phòng A.007, 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM\n📞 *Hotline:* (028) 3772 0406 | (028) 3772 0407\n📧 *Email:* [tuyensinh@ufm.edu.vn](mailto:tuyensinh@ufm.edu.vn)\n🌐 *Website:* [tuyensinh.ufm.edu.vn](https://tuyensinh.ufm.edu.vn)\n💬 *Zalo:* [zalo.me/ufmhcm](https://zalo.me/ufmhcm) | *Fanpage:* [tuyensinhufm](https://www.facebook.com/tuyensinhufm)\n\n🔹 **Tuyển sinh Sau đại học (Thạc sĩ, Tiến sĩ)**\n📍 *Địa chỉ:* Viện Đào tạo Sau đại học (Phòng D.006)\n📞 *Hotline:* 0967 657 532 (Thầy Tuấn) | 0966 286 386 (Thầy Thành)\n📧 *Email:* [daotaosdh@ufm.edu.vn](mailto:daotaosdh@ufm.edu.vn)\n🌐 *Website:* [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn)\n\n🔹 **Các hệ đào tạo khác**\n💻 **Từ xa (E-Learning):** 0394 494 931 (Cô Ngân) | 🌐 [ufm-elearning.edu.vn](https://ufm-elearning.edu.vn)\n🏢 **Vừa làm vừa học:** Hotline: 0986 08 42 42 | 🌐 [ice.ufm.edu.vn](http://ice.ufm.edu.vn)\n🌍 **Liên kết Quốc tế ISFM:** Hotline: 0983 373 450 | 🌐 [isfm.ufm.edu.vn](https://isfm.ufm.edu.vn)"}
+                                                         [2] {"role": "user", "content": "thong tin cao hoc qtkd"}
+                                                         [3] {"role": "assistant", "content": "Chào bạn, mình là Trợ lý Tuyển sinh Đại học Tài chính - Marketing (UFM) đây! Mình rất vui được cung cấp cho bạn những thông tin chi tiết về chương trình **Thạc sĩ ngành Quản trị kinh doanh (QTKD)** tại UFM nhé! 🎓\n\nChương trình Thạc sĩ QTKD tại UFM được xây dựng dựa trên triết lý giáo dục \"Thực chất, đổi mới sáng tạo và hội nhập\", với thiết kế linh hoạt theo hệ thống tín chỉ, luôn cập nhật để đáp ứng nhu cầu thị trường lao động và xu hướng quản trị hiện đại.\n\n**1. Định hướng đào tạo:**\nNăm 2026, chương trình cung cấp hai định hướng chuyên biệt để bạn lựa chọn phù hợp với mục tiêu nghề nghiệp của mình:\n\n*   **Định hướng Nghiên cứu:** Tập trung phát triển tư duy hàn lâm, năng lực nghiên cứu khoa học chuyên sâu và khả năng giải quyết các vấn đề quản trị phức tạp bằng phương pháp luận khoa học. Định hướng này rất phù hợp với những bạn muốn trở thành giảng viên, nghiên cứu viên hoặc có định hướng học lên Tiến sĩ.\n*   **Định hướng Ứng dụng:** Tập trung phát triển kỹ năng thực hành, năng lực lãnh đạo và giải quyết các tình huống quản trị thực tiễn tại doanh nghiệp. Đây là lựa chọn lý tưởng cho các nhà quản lý, điều hành, doanh nhân.\n\nThời gian đào tạo trung bình là **02 năm** (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là **61 tín chỉ**.\n\nBạn có thể xem thông tin chi tiết chương trình đào tạo tại: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=ig3wGlAYnn1rof8yGKfbBA>\n\nNguồn tài liệu: [ThS QTKD.txt](/view-document/f1b4438f-76a9-4a40-941a-57a2388590ca)\n\n**2. Điều kiện xét tuyển:**\nĐể tham gia xét tuyển chương trình Thạc sĩ QTKD, bạn cần đáp ứng các tiêu chuẩn sau:\n\n*   **Về văn bằng:** Đã tốt nghiệp đại học ngành Quản trị kinh doanh hoặc các ngành phù hợp/ngành gần/ngành khác (có bổ sung kiến thức).\n*   **Phương thức tuyển sinh:** Xét tuyển dựa trên hồ sơ văn bằng, kết quả học tập đại học và năng lực ngoại ngữ.\n*   **Môn xét tuyển:** Đánh giá năng lực qua hai môn cơ sở ngành là **Kinh tế học** và **Quản trị học**.\n*   **Trình độ ngoại ngữ:** Ứng viên phải đạt năng lực ngoại ngữ từ Bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc sở hữu các văn bằng, chứng chỉ tương đương.\n\n**Lưu ý đặc biệt:** Đối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Quản trị kinh doanh, Nhà trường sẽ tổ chức học bổ sung kiến thức trước khi xét tuyển:\n*   **Ngành gần:** Bổ sung 02 môn (5 tín chỉ), gồm: Quản trị học (2 TC) và Kinh tế học (3 TC).\n*   **Ngành khác:** Bổ sung 04 môn (9 tín chỉ), gồm: Quản trị học (2 TC), Marketing căn bản (2 TC), Kinh tế học (3 TC) và Kinh tế phát triển (2 TC).\n\nNguồn tài liệu: [ThS QTKD.txt](/view-document/678d39ce-6eb4-4457-8ddc-7594b3dd0e4f)\n\n**3. Hồ sơ đăng ký dự tuyển:**\nĐể đăng ký dự tuyển, bạn cần chuẩn bị các giấy tờ sau:\n\n*   01 Phiếu đăng ký dự tuyển (theo mẫu).\n*   01 Lý lịch khoa học (theo mẫu) có xác nhận của thủ trưởng cơ quan hoặc chính quyền địa phương.\n*   02 Bản sao có công chứng (hoặc đối chiếu bản gốc) các giấy tờ sau:\n    *   Bằng và bảng điểm tốt nghiệp đại học; Bằng và bảng điểm Cao đẳng đối với thí sinh học hệ liên thông.\n    *   Văn bằng, chứng chỉ minh chứng trình độ ngoại ngữ bậc 3 (nếu có).\n    *   Bảng điểm bổ sung kiến thức (nếu thuộc đối tượng phải bổ sung kiến thức).\n    *   Các văn bằng, chứng chỉ khác (nếu có).\n*   01 Giấy chứng nhận đủ sức khỏe để học tập của bệnh viện hoặc phòng khám đa khoa thời gian không quá 6 tháng.\n*   04 Ảnh màu cỡ 3x4 (ghi rõ họ tên và ngày sinh của bạn ở mặt sau).\n\nNguồn tài liệu: [phuluc1.md](/view-document/01499ae0-25e1-4728-8f8f-2d2033410dbf)\n\n**4. Địa chỉ liên hệ và đăng ký:**\nBạn có thể đăng ký Tuyển sinh Sau đại học trực tuyến tại: <https://tuyensinhsdh.ufm.edu.vn/DangKy/CaoHoc>\n\nHoặc liên hệ trực tiếp Viện Đào tạo sau đại học, Trường Đại học Tài chính – Marketing:\n*   **Địa chỉ:** Phòng D006, cơ sở 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.\n*   **Email:** tuyensinhsaudaihoc@ufm.edu.vn\n*   **Điện thoại:** 028 3997 4641\n*   **Thời gian làm việc:** Sáng: 8g00 – 11g30 | Chiều: 13g30 – 16g30\n\nĐặc biệt, nếu bạn có thắc mắc cụ thể về ngành Quản trị kinh doanh, bạn có thể liên hệ trực tiếp với chuyên viên phụ trách tuyển sinh:\n*   **ThS. Đỗ Minh Hương**\n*   **SĐT:** 0983637999\n*   **Email:** dmhuong@ufm.edu.vn\n\nNguồn tài liệu: [tuyensinh-trinhdo-thacsi-dot1-2026.md](/view-document/7ac4cacc-3b18-4199-bdd2-8d1855b479a9)\n\nHy vọng những thông tin này hữu ích cho bạn! Bạn có muốn mình giải thích thêm về các môn học hoặc quy trình xét tuyển chi tiết hơn không? 🌟"}
+                                   user_query  │  học UFM % cao  RA TRUONG CÓ VIỆC LÀM KO 100%?
+                                                      >(45 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  học ufm % cao  ra truong có việc làm không 100%?
+                                                      >(48 chars)
+                             standalone_query  │  Tỷ lệ có việc làm sau khi tốt nghiệp ngành Quản trị kinh doanh hệ cao học tại UFM là bao nhiêu?
+                                                      >(95 chars)
+                                multi_queries  │  [2 items]
+                                                         [0] "Tỷ lệ sinh viên có việc làm sau khi hoàn thành chương trình thạc sĩ Quản trị kinh doanh tại UFM là bao nhiêu?"
+                                                         [1] "Khả năng tìm được việc làm của học viên cao học ngành Quản trị kinh doanh sau khi ra trường từ UFM là bao nhiêu phần trăm?"
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.552s] standalone_query an toan
+                                                      >(57 chars)
+                             query_embeddings  │  [3 vectors × 1024D]
+                                       intent  │  CO_HOI_VIEC_LAM
+                                                      >(15 chars)
+                               intent_summary  │  ""
+                                intent_action  │  PROCEED_RAG_PR_SEARCH
+                                                      >(21 chars)
+                         program_level_filter  │  thac_si
+                                                      >(7 chars)
+                          program_name_filter  │  Quản Trị Kinh Doanh
+                                                      >(19 chars)
+                             retrieved_chunks  │  [10 items]
+                                                         [0] {"chunk_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.5484421906998385, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]\nCHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nChương trình đào tạo Thạc sĩ ngành Quản trị kinh doanh", "source": "vector", "rrf_score": 0.05245901639344262}
+                                                         [1] {"chunk_id": "dadc95b5-4d8e-48ba-9d06-a334e769335a", "chunk_level": "child", "parent_id": "da792a31-921c-482e-92c0-28febd2ebaf0", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CƠ HỘI NGHỀ NGHIỆP", "program_name": "Quản Trị Kinh Doanh", "score": 0.5374257013113143, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — CƠ HỘI NGHỀ NGHIỆP\n\nSau khi tốt nghiệp, Thạc sĩ Quản trị kinh doanh có thể đảm nhiệm các vị trí:\n\n* **Nhóm Q", "source": "vector", "rrf_score": 0.05161290322580645}
+                                                         [2] {"chunk_id": "da792a31-921c-482e-92c0-28febd2ebaf0", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CƠ HỘI NGHỀ NGHIỆP", "program_name": "Quản Trị Kinh Doanh", "score": 0.5363782963978239, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]\nCƠ HỘI NGHỀ NGHIỆP\n\nSau khi tốt nghiệp, Thạc sĩ Quản trị kinh doanh có thể đảm nhiệm các vị trí:\n\n* **Nhóm Quả", "source": "vector", "rrf_score": 0.050793650793650794}
+                                                         [3] {"chunk_id": "dc9e22ec-ee19-47b3-9bea-fd2fa5c8babd", "chunk_level": "child", "parent_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.5276123599775061, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nThông tin chi tiết chương trình đào tạo: <https://da", "source": "vector", "rrf_score": 0.048771526980482205}
+                                                         [4] {"chunk_id": "967684c1-33aa-4a7d-87e8-389259f974ea", "chunk_level": "child", "parent_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.5277866000938358, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nChương trình đào tạo Thạc sĩ ngành Quản trị kinh doa", "source": "vector", "rrf_score": 0.034375}
+                                                         [5] {"chunk_id": "a83af527-0285-4624-8fd6-7d5c416ff5ce", "chunk_level": "child", "parent_id": "5d05b110-4074-4d30-925b-66873c16fd0d", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.519292683559221, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — ĐIỀU KIỆN XÉT TUYỂN\n\n* **Ngành gần:** Bổ sung 02 môn (5 tín chỉ), gồm: Quản trị học (2 TC) và Kinh tế học (3", "source": "vector", "rrf_score": 0.033566433566433566}
+                                                         [6] {"chunk_id": "5d05b110-4074-4d30-925b-66873c16fd0d", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.5187465570862957, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]\nĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:\n\n* **Về văn bằng:** Đã tốt ng", "source": "vector", "rrf_score": 0.033535447761194034}
+                                                         [7] {"chunk_id": "0fb4062a-765a-4f7b-a341-7c5e3c39261b", "chunk_level": "child", "parent_id": "f02de27d-1e68-4c15-a796-baf4c62d7b7e", "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ", "program_name": null, "score": 0.5473654270172119, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9.", "source": "vector", "rrf_score": 0.015151515151515152}
+                                                         [8] {"chunk_id": "d74a51d8-ce9c-4dfe-8945-d72df0795293", "chunk_level": "child", "parent_id": "5d05b110-4074-4d30-925b-66873c16fd0d", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.5258189753186101, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — ĐIỀU KIỆN XÉT TUYỂN\n\n* **Về văn bằng:** Đã tốt nghiệp đại học ngành Quản trị kinh doanh hoặc các ngành phù h", "source": "vector", "rrf_score": 0.015151515151515152}
+                                                         [9] {"chunk_id": "f02de27d-1e68-4c15-a796-baf4c62d7b7e", "chunk_level": "parent", "parent_id": null, "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ", "program_name": null, "score": 0.5473654270172119, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9.", "source": "vector", "rrf_score": 0.014925373134328358}
+                                  rag_context  │  1.{{ SOURCE: ThS QTKD.txt
+PATH (NẰM Ở MỤC: Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [ThS QTKD.txt](/view-document/ac3e62ce-2f2b-4416-9fcc-affbe9d943ee) }}
+
+[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]
+CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH
+
+Chương trình đào tạo Thạc sĩ ngành Quản trị kinh doanh tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế linh hoạt theo hệ thống tín chỉ, cập nhật liên tục để đáp ứng nhu cầu của nhà tuyển dụng và xu hướng quản trị hiện đại.
+
+**Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt:**
+
+* **Định hướng Nghiên cứu:** Tập trung vào phát triển tư duy hàn lâm, năng lực nghiên cứu khoa học chuyên sâu và khả năng giải quyết các vấn đề quản trị phức tạp bằng phương pháp luận khoa học. Phù hợp với giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+* **Định hướng Ứng dụng:** Tập trung vào phát triển kỹ năng thực hành, năng lực lãnh đạo và giải quyết các tình huống quản trị thực tiễn tại doanh nghiệp. Phù hợp với các nhà quản lý, điều hành, doanh nhân.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=ig3wGlAYnn1rof8yGKfbBA>
+
+---
+
+2.{{ SOURCE: ThS QTKD.txt
+PATH (NẰM Ở MỤC: Thạc sĩ Quản Trị Kinh Doanh > CƠ HỘI NGHỀ NGHIỆP)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [ThS QTKD.txt](/view-document/e7b417e4-edea-4c25-9a85-f3e0c0055623) }}
+
+[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]
+CƠ HỘI NGHỀ NGHIỆP
+
+Sau khi tốt nghiệp, Thạc sĩ Quản trị kinh doanh có thể đảm nhiệm các vị trí:
+
+* **Nhóm Quản lý & Thực hành (Định hướng Ứng dụng):**
+  + Giám đốc điều hành (CEO), Giám đốc bộ phận (nhân sự, kinh doanh, vận hành...) tại các doanh nghiệp, tập đoàn đa quốc gia.
+  + Chuyên gia tư vấn quản trị, tư vấn chiến lược, khởi nghiệp và điều hành doanh nghiệp riêng.
+* **Nhóm Nghiên cứu & Giảng dạy (Định hướng Nghiên cứu):**
+  + Giảng viên giảng dạy ngành Quản trị kinh doanh tại các trường Đại học, Cao đẳng.
+  + Nghiên cứu viên tại các Viện nghiên cứu kinh tế, quản trị.
+  + Tiếp tục nghiên cứu ở bậc học cao hơn (Tiến sĩ) trong và ngoài nước.
+
+---
+
+3.{{ SOURCE: ThS QTKD.txt
+PATH (NẰM Ở MỤC: Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [ThS QTKD.txt](/view-document/0d2a6f65-4440-458d-b0a3-e4ef2eca77e0) }}
+
+[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]
+ĐIỀU KIỆN XÉT TUYỂN
+
+Ứng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:
+
+* **Về văn bằng:** Đã tốt nghiệp đại học ngành Quản trị kinh doanh hoặc các ngành phù hợp/ngành gần/ngành khác (có bổ sung kiến thức) .
+* **Phương thức tuyển sinh:** Xét tuyển dựa trên hồ sơ văn bằng, kết quả học tập đại học và năng lực ngoại ngữ.
+* **Môn xét tuyển:** Đánh giá năng lực qua hai môn cơ sở ngành là Kinh tế học và Quản trị học.
+* **Trình độ ngoại ngữ:** Ứng viên phải đạt năng lực ngoại ngữ từ Bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc sở hữu các văn bằng, chứng chỉ tương đương.
+
+Đối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Quản trị kinh doanh, Nhà trường tổ chức học bổ sung kiến thức trước khi xét tuyển:
+
+* **Ngành gần:** Bổ sung 02 môn (5 tín chỉ), gồm: Quản trị học (2 TC) và Kinh tế học (3 TC).
+* **Ngành khác:** Bổ sung 04 môn (9 tín chỉ), gồm: Quản trị học (2 TC), Marketing căn bản (2 TC), Kinh tế học (3 TC) và Kinh tế phát triển (2 TC).
+
+---
+
+4.{{ SOURCE: tuyensinh-trinhdo-thacsi-dot1-2026.md
+PATH (NẰM Ở MỤC: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [tuyensinh-trinhdo-thacsi-dot1-2026.md](/view-document/a66eb8c0-4547-4c10-bb56-3959188f7939) }}
+
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026
+[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]
+[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ]
+
+Link đăng ký Tuyển sinh Sau đại học trực tuyến: https://tuyensinhsdh.ufm.edu.vn/DangKy/CaoHoc
+Viện Đào tạo sau đại học, Trường Đại học Tài chính – Marketing
+Phòng D006, cơ sở 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.
+Email: tuyensinhsaudaihoc@ufm.edu.vn ĐT: 028 3997 4641
+Thời gian: Sáng: 8g00 – 11g30 Chiều: 13g30 – 16g30
+Chuyên viên phụ trách tuyển sinh:
+
+| STT | Ngành                 | Chuyên viên<br/>phụ trách    | SĐT          | Email                   |
+| --- | --------------------- | ---------------------------- | ------------ | ----------------------- |
+| 1.  | Quản trị kinh doanh   | ThS. Đỗ Minh Hương           | 0983637999   | dmhuong\@ufm.edu.vn     |
+| 2.  | Kế toán               |                              |              |                         |
+| 3.  | Tài chính – Ngân hàng | ThS. Vũ Mạnh Thành           | 0703 216 336 | manhthanhvn\@ufm.edu.vn |
+| 4.  | Luật kinh tế          |                              |              |                         |
+| 5.  | Quản lý kinh tế       | TS. Hoàng Sĩ Nam             | 0343843868   | hs.nam\@ufm.edu.vn      |
+| 6.  | Marketing             | ThS. Nguyễn Ngọc Thảo Nguyên | 0988932803   | nntnguyen\@ufm.edu.vn   |
+| 7.  | Kinh tế học           |                              |              |                         |
+| 8.  | Kinh doanh quốc tế    | ThS. Châu Mỹ Chi             | 0903 848285  | chaumychi\@ufm.edu.vn   |
+| 9.  | Toán kinh tế          |                              |              |                         |
+
+
+Đơn vị, cá nhân đăng ký tại văn phòng Viện Đào tạo sau đại học hoặc qua điện thoại, email như trên.
+                                                      >(5969 chars)
+                               final_response  │  ""
+                              response_source  │  ""
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🌐 [8] RAG SEARCH PIPELINE (Evaluator + Web Search)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.000s)
+                                        Message  │  cache=MISS, citations=0
+                                 chat_history  │  [4 items]
+                                                         [0] {"role": "user", "content": "cao học qtkd"}
+                                                         [1] {"role": "assistant", "content": "Cho mình hỏi thêm xíu, bạn đang quan tâm đến ngành học cụ thể nào hay thắc mắc về vấn đề nào ở UFM vậy ạ? Bạn gõ rõ hơn giúp mình nhé!\n---\n🌟 **Kênh Hỗ trợ Tư vấn Tuyển sinh UFM**\n\n🔹 **Tuyển sinh Đại học Chính quy (Cử nhân)**\n📍 *Địa chỉ:* Phòng A.007, 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM\n📞 *Hotline:* (028) 3772 0406 | (028) 3772 0407\n📧 *Email:* [tuyensinh@ufm.edu.vn](mailto:tuyensinh@ufm.edu.vn)\n🌐 *Website:* [tuyensinh.ufm.edu.vn](https://tuyensinh.ufm.edu.vn)\n💬 *Zalo:* [zalo.me/ufmhcm](https://zalo.me/ufmhcm) | *Fanpage:* [tuyensinhufm](https://www.facebook.com/tuyensinhufm)\n\n🔹 **Tuyển sinh Sau đại học (Thạc sĩ, Tiến sĩ)**\n📍 *Địa chỉ:* Viện Đào tạo Sau đại học (Phòng D.006)\n📞 *Hotline:* 0967 657 532 (Thầy Tuấn) | 0966 286 386 (Thầy Thành)\n📧 *Email:* [daotaosdh@ufm.edu.vn](mailto:daotaosdh@ufm.edu.vn)\n🌐 *Website:* [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn)\n\n🔹 **Các hệ đào tạo khác**\n💻 **Từ xa (E-Learning):** 0394 494 931 (Cô Ngân) | 🌐 [ufm-elearning.edu.vn](https://ufm-elearning.edu.vn)\n🏢 **Vừa làm vừa học:** Hotline: 0986 08 42 42 | 🌐 [ice.ufm.edu.vn](http://ice.ufm.edu.vn)\n🌍 **Liên kết Quốc tế ISFM:** Hotline: 0983 373 450 | 🌐 [isfm.ufm.edu.vn](https://isfm.ufm.edu.vn)"}
+                                                         [2] {"role": "user", "content": "thong tin cao hoc qtkd"}
+                                                         [3] {"role": "assistant", "content": "Chào bạn, mình là Trợ lý Tuyển sinh Đại học Tài chính - Marketing (UFM) đây! Mình rất vui được cung cấp cho bạn những thông tin chi tiết về chương trình **Thạc sĩ ngành Quản trị kinh doanh (QTKD)** tại UFM nhé! 🎓\n\nChương trình Thạc sĩ QTKD tại UFM được xây dựng dựa trên triết lý giáo dục \"Thực chất, đổi mới sáng tạo và hội nhập\", với thiết kế linh hoạt theo hệ thống tín chỉ, luôn cập nhật để đáp ứng nhu cầu thị trường lao động và xu hướng quản trị hiện đại.\n\n**1. Định hướng đào tạo:**\nNăm 2026, chương trình cung cấp hai định hướng chuyên biệt để bạn lựa chọn phù hợp với mục tiêu nghề nghiệp của mình:\n\n*   **Định hướng Nghiên cứu:** Tập trung phát triển tư duy hàn lâm, năng lực nghiên cứu khoa học chuyên sâu và khả năng giải quyết các vấn đề quản trị phức tạp bằng phương pháp luận khoa học. Định hướng này rất phù hợp với những bạn muốn trở thành giảng viên, nghiên cứu viên hoặc có định hướng học lên Tiến sĩ.\n*   **Định hướng Ứng dụng:** Tập trung phát triển kỹ năng thực hành, năng lực lãnh đạo và giải quyết các tình huống quản trị thực tiễn tại doanh nghiệp. Đây là lựa chọn lý tưởng cho các nhà quản lý, điều hành, doanh nhân.\n\nThời gian đào tạo trung bình là **02 năm** (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là **61 tín chỉ**.\n\nBạn có thể xem thông tin chi tiết chương trình đào tạo tại: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=ig3wGlAYnn1rof8yGKfbBA>\n\nNguồn tài liệu: [ThS QTKD.txt](/view-document/f1b4438f-76a9-4a40-941a-57a2388590ca)\n\n**2. Điều kiện xét tuyển:**\nĐể tham gia xét tuyển chương trình Thạc sĩ QTKD, bạn cần đáp ứng các tiêu chuẩn sau:\n\n*   **Về văn bằng:** Đã tốt nghiệp đại học ngành Quản trị kinh doanh hoặc các ngành phù hợp/ngành gần/ngành khác (có bổ sung kiến thức).\n*   **Phương thức tuyển sinh:** Xét tuyển dựa trên hồ sơ văn bằng, kết quả học tập đại học và năng lực ngoại ngữ.\n*   **Môn xét tuyển:** Đánh giá năng lực qua hai môn cơ sở ngành là **Kinh tế học** và **Quản trị học**.\n*   **Trình độ ngoại ngữ:** Ứng viên phải đạt năng lực ngoại ngữ từ Bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc sở hữu các văn bằng, chứng chỉ tương đương.\n\n**Lưu ý đặc biệt:** Đối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Quản trị kinh doanh, Nhà trường sẽ tổ chức học bổ sung kiến thức trước khi xét tuyển:\n*   **Ngành gần:** Bổ sung 02 môn (5 tín chỉ), gồm: Quản trị học (2 TC) và Kinh tế học (3 TC).\n*   **Ngành khác:** Bổ sung 04 môn (9 tín chỉ), gồm: Quản trị học (2 TC), Marketing căn bản (2 TC), Kinh tế học (3 TC) và Kinh tế phát triển (2 TC).\n\nNguồn tài liệu: [ThS QTKD.txt](/view-document/678d39ce-6eb4-4457-8ddc-7594b3dd0e4f)\n\n**3. Hồ sơ đăng ký dự tuyển:**\nĐể đăng ký dự tuyển, bạn cần chuẩn bị các giấy tờ sau:\n\n*   01 Phiếu đăng ký dự tuyển (theo mẫu).\n*   01 Lý lịch khoa học (theo mẫu) có xác nhận của thủ trưởng cơ quan hoặc chính quyền địa phương.\n*   02 Bản sao có công chứng (hoặc đối chiếu bản gốc) các giấy tờ sau:\n    *   Bằng và bảng điểm tốt nghiệp đại học; Bằng và bảng điểm Cao đẳng đối với thí sinh học hệ liên thông.\n    *   Văn bằng, chứng chỉ minh chứng trình độ ngoại ngữ bậc 3 (nếu có).\n    *   Bảng điểm bổ sung kiến thức (nếu thuộc đối tượng phải bổ sung kiến thức).\n    *   Các văn bằng, chứng chỉ khác (nếu có).\n*   01 Giấy chứng nhận đủ sức khỏe để học tập của bệnh viện hoặc phòng khám đa khoa thời gian không quá 6 tháng.\n*   04 Ảnh màu cỡ 3x4 (ghi rõ họ tên và ngày sinh của bạn ở mặt sau).\n\nNguồn tài liệu: [phuluc1.md](/view-document/01499ae0-25e1-4728-8f8f-2d2033410dbf)\n\n**4. Địa chỉ liên hệ và đăng ký:**\nBạn có thể đăng ký Tuyển sinh Sau đại học trực tuyến tại: <https://tuyensinhsdh.ufm.edu.vn/DangKy/CaoHoc>\n\nHoặc liên hệ trực tiếp Viện Đào tạo sau đại học, Trường Đại học Tài chính – Marketing:\n*   **Địa chỉ:** Phòng D006, cơ sở 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.\n*   **Email:** tuyensinhsaudaihoc@ufm.edu.vn\n*   **Điện thoại:** 028 3997 4641\n*   **Thời gian làm việc:** Sáng: 8g00 – 11g30 | Chiều: 13g30 – 16g30\n\nĐặc biệt, nếu bạn có thắc mắc cụ thể về ngành Quản trị kinh doanh, bạn có thể liên hệ trực tiếp với chuyên viên phụ trách tuyển sinh:\n*   **ThS. Đỗ Minh Hương**\n*   **SĐT:** 0983637999\n*   **Email:** dmhuong@ufm.edu.vn\n\nNguồn tài liệu: [tuyensinh-trinhdo-thacsi-dot1-2026.md](/view-document/7ac4cacc-3b18-4199-bdd2-8d1855b479a9)\n\nHy vọng những thông tin này hữu ích cho bạn! Bạn có muốn mình giải thích thêm về các môn học hoặc quy trình xét tuyển chi tiết hơn không? 🌟"}
+                                   user_query  │  học UFM % cao  RA TRUONG CÓ VIỆC LÀM KO 100%?
+                                                      >(45 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  học ufm % cao  ra truong có việc làm không 100%?
+                                                      >(48 chars)
+                             standalone_query  │  Tỷ lệ có việc làm sau khi tốt nghiệp ngành Quản trị kinh doanh hệ cao học tại UFM là bao nhiêu?
+                                                      >(95 chars)
+                                multi_queries  │  [2 items]
+                                                         [0] "Tỷ lệ sinh viên có việc làm sau khi hoàn thành chương trình thạc sĩ Quản trị kinh doanh tại UFM là bao nhiêu?"
+                                                         [1] "Khả năng tìm được việc làm của học viên cao học ngành Quản trị kinh doanh sau khi ra trường từ UFM là bao nhiêu phần trăm?"
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.552s] standalone_query an toan
+                                                      >(57 chars)
+                             query_embeddings  │  [3 vectors × 1024D]
+                                       intent  │  CO_HOI_VIEC_LAM
+                                                      >(15 chars)
+                               intent_summary  │  ""
+                                intent_action  │  PROCEED_RAG_PR_SEARCH
+                                                      >(21 chars)
+                         program_level_filter  │  thac_si
+                                                      >(7 chars)
+                          program_name_filter  │  Quản Trị Kinh Doanh
+                                                      >(19 chars)
+                             retrieved_chunks  │  [10 items]
+                                                         [0] {"chunk_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.5484421906998385, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]\nCHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nChương trình đào tạo Thạc sĩ ngành Quản trị kinh doanh", "source": "vector", "rrf_score": 0.05245901639344262}
+                                                         [1] {"chunk_id": "dadc95b5-4d8e-48ba-9d06-a334e769335a", "chunk_level": "child", "parent_id": "da792a31-921c-482e-92c0-28febd2ebaf0", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CƠ HỘI NGHỀ NGHIỆP", "program_name": "Quản Trị Kinh Doanh", "score": 0.5374257013113143, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — CƠ HỘI NGHỀ NGHIỆP\n\nSau khi tốt nghiệp, Thạc sĩ Quản trị kinh doanh có thể đảm nhiệm các vị trí:\n\n* **Nhóm Q", "source": "vector", "rrf_score": 0.05161290322580645}
+                                                         [2] {"chunk_id": "da792a31-921c-482e-92c0-28febd2ebaf0", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CƠ HỘI NGHỀ NGHIỆP", "program_name": "Quản Trị Kinh Doanh", "score": 0.5363782963978239, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]\nCƠ HỘI NGHỀ NGHIỆP\n\nSau khi tốt nghiệp, Thạc sĩ Quản trị kinh doanh có thể đảm nhiệm các vị trí:\n\n* **Nhóm Quả", "source": "vector", "rrf_score": 0.050793650793650794}
+                                                         [3] {"chunk_id": "dc9e22ec-ee19-47b3-9bea-fd2fa5c8babd", "chunk_level": "child", "parent_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.5276123599775061, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nThông tin chi tiết chương trình đào tạo: <https://da", "source": "vector", "rrf_score": 0.048771526980482205}
+                                                         [4] {"chunk_id": "967684c1-33aa-4a7d-87e8-389259f974ea", "chunk_level": "child", "parent_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.5277866000938358, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nChương trình đào tạo Thạc sĩ ngành Quản trị kinh doa", "source": "vector", "rrf_score": 0.034375}
+                                                         [5] {"chunk_id": "a83af527-0285-4624-8fd6-7d5c416ff5ce", "chunk_level": "child", "parent_id": "5d05b110-4074-4d30-925b-66873c16fd0d", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.519292683559221, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — ĐIỀU KIỆN XÉT TUYỂN\n\n* **Ngành gần:** Bổ sung 02 môn (5 tín chỉ), gồm: Quản trị học (2 TC) và Kinh tế học (3", "source": "vector", "rrf_score": 0.033566433566433566}
+                                                         [6] {"chunk_id": "5d05b110-4074-4d30-925b-66873c16fd0d", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.5187465570862957, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]\nĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:\n\n* **Về văn bằng:** Đã tốt ng", "source": "vector", "rrf_score": 0.033535447761194034}
+                                                         [7] {"chunk_id": "0fb4062a-765a-4f7b-a341-7c5e3c39261b", "chunk_level": "child", "parent_id": "f02de27d-1e68-4c15-a796-baf4c62d7b7e", "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ", "program_name": null, "score": 0.5473654270172119, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9.", "source": "vector", "rrf_score": 0.015151515151515152}
+                                                         [8] {"chunk_id": "d74a51d8-ce9c-4dfe-8945-d72df0795293", "chunk_level": "child", "parent_id": "5d05b110-4074-4d30-925b-66873c16fd0d", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.5258189753186101, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — ĐIỀU KIỆN XÉT TUYỂN\n\n* **Về văn bằng:** Đã tốt nghiệp đại học ngành Quản trị kinh doanh hoặc các ngành phù h", "source": "vector", "rrf_score": 0.015151515151515152}
+                                                         [9] {"chunk_id": "f02de27d-1e68-4c15-a796-baf4c62d7b7e", "chunk_level": "parent", "parent_id": null, "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ", "program_name": null, "score": 0.5473654270172119, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9.", "source": "vector", "rrf_score": 0.014925373134328358}
+                                  rag_context  │  1.{{ SOURCE: ThS QTKD.txt
+PATH (NẰM Ở MỤC: Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [ThS QTKD.txt](/view-document/ac3e62ce-2f2b-4416-9fcc-affbe9d943ee) }}
+
+[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]
+CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH
+
+Chương trình đào tạo Thạc sĩ ngành Quản trị kinh doanh tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế linh hoạt theo hệ thống tín chỉ, cập nhật liên tục để đáp ứng nhu cầu của nhà tuyển dụng và xu hướng quản trị hiện đại.
+
+**Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt:**
+
+* **Định hướng Nghiên cứu:** Tập trung vào phát triển tư duy hàn lâm, năng lực nghiên cứu khoa học chuyên sâu và khả năng giải quyết các vấn đề quản trị phức tạp bằng phương pháp luận khoa học. Phù hợp với giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+* **Định hướng Ứng dụng:** Tập trung vào phát triển kỹ năng thực hành, năng lực lãnh đạo và giải quyết các tình huống quản trị thực tiễn tại doanh nghiệp. Phù hợp với các nhà quản lý, điều hành, doanh nhân.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=ig3wGlAYnn1rof8yGKfbBA>
+
+---
+
+2.{{ SOURCE: ThS QTKD.txt
+PATH (NẰM Ở MỤC: Thạc sĩ Quản Trị Kinh Doanh > CƠ HỘI NGHỀ NGHIỆP)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [ThS QTKD.txt](/view-document/e7b417e4-edea-4c25-9a85-f3e0c0055623) }}
+
+[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]
+CƠ HỘI NGHỀ NGHIỆP
+
+Sau khi tốt nghiệp, Thạc sĩ Quản trị kinh doanh có thể đảm nhiệm các vị trí:
+
+* **Nhóm Quản lý & Thực hành (Định hướng Ứng dụng):**
+  + Giám đốc điều hành (CEO), Giám đốc bộ phận (nhân sự, kinh doanh, vận hành...) tại các doanh nghiệp, tập đoàn đa quốc gia.
+  + Chuyên gia tư vấn quản trị, tư vấn chiến lược, khởi nghiệp và điều hành doanh nghiệp riêng.
+* **Nhóm Nghiên cứu & Giảng dạy (Định hướng Nghiên cứu):**
+  + Giảng viên giảng dạy ngành Quản trị kinh doanh tại các trường Đại học, Cao đẳng.
+  + Nghiên cứu viên tại các Viện nghiên cứu kinh tế, quản trị.
+  + Tiếp tục nghiên cứu ở bậc học cao hơn (Tiến sĩ) trong và ngoài nước.
+
+---
+
+3.{{ SOURCE: ThS QTKD.txt
+PATH (NẰM Ở MỤC: Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [ThS QTKD.txt](/view-document/0d2a6f65-4440-458d-b0a3-e4ef2eca77e0) }}
+
+[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]
+ĐIỀU KIỆN XÉT TUYỂN
+
+Ứng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:
+
+* **Về văn bằng:** Đã tốt nghiệp đại học ngành Quản trị kinh doanh hoặc các ngành phù hợp/ngành gần/ngành khác (có bổ sung kiến thức) .
+* **Phương thức tuyển sinh:** Xét tuyển dựa trên hồ sơ văn bằng, kết quả học tập đại học và năng lực ngoại ngữ.
+* **Môn xét tuyển:** Đánh giá năng lực qua hai môn cơ sở ngành là Kinh tế học và Quản trị học.
+* **Trình độ ngoại ngữ:** Ứng viên phải đạt năng lực ngoại ngữ từ Bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc sở hữu các văn bằng, chứng chỉ tương đương.
+
+Đối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Quản trị kinh doanh, Nhà trường tổ chức học bổ sung kiến thức trước khi xét tuyển:
+
+* **Ngành gần:** Bổ sung 02 môn (5 tín chỉ), gồm: Quản trị học (2 TC) và Kinh tế học (3 TC).
+* **Ngành khác:** Bổ sung 04 môn (9 tín chỉ), gồm: Quản trị học (2 TC), Marketing căn bản (2 TC), Kinh tế học (3 TC) và Kinh tế phát triển (2 TC).
+
+---
+
+4.{{ SOURCE: tuyensinh-trinhdo-thacsi-dot1-2026.md
+PATH (NẰM Ở MỤC: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [tuyensinh-trinhdo-thacsi-dot1-2026.md](/view-document/a66eb8c0-4547-4c10-bb56-3959188f7939) }}
+
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026
+[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]
+[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ]
+
+Link đăng ký Tuyển sinh Sau đại học trực tuyến: https://tuyensinhsdh.ufm.edu.vn/DangKy/CaoHoc
+Viện Đào tạo sau đại học, Trường Đại học Tài chính – Marketing
+Phòng D006, cơ sở 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.
+Email: tuyensinhsaudaihoc@ufm.edu.vn ĐT: 028 3997 4641
+Thời gian: Sáng: 8g00 – 11g30 Chiều: 13g30 – 16g30
+Chuyên viên phụ trách tuyển sinh:
+
+| STT | Ngành                 | Chuyên viên<br/>phụ trách    | SĐT          | Email                   |
+| --- | --------------------- | ---------------------------- | ------------ | ----------------------- |
+| 1.  | Quản trị kinh doanh   | ThS. Đỗ Minh Hương           | 0983637999   | dmhuong\@ufm.edu.vn     |
+| 2.  | Kế toán               |                              |              |                         |
+| 3.  | Tài chính – Ngân hàng | ThS. Vũ Mạnh Thành           | 0703 216 336 | manhthanhvn\@ufm.edu.vn |
+| 4.  | Luật kinh tế          |                              |              |                         |
+| 5.  | Quản lý kinh tế       | TS. Hoàng Sĩ Nam             | 0343843868   | hs.nam\@ufm.edu.vn      |
+| 6.  | Marketing             | ThS. Nguyễn Ngọc Thảo Nguyên | 0988932803   | nntnguyen\@ufm.edu.vn   |
+| 7.  | Kinh tế học           |                              |              |                         |
+| 8.  | Kinh doanh quốc tế    | ThS. Châu Mỹ Chi             | 0903 848285  | chaumychi\@ufm.edu.vn   |
+| 9.  | Toán kinh tế          |                              |              |                         |
+
+
+Đơn vị, cá nhân đăng ký tại văn phòng Viện Đào tạo sau đại học hoặc qua điện thoại, email như trên.
+                                                      >(5969 chars)
+                               final_response  │  1.{{ SOURCE: ThS QTKD.txt
+PATH (NẰM Ở MỤC: Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [ThS QTKD.txt](/view-document/ac3e62ce-2f2b-4416-9fcc-affbe9d943ee) }}
+
+[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]
+CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH
+
+Chương trình đào tạo Thạc sĩ ngành Quản trị kinh doanh tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế linh hoạt theo hệ thống tín chỉ, cập nhật liên tục để đáp ứng nhu cầu của nhà tuyển dụng và xu hướng quản trị hiện đại.
+
+**Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt:**
+
+* **Định hướng Nghiên cứu:** Tập trung vào phát triển tư duy hàn lâm, năng lực nghiên cứu khoa học chuyên sâu và khả năng giải quyết các vấn đề quản trị phức tạp bằng phương pháp luận khoa học. Phù hợp với giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+* **Định hướng Ứng dụng:** Tập trung vào phát triển kỹ năng thực hành, năng lực lãnh đạo và giải quyết các tình huống quản trị thực tiễn tại doanh nghiệp. Phù hợp với các nhà quản lý, điều hành, doanh nhân.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=ig3wGlAYnn1rof8yGKfbBA>
+
+---
+
+2.{{ SOURCE: ThS QTKD.txt
+PATH (NẰM Ở MỤC: Thạc sĩ Quản Trị Kinh Doanh > CƠ HỘI NGHỀ NGHIỆP)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [ThS QTKD.txt](/view-document/e7b417e4-edea-4c25-9a85-f3e0c0055623) }}
+
+[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]
+CƠ HỘI NGHỀ NGHIỆP
+
+Sau khi tốt nghiệp, Thạc sĩ Quản trị kinh doanh có thể đảm nhiệm các vị trí:
+
+* **Nhóm Quản lý & Thực hành (Định hướng Ứng dụng):**
+  + Giám đốc điều hành (CEO), Giám đốc bộ phận (nhân sự, kinh doanh, vận hành...) tại các doanh nghiệp, tập đoàn đa quốc gia.
+  + Chuyên gia tư vấn quản trị, tư vấn chiến lược, khởi nghiệp và điều hành doanh nghiệp riêng.
+* **Nhóm Nghiên cứu & Giảng dạy (Định hướng Nghiên cứu):**
+  + Giảng viên giảng dạy ngành Quản trị kinh doanh tại các trường Đại học, Cao đẳng.
+  + Nghiên cứu viên tại các Viện nghiên cứu kinh tế, quản trị.
+  + Tiếp tục nghiên cứu ở bậc học cao hơn (Tiến sĩ) trong và ngoài nước.
+
+---
+
+3.{{ SOURCE: ThS QTKD.txt
+PATH (NẰM Ở MỤC: Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [ThS QTKD.txt](/view-document/0d2a6f65-4440-458d-b0a3-e4ef2eca77e0) }}
+
+[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]
+ĐIỀU KIỆN XÉT TUYỂN
+
+Ứng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:
+
+* **Về văn bằng:** Đã tốt nghiệp đại học ngành Quản trị kinh doanh hoặc các ngành phù hợp/ngành gần/ngành khác (có bổ sung kiến thức) .
+* **Phương thức tuyển sinh:** Xét tuyển dựa trên hồ sơ văn bằng, kết quả học tập đại học và năng lực ngoại ngữ.
+* **Môn xét tuyển:** Đánh giá năng lực qua hai môn cơ sở ngành là Kinh tế học và Quản trị học.
+* **Trình độ ngoại ngữ:** Ứng viên phải đạt năng lực ngoại ngữ từ Bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc sở hữu các văn bằng, chứng chỉ tương đương.
+
+Đối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Quản trị kinh doanh, Nhà trường tổ chức học bổ sung kiến thức trước khi xét tuyển:
+
+* **Ngành gần:** Bổ sung 02 môn (5 tín chỉ), gồm: Quản trị học (2 TC) và Kinh tế học (3 TC).
+* **Ngành khác:** Bổ sung 04 môn (9 tín chỉ), gồm: Quản trị học (2 TC), Marketing căn bản (2 TC), Kinh tế học (3 TC) và Kinh tế phát triển (2 TC).
+
+---
+
+4.{{ SOURCE: tuyensinh-trinhdo-thacsi-dot1-2026.md
+PATH (NẰM Ở MỤC: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [tuyensinh-trinhdo-thacsi-dot1-2026.md](/view-document/a66eb8c0-4547-4c10-bb56-3959188f7939) }}
+
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026
+[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]
+[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ]
+
+Link đăng ký Tuyển sinh Sau đại học trực tuyến: https://tuyensinhsdh.ufm.edu.vn/DangKy/CaoHoc
+Viện Đào tạo sau đại học, Trường Đại học Tài chính – Marketing
+Phòng D006, cơ sở 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.
+Email: tuyensinhsaudaihoc@ufm.edu.vn ĐT: 028 3997 4641
+Thời gian: Sáng: 8g00 – 11g30 Chiều: 13g30 – 16g30
+Chuyên viên phụ trách tuyển sinh:
+
+| STT | Ngành                 | Chuyên viên<br/>phụ trách    | SĐT          | Email                   |
+| --- | --------------------- | ---------------------------- | ------------ | ----------------------- |
+| 1.  | Quản trị kinh doanh   | ThS. Đỗ Minh Hương           | 0983637999   | dmhuong\@ufm.edu.vn     |
+| 2.  | Kế toán               |                              |              |                         |
+| 3.  | Tài chính – Ngân hàng | ThS. Vũ Mạnh Thành           | 0703 216 336 | manhthanhvn\@ufm.edu.vn |
+| 4.  | Luật kinh tế          |                              |              |                         |
+| 5.  | Quản lý kinh tế       | TS. Hoàng Sĩ Nam             | 0343843868   | hs.nam\@ufm.edu.vn      |
+| 6.  | Marketing             | ThS. Nguyễn Ngọc Thảo Nguyên | 0988932803   | nntnguyen\@ufm.edu.vn   |
+| 7.  | Kinh tế học           |                              |              |                         |
+| 8.  | Kinh doanh quốc tế    | ThS. Châu Mỹ Chi             | 0903 848285  | chaumychi\@ufm.edu.vn   |
+| 9.  | Toán kinh tế          |                              |              |                         |
+
+
+Đơn vị, cá nhân đăng ký tại văn phòng Viện Đào tạo sau đại học hoặc qua điện thoại, email như trên.
+                                                      >(5969 chars)
+                              response_source  │  rag_db_only
+                                                      >(11 chars)
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+                           ufm_search_queries  │  null
+                              pr_search_query  │  null
+                           web_search_results  │  null
+                         web_search_citations  │  null
+                             search_cache_hit  │  ✗ False
+                      search_cache_similarity  │  0.0000
+                         sanitizer_loop_count  │  0
+                           sanitizer_critique  │  null
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [9] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (7.224s)
+                                        Message  │  source='rag_db_only_generated', length=4950 chars
+                                 chat_history  │  [4 items]
+                                                         [0] {"role": "user", "content": "cao học qtkd"}
+                                                         [1] {"role": "assistant", "content": "Cho mình hỏi thêm xíu, bạn đang quan tâm đến ngành học cụ thể nào hay thắc mắc về vấn đề nào ở UFM vậy ạ? Bạn gõ rõ hơn giúp mình nhé!\n---\n🌟 **Kênh Hỗ trợ Tư vấn Tuyển sinh UFM**\n\n🔹 **Tuyển sinh Đại học Chính quy (Cử nhân)**\n📍 *Địa chỉ:* Phòng A.007, 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM\n📞 *Hotline:* (028) 3772 0406 | (028) 3772 0407\n📧 *Email:* [tuyensinh@ufm.edu.vn](mailto:tuyensinh@ufm.edu.vn)\n🌐 *Website:* [tuyensinh.ufm.edu.vn](https://tuyensinh.ufm.edu.vn)\n💬 *Zalo:* [zalo.me/ufmhcm](https://zalo.me/ufmhcm) | *Fanpage:* [tuyensinhufm](https://www.facebook.com/tuyensinhufm)\n\n🔹 **Tuyển sinh Sau đại học (Thạc sĩ, Tiến sĩ)**\n📍 *Địa chỉ:* Viện Đào tạo Sau đại học (Phòng D.006)\n📞 *Hotline:* 0967 657 532 (Thầy Tuấn) | 0966 286 386 (Thầy Thành)\n📧 *Email:* [daotaosdh@ufm.edu.vn](mailto:daotaosdh@ufm.edu.vn)\n🌐 *Website:* [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn)\n\n🔹 **Các hệ đào tạo khác**\n💻 **Từ xa (E-Learning):** 0394 494 931 (Cô Ngân) | 🌐 [ufm-elearning.edu.vn](https://ufm-elearning.edu.vn)\n🏢 **Vừa làm vừa học:** Hotline: 0986 08 42 42 | 🌐 [ice.ufm.edu.vn](http://ice.ufm.edu.vn)\n🌍 **Liên kết Quốc tế ISFM:** Hotline: 0983 373 450 | 🌐 [isfm.ufm.edu.vn](https://isfm.ufm.edu.vn)"}
+                                                         [2] {"role": "user", "content": "thong tin cao hoc qtkd"}
+                                                         [3] {"role": "assistant", "content": "Chào bạn, mình là Trợ lý Tuyển sinh Đại học Tài chính - Marketing (UFM) đây! Mình rất vui được cung cấp cho bạn những thông tin chi tiết về chương trình **Thạc sĩ ngành Quản trị kinh doanh (QTKD)** tại UFM nhé! 🎓\n\nChương trình Thạc sĩ QTKD tại UFM được xây dựng dựa trên triết lý giáo dục \"Thực chất, đổi mới sáng tạo và hội nhập\", với thiết kế linh hoạt theo hệ thống tín chỉ, luôn cập nhật để đáp ứng nhu cầu thị trường lao động và xu hướng quản trị hiện đại.\n\n**1. Định hướng đào tạo:**\nNăm 2026, chương trình cung cấp hai định hướng chuyên biệt để bạn lựa chọn phù hợp với mục tiêu nghề nghiệp của mình:\n\n*   **Định hướng Nghiên cứu:** Tập trung phát triển tư duy hàn lâm, năng lực nghiên cứu khoa học chuyên sâu và khả năng giải quyết các vấn đề quản trị phức tạp bằng phương pháp luận khoa học. Định hướng này rất phù hợp với những bạn muốn trở thành giảng viên, nghiên cứu viên hoặc có định hướng học lên Tiến sĩ.\n*   **Định hướng Ứng dụng:** Tập trung phát triển kỹ năng thực hành, năng lực lãnh đạo và giải quyết các tình huống quản trị thực tiễn tại doanh nghiệp. Đây là lựa chọn lý tưởng cho các nhà quản lý, điều hành, doanh nhân.\n\nThời gian đào tạo trung bình là **02 năm** (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là **61 tín chỉ**.\n\nBạn có thể xem thông tin chi tiết chương trình đào tạo tại: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=ig3wGlAYnn1rof8yGKfbBA>\n\nNguồn tài liệu: [ThS QTKD.txt](/view-document/f1b4438f-76a9-4a40-941a-57a2388590ca)\n\n**2. Điều kiện xét tuyển:**\nĐể tham gia xét tuyển chương trình Thạc sĩ QTKD, bạn cần đáp ứng các tiêu chuẩn sau:\n\n*   **Về văn bằng:** Đã tốt nghiệp đại học ngành Quản trị kinh doanh hoặc các ngành phù hợp/ngành gần/ngành khác (có bổ sung kiến thức).\n*   **Phương thức tuyển sinh:** Xét tuyển dựa trên hồ sơ văn bằng, kết quả học tập đại học và năng lực ngoại ngữ.\n*   **Môn xét tuyển:** Đánh giá năng lực qua hai môn cơ sở ngành là **Kinh tế học** và **Quản trị học**.\n*   **Trình độ ngoại ngữ:** Ứng viên phải đạt năng lực ngoại ngữ từ Bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc sở hữu các văn bằng, chứng chỉ tương đương.\n\n**Lưu ý đặc biệt:** Đối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Quản trị kinh doanh, Nhà trường sẽ tổ chức học bổ sung kiến thức trước khi xét tuyển:\n*   **Ngành gần:** Bổ sung 02 môn (5 tín chỉ), gồm: Quản trị học (2 TC) và Kinh tế học (3 TC).\n*   **Ngành khác:** Bổ sung 04 môn (9 tín chỉ), gồm: Quản trị học (2 TC), Marketing căn bản (2 TC), Kinh tế học (3 TC) và Kinh tế phát triển (2 TC).\n\nNguồn tài liệu: [ThS QTKD.txt](/view-document/678d39ce-6eb4-4457-8ddc-7594b3dd0e4f)\n\n**3. Hồ sơ đăng ký dự tuyển:**\nĐể đăng ký dự tuyển, bạn cần chuẩn bị các giấy tờ sau:\n\n*   01 Phiếu đăng ký dự tuyển (theo mẫu).\n*   01 Lý lịch khoa học (theo mẫu) có xác nhận của thủ trưởng cơ quan hoặc chính quyền địa phương.\n*   02 Bản sao có công chứng (hoặc đối chiếu bản gốc) các giấy tờ sau:\n    *   Bằng và bảng điểm tốt nghiệp đại học; Bằng và bảng điểm Cao đẳng đối với thí sinh học hệ liên thông.\n    *   Văn bằng, chứng chỉ minh chứng trình độ ngoại ngữ bậc 3 (nếu có).\n    *   Bảng điểm bổ sung kiến thức (nếu thuộc đối tượng phải bổ sung kiến thức).\n    *   Các văn bằng, chứng chỉ khác (nếu có).\n*   01 Giấy chứng nhận đủ sức khỏe để học tập của bệnh viện hoặc phòng khám đa khoa thời gian không quá 6 tháng.\n*   04 Ảnh màu cỡ 3x4 (ghi rõ họ tên và ngày sinh của bạn ở mặt sau).\n\nNguồn tài liệu: [phuluc1.md](/view-document/01499ae0-25e1-4728-8f8f-2d2033410dbf)\n\n**4. Địa chỉ liên hệ và đăng ký:**\nBạn có thể đăng ký Tuyển sinh Sau đại học trực tuyến tại: <https://tuyensinhsdh.ufm.edu.vn/DangKy/CaoHoc>\n\nHoặc liên hệ trực tiếp Viện Đào tạo sau đại học, Trường Đại học Tài chính – Marketing:\n*   **Địa chỉ:** Phòng D006, cơ sở 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.\n*   **Email:** tuyensinhsaudaihoc@ufm.edu.vn\n*   **Điện thoại:** 028 3997 4641\n*   **Thời gian làm việc:** Sáng: 8g00 – 11g30 | Chiều: 13g30 – 16g30\n\nĐặc biệt, nếu bạn có thắc mắc cụ thể về ngành Quản trị kinh doanh, bạn có thể liên hệ trực tiếp với chuyên viên phụ trách tuyển sinh:\n*   **ThS. Đỗ Minh Hương**\n*   **SĐT:** 0983637999\n*   **Email:** dmhuong@ufm.edu.vn\n\nNguồn tài liệu: [tuyensinh-trinhdo-thacsi-dot1-2026.md](/view-document/7ac4cacc-3b18-4199-bdd2-8d1855b479a9)\n\nHy vọng những thông tin này hữu ích cho bạn! Bạn có muốn mình giải thích thêm về các môn học hoặc quy trình xét tuyển chi tiết hơn không? 🌟"}
+                                   user_query  │  học UFM % cao  RA TRUONG CÓ VIỆC LÀM KO 100%?
+                                                      >(45 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  học ufm % cao  ra truong có việc làm không 100%?
+                                                      >(48 chars)
+                             standalone_query  │  Tỷ lệ có việc làm sau khi tốt nghiệp ngành Quản trị kinh doanh hệ cao học tại UFM là bao nhiêu?
+                                                      >(95 chars)
+                                multi_queries  │  [2 items]
+                                                         [0] "Tỷ lệ sinh viên có việc làm sau khi hoàn thành chương trình thạc sĩ Quản trị kinh doanh tại UFM là bao nhiêu?"
+                                                         [1] "Khả năng tìm được việc làm của học viên cao học ngành Quản trị kinh doanh sau khi ra trường từ UFM là bao nhiêu phần trăm?"
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.552s] standalone_query an toan
+                                                      >(57 chars)
+                             query_embeddings  │  [3 vectors × 1024D]
+                                       intent  │  CO_HOI_VIEC_LAM
+                                                      >(15 chars)
+                               intent_summary  │  ""
+                                intent_action  │  PROCEED_RAG_PR_SEARCH
+                                                      >(21 chars)
+                         program_level_filter  │  thac_si
+                                                      >(7 chars)
+                          program_name_filter  │  Quản Trị Kinh Doanh
+                                                      >(19 chars)
+                             retrieved_chunks  │  [10 items]
+                                                         [0] {"chunk_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.5484421906998385, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]\nCHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nChương trình đào tạo Thạc sĩ ngành Quản trị kinh doanh", "source": "vector", "rrf_score": 0.05245901639344262}
+                                                         [1] {"chunk_id": "dadc95b5-4d8e-48ba-9d06-a334e769335a", "chunk_level": "child", "parent_id": "da792a31-921c-482e-92c0-28febd2ebaf0", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CƠ HỘI NGHỀ NGHIỆP", "program_name": "Quản Trị Kinh Doanh", "score": 0.5374257013113143, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — CƠ HỘI NGHỀ NGHIỆP\n\nSau khi tốt nghiệp, Thạc sĩ Quản trị kinh doanh có thể đảm nhiệm các vị trí:\n\n* **Nhóm Q", "source": "vector", "rrf_score": 0.05161290322580645}
+                                                         [2] {"chunk_id": "da792a31-921c-482e-92c0-28febd2ebaf0", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CƠ HỘI NGHỀ NGHIỆP", "program_name": "Quản Trị Kinh Doanh", "score": 0.5363782963978239, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]\nCƠ HỘI NGHỀ NGHIỆP\n\nSau khi tốt nghiệp, Thạc sĩ Quản trị kinh doanh có thể đảm nhiệm các vị trí:\n\n* **Nhóm Quả", "source": "vector", "rrf_score": 0.050793650793650794}
+                                                         [3] {"chunk_id": "dc9e22ec-ee19-47b3-9bea-fd2fa5c8babd", "chunk_level": "child", "parent_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.5276123599775061, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nThông tin chi tiết chương trình đào tạo: <https://da", "source": "vector", "rrf_score": 0.048771526980482205}
+                                                         [4] {"chunk_id": "967684c1-33aa-4a7d-87e8-389259f974ea", "chunk_level": "child", "parent_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.5277866000938358, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nChương trình đào tạo Thạc sĩ ngành Quản trị kinh doa", "source": "vector", "rrf_score": 0.034375}
+                                                         [5] {"chunk_id": "a83af527-0285-4624-8fd6-7d5c416ff5ce", "chunk_level": "child", "parent_id": "5d05b110-4074-4d30-925b-66873c16fd0d", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.519292683559221, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — ĐIỀU KIỆN XÉT TUYỂN\n\n* **Ngành gần:** Bổ sung 02 môn (5 tín chỉ), gồm: Quản trị học (2 TC) và Kinh tế học (3", "source": "vector", "rrf_score": 0.033566433566433566}
+                                                         [6] {"chunk_id": "5d05b110-4074-4d30-925b-66873c16fd0d", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.5187465570862957, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]\nĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:\n\n* **Về văn bằng:** Đã tốt ng", "source": "vector", "rrf_score": 0.033535447761194034}
+                                                         [7] {"chunk_id": "0fb4062a-765a-4f7b-a341-7c5e3c39261b", "chunk_level": "child", "parent_id": "f02de27d-1e68-4c15-a796-baf4c62d7b7e", "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ", "program_name": null, "score": 0.5473654270172119, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9.", "source": "vector", "rrf_score": 0.015151515151515152}
+                                                         [8] {"chunk_id": "d74a51d8-ce9c-4dfe-8945-d72df0795293", "chunk_level": "child", "parent_id": "5d05b110-4074-4d30-925b-66873c16fd0d", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.5258189753186101, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — ĐIỀU KIỆN XÉT TUYỂN\n\n* **Về văn bằng:** Đã tốt nghiệp đại học ngành Quản trị kinh doanh hoặc các ngành phù h", "source": "vector", "rrf_score": 0.015151515151515152}
+                                                         [9] {"chunk_id": "f02de27d-1e68-4c15-a796-baf4c62d7b7e", "chunk_level": "parent", "parent_id": null, "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ", "program_name": null, "score": 0.5473654270172119, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9.", "source": "vector", "rrf_score": 0.014925373134328358}
+                                  rag_context  │  1.{{ SOURCE: ThS QTKD.txt
+PATH (NẰM Ở MỤC: Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [ThS QTKD.txt](/view-document/ac3e62ce-2f2b-4416-9fcc-affbe9d943ee) }}
+
+[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]
+CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH
+
+Chương trình đào tạo Thạc sĩ ngành Quản trị kinh doanh tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế linh hoạt theo hệ thống tín chỉ, cập nhật liên tục để đáp ứng nhu cầu của nhà tuyển dụng và xu hướng quản trị hiện đại.
+
+**Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt:**
+
+* **Định hướng Nghiên cứu:** Tập trung vào phát triển tư duy hàn lâm, năng lực nghiên cứu khoa học chuyên sâu và khả năng giải quyết các vấn đề quản trị phức tạp bằng phương pháp luận khoa học. Phù hợp với giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+* **Định hướng Ứng dụng:** Tập trung vào phát triển kỹ năng thực hành, năng lực lãnh đạo và giải quyết các tình huống quản trị thực tiễn tại doanh nghiệp. Phù hợp với các nhà quản lý, điều hành, doanh nhân.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=ig3wGlAYnn1rof8yGKfbBA>
+
+---
+
+2.{{ SOURCE: ThS QTKD.txt
+PATH (NẰM Ở MỤC: Thạc sĩ Quản Trị Kinh Doanh > CƠ HỘI NGHỀ NGHIỆP)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [ThS QTKD.txt](/view-document/e7b417e4-edea-4c25-9a85-f3e0c0055623) }}
+
+[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]
+CƠ HỘI NGHỀ NGHIỆP
+
+Sau khi tốt nghiệp, Thạc sĩ Quản trị kinh doanh có thể đảm nhiệm các vị trí:
+
+* **Nhóm Quản lý & Thực hành (Định hướng Ứng dụng):**
+  + Giám đốc điều hành (CEO), Giám đốc bộ phận (nhân sự, kinh doanh, vận hành...) tại các doanh nghiệp, tập đoàn đa quốc gia.
+  + Chuyên gia tư vấn quản trị, tư vấn chiến lược, khởi nghiệp và điều hành doanh nghiệp riêng.
+* **Nhóm Nghiên cứu & Giảng dạy (Định hướng Nghiên cứu):**
+  + Giảng viên giảng dạy ngành Quản trị kinh doanh tại các trường Đại học, Cao đẳng.
+  + Nghiên cứu viên tại các Viện nghiên cứu kinh tế, quản trị.
+  + Tiếp tục nghiên cứu ở bậc học cao hơn (Tiến sĩ) trong và ngoài nước.
+
+---
+
+3.{{ SOURCE: ThS QTKD.txt
+PATH (NẰM Ở MỤC: Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [ThS QTKD.txt](/view-document/0d2a6f65-4440-458d-b0a3-e4ef2eca77e0) }}
+
+[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]
+ĐIỀU KIỆN XÉT TUYỂN
+
+Ứng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:
+
+* **Về văn bằng:** Đã tốt nghiệp đại học ngành Quản trị kinh doanh hoặc các ngành phù hợp/ngành gần/ngành khác (có bổ sung kiến thức) .
+* **Phương thức tuyển sinh:** Xét tuyển dựa trên hồ sơ văn bằng, kết quả học tập đại học và năng lực ngoại ngữ.
+* **Môn xét tuyển:** Đánh giá năng lực qua hai môn cơ sở ngành là Kinh tế học và Quản trị học.
+* **Trình độ ngoại ngữ:** Ứng viên phải đạt năng lực ngoại ngữ từ Bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc sở hữu các văn bằng, chứng chỉ tương đương.
+
+Đối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Quản trị kinh doanh, Nhà trường tổ chức học bổ sung kiến thức trước khi xét tuyển:
+
+* **Ngành gần:** Bổ sung 02 môn (5 tín chỉ), gồm: Quản trị học (2 TC) và Kinh tế học (3 TC).
+* **Ngành khác:** Bổ sung 04 môn (9 tín chỉ), gồm: Quản trị học (2 TC), Marketing căn bản (2 TC), Kinh tế học (3 TC) và Kinh tế phát triển (2 TC).
+
+---
+
+4.{{ SOURCE: tuyensinh-trinhdo-thacsi-dot1-2026.md
+PATH (NẰM Ở MỤC: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [tuyensinh-trinhdo-thacsi-dot1-2026.md](/view-document/a66eb8c0-4547-4c10-bb56-3959188f7939) }}
+
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026
+[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]
+[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ]
+
+Link đăng ký Tuyển sinh Sau đại học trực tuyến: https://tuyensinhsdh.ufm.edu.vn/DangKy/CaoHoc
+Viện Đào tạo sau đại học, Trường Đại học Tài chính – Marketing
+Phòng D006, cơ sở 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.
+Email: tuyensinhsaudaihoc@ufm.edu.vn ĐT: 028 3997 4641
+Thời gian: Sáng: 8g00 – 11g30 Chiều: 13g30 – 16g30
+Chuyên viên phụ trách tuyển sinh:
+
+| STT | Ngành                 | Chuyên viên<br/>phụ trách    | SĐT          | Email                   |
+| --- | --------------------- | ---------------------------- | ------------ | ----------------------- |
+| 1.  | Quản trị kinh doanh   | ThS. Đỗ Minh Hương           | 0983637999   | dmhuong\@ufm.edu.vn     |
+| 2.  | Kế toán               |                              |              |                         |
+| 3.  | Tài chính – Ngân hàng | ThS. Vũ Mạnh Thành           | 0703 216 336 | manhthanhvn\@ufm.edu.vn |
+| 4.  | Luật kinh tế          |                              |              |                         |
+| 5.  | Quản lý kinh tế       | TS. Hoàng Sĩ Nam             | 0343843868   | hs.nam\@ufm.edu.vn      |
+| 6.  | Marketing             | ThS. Nguyễn Ngọc Thảo Nguyên | 0988932803   | nntnguyen\@ufm.edu.vn   |
+| 7.  | Kinh tế học           |                              |              |                         |
+| 8.  | Kinh doanh quốc tế    | ThS. Châu Mỹ Chi             | 0903 848285  | chaumychi\@ufm.edu.vn   |
+| 9.  | Toán kinh tế          |                              |              |                         |
+
+
+Đơn vị, cá nhân đăng ký tại văn phòng Viện Đào tạo sau đại học hoặc qua điện thoại, email như trên.
+                                                      >(5969 chars)
+                           ufm_search_queries  │  null
+                              pr_search_query  │  null
+                           web_search_results  │  null
+                         web_search_citations  │  null
+                           sanitizer_critique  │  null
+                         sanitizer_loop_count  │  0
+                             search_cache_hit  │  ✗ False
+                      search_cache_similarity  │  0.0000
+                               final_response  │  Chào bạn, mình là Trợ lý Tuyển sinh Đại học Tài chính - Marketing (UFM) đây! Rất vui được hỗ trợ bạn tìm hiểu về chương trình Thạc sĩ Quản trị kinh doanh tại UFM nhé. 🎓
+
+Về câu hỏi của bạn liên quan đến **tỷ lệ có việc làm sau khi tốt nghiệp ngành Quản trị kinh doanh hệ cao học tại UFM**, hiện tại mình chưa có số liệu cụ thể về tỷ lệ này. Tuy nhiên, mình có thể chia sẻ với bạn về **cơ hội nghề nghiệp** rất rộng mở dành cho các Thạc sĩ Quản trị kinh doanh tốt nghiệp từ UFM, điều này phần nào khẳng định chất lượng đào tạo và khả năng thích ứng của sinh viên sau khi ra trường.
+
+Chương trình đào tạo Thạc sĩ Quản trị kinh doanh tại UFM được thiết kế rất linh hoạt và cập nhật liên tục, với hai định hướng chuyên biệt:
+
+*   **Định hướng Nghiên cứu:** Tập trung phát triển tư duy hàn lâm, năng lực nghiên cứu khoa học chuyên sâu. Định hướng này rất phù hợp với những bạn muốn trở thành giảng viên, nghiên cứu viên hoặc tiếp tục học lên Tiến sĩ.
+*   **Định hướng Ứng dụng:** Tập trung vào kỹ năng thực hành, năng lực lãnh đạo và giải quyết các tình huống quản trị thực tiễn tại doanh nghiệp. Đây là lựa chọn lý tưởng cho các nhà quản lý, điều hành, hoặc những bạn muốn khởi nghiệp.
+
+Sau khi tốt nghiệp, các Thạc sĩ Quản trị kinh doanh của UFM có thể đảm nhiệm nhiều vị trí quan trọng như:
+
+*   **Nhóm Quản lý & Thực hành (Định hướng Ứng dụng):**
+    *   Giám đốc điều hành (CEO), Giám đốc bộ phận (nhân sự, kinh doanh, vận hành...) tại các doanh nghiệp, tập đoàn đa quốc gia.
+    *   Chuyên gia tư vấn quản trị, tư vấn chiến lược, khởi nghiệp và điều hành doanh nghiệp riêng.
+*   **Nhóm Nghiên cứu & Giảng dạy (Định hướng Nghiên cứu):**
+    *   Giảng viên giảng dạy ngành Quản trị kinh doanh tại các trường Đại học, Cao đẳng.
+    *   Nghiên cứu viên tại các Viện nghiên cứu kinh tế, quản trị.
+    *   Tiếp tục nghiên cứu ở bậc học cao hơn (Tiến sĩ) trong và ngoài nước.
+
+Với những cơ hội nghề nghiệp đa dạng và chất lượng đào tạo được chú trọng như vậy, bạn hoàn toàn có thể tự tin vào triển vọng việc làm sau khi tốt nghiệp Thạc sĩ Quản trị kinh doanh tại UFM nhé!
+
+Dưới đây là thông tin chi tiết về chương trình đào tạo và cơ hội nghề nghiệp:
+{{ SOURCE: ThS QTKD.txt
+PATH (NẰM Ở MỤC: Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [ThS QTKD.txt](/view-document/ac3e62ce-2f2b-4416-9fcc-affbe9d943ee) }}
+
+[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]
+CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH
+
+Chương trình đào tạo Thạc sĩ ngành Quản trị kinh doanh tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế linh hoạt theo hệ thống tín chỉ, cập nhật liên tục để đáp ứng nhu cầu của nhà tuyển dụng và xu hướng quản trị hiện đại.
+
+**Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt:**
+
+*   **Định hướng Nghiên cứu:** Tập trung vào phát triển tư duy hàn lâm, năng lực nghiên cứu khoa học chuyên sâu và khả năng giải quyết các vấn đề quản trị phức tạp bằng phương pháp luận khoa học. Phù hợp với giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+*   **Định hướng Ứng dụng:** Tập trung vào phát triển kỹ năng thực hành, năng lực lãnh đạo và giải quyết các tình huống quản trị thực tiễn tại doanh nghiệp. Phù hợp với các nhà quản lý, điều hành, doanh nhân.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=ig3wGlAYnn1rof8yGKfbBA>
+
+Nguồn tài liệu: [ThS QTKD.txt](/view-document/ac3e62ce-2f2b-4416-9fcc-affbe9d943ee)
+
+{{ SOURCE: ThS QTKD.txt
+PATH (NẰM Ở MỤC: Thạc sĩ Quản Trị Kinh Doanh > CƠ HỘI NGHỀ NGHIỆP)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [ThS QTKD.txt](/view-document/e7b417e4-edea-4c25-9a85-f3e0c0055623) }}
+
+[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]
+CƠ HỘI NGHỀ NGHIỆP
+
+Sau khi tốt nghiệp, Thạc sĩ Quản trị kinh doanh có thể đảm nhiệm các vị trí:
+
+*   **Nhóm Quản lý & Thực hành (Định hướng Ứng dụng):**
+    *   Giám đốc điều hành (CEO), Giám đốc bộ phận (nhân sự, kinh doanh, vận hành...) tại các doanh nghiệp, tập đoàn đa quốc gia.
+    *   Chuyên gia tư vấn quản trị, tư vấn chiến lược, khởi nghiệp và điều hành doanh nghiệp riêng.
+*   **Nhóm Nghiên cứu & Giảng dạy (Định hướng Nghiên cứu):**
+    *   Giảng viên giảng dạy ngành Quản trị kinh doanh tại các trường Đại học, Cao đẳng.
+    *   Nghiên cứu viên tại các Viện nghiên cứu kinh tế, quản trị.
+    *   Tiếp tục nghiên cứu ở bậc học cao hơn (Tiến sĩ) trong và ngoài nước.
+
+Nguồn tài liệu: [ThS QTKD.txt](/view-document/e7b417e4-edea-4c25-9a85-f3e0c0055623)
+
+Nếu bạn có bất kỳ thắc mắc nào khác về chương trình Thạc sĩ Quản trị kinh doanh hoặc các ngành học khác tại UFM, đừng ngần ngại hỏi mình nhé! 💡
+                                                      >(4950 chars)
+                              response_source  │  rag_db_only_generated
+                                                      >(21 chars)
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : rag_db_only_generated
+  Intent          : CO_HOI_VIEC_LAM → PROCEED_RAG_PR_SEARCH
+  Response Length : 4950 chars
+  Total Time      : 17.41s
+  Nodes Executed  : 9
+──────────────────────────────────────────────────────────────────────────
+
+Chào bạn, mình là Trợ lý Tuyển sinh Đại học Tài chính - Marketing (UFM) đây! Rất vui được hỗ trợ bạn tìm hiểu về chương trình Thạc sĩ Quản trị kinh doanh tại UFM nhé. 🎓
+
+Về câu hỏi của bạn liên quan đến **tỷ lệ có việc làm sau khi tốt nghiệp ngành Quản trị kinh doanh hệ cao học tại UFM**, hiện tại mình chưa có số liệu cụ thể về tỷ lệ này. Tuy nhiên, mình có thể chia sẻ với bạn về **cơ hội nghề nghiệp** rất rộng mở dành cho các Thạc sĩ Quản trị kinh doanh tốt nghiệp từ UFM, điều này phần nào khẳng định chất lượng đào tạo và khả năng thích ứng của sinh viên sau khi ra trường.
+
+Chương trình đào tạo Thạc sĩ Quản trị kinh doanh tại UFM được thiết kế rất linh hoạt và cập nhật liên tục, với hai định hướng chuyên biệt:
+
+*   **Định hướng Nghiên cứu:** Tập trung phát triển tư duy hàn lâm, năng lực nghiên cứu khoa học chuyên sâu. Định hướng này rất phù hợp với những bạn muốn trở thành giảng viên, nghiên cứu viên hoặc tiếp tục học lên Tiến sĩ.
+*   **Định hướng Ứng dụng:** Tập trung vào kỹ năng thực hành, năng lực lãnh đạo và giải quyết các tình huống quản trị thực tiễn tại doanh nghiệp. Đây là lựa chọn lý tưởng cho các nhà quản lý, điều hành, hoặc những bạn muốn khởi nghiệp.
+
+Sau khi tốt nghiệp, các Thạc sĩ Quản trị kinh doanh của UFM có thể đảm nhiệm nhiều vị trí quan trọng như:
+
+*   **Nhóm Quản lý & Thực hành (Định hướng Ứng dụng):**
+    *   Giám đốc điều hành (CEO), Giám đốc bộ phận (nhân sự, kinh doanh, vận hành...) tại các doanh nghiệp, tập đoàn đa quốc gia.
+    *   Chuyên gia tư vấn quản trị, tư vấn chiến lược, khởi nghiệp và điều hành doanh nghiệp riêng.
+*   **Nhóm Nghiên cứu & Giảng dạy (Định hướng Nghiên cứu):**
+    *   Giảng viên giảng dạy ngành Quản trị kinh doanh tại các trường Đại học, Cao đẳng.
+    *   Nghiên cứu viên tại các Viện nghiên cứu kinh tế, quản trị.
+    *   Tiếp tục nghiên cứu ở bậc học cao hơn (Tiến sĩ) trong và ngoài nước.
+
+Với những cơ hội nghề nghiệp đa dạng và chất lượng đào tạo được chú trọng như vậy, bạn hoàn toàn có thể tự tin vào triển vọng việc làm sau khi tốt nghiệp Thạc sĩ Quản trị kinh doanh tại UFM nhé!
+
+Dưới đây là thông tin chi tiết về chương trình đào tạo và cơ hội nghề nghiệp:
+{{ SOURCE: ThS QTKD.txt
+PATH (NẰM Ở MỤC: Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [ThS QTKD.txt](/view-document/ac3e62ce-2f2b-4416-9fcc-affbe9d943ee) }}
+
+[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]
+CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH
+
+Chương trình đào tạo Thạc sĩ ngành Quản trị kinh doanh tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế linh hoạt theo hệ thống tín chỉ, cập nhật liên tục để đáp ứng nhu cầu của nhà tuyển dụng và xu hướng quản trị hiện đại.
+
+**Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt:**
+
+*   **Định hướng Nghiên cứu:** Tập trung vào phát triển tư duy hàn lâm, năng lực nghiên cứu khoa học chuyên sâu và khả năng giải quyết các vấn đề quản trị phức tạp bằng phương pháp luận khoa học. Phù hợp với giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+*   **Định hướng Ứng dụng:** Tập trung vào phát triển kỹ năng thực hành, năng lực lãnh đạo và giải quyết các tình huống quản trị thực tiễn tại doanh nghiệp. Phù hợp với các nhà quản lý, điều hành, doanh nhân.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=ig3wGlAYnn1rof8yGKfbBA>
+
+Nguồn tài liệu: [ThS QTKD.txt](/view-document/ac3e62ce-2f2b-4416-9fcc-affbe9d943ee)
+
+{{ SOURCE: ThS QTKD.txt
+PATH (NẰM Ở MỤC: Thạc sĩ Quản Trị Kinh Doanh > CƠ HỘI NGHỀ NGHIỆP)
+BẬC ĐÀO TẠO: thac_si
+LINK CHI TIẾT DÀNH CHO DOC_VIEWER: [ThS QTKD.txt](/view-document/e7b417e4-edea-4c25-9a85-f3e0c0055623) }}
+
+[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]
+CƠ HỘI NGHỀ NGHIỆP
+
+Sau khi tốt nghiệp, Thạc sĩ Quản trị kinh doanh có thể đảm nhiệm các vị trí:
+
+*   **Nhóm Quản lý & Thực hành (Định hướng Ứng dụng):**
+    *   Giám đốc điều hành (CEO), Giám đốc bộ phận (nhân sự, kinh doanh, vận hành...) tại các doanh nghiệp, tập đoàn đa quốc gia.
+    *   Chuyên gia tư vấn quản trị, tư vấn chiến lược, khởi nghiệp và điều hành doanh nghiệp riêng.
+*   **Nhóm Nghiên cứu & Giảng dạy (Định hướng Nghiên cứu):**
+    *   Giảng viên giảng dạy ngành Quản trị kinh doanh tại các trường Đại học, Cao đẳng.
+    *   Nghiên cứu viên tại các Viện nghiên cứu kinh tế, quản trị.
+    *   Tiếp tục nghiên cứu ở bậc học cao hơn (Tiến sĩ) trong và ngoài nước.
+
+Nguồn tài liệu: [ThS QTKD.txt](/view-document/e7b417e4-edea-4c25-9a85-f3e0c0055623)
+
+Nếu bạn có bất kỳ thắc mắc nào khác về chương trình Thạc sĩ Quản trị kinh doanh hoặc các ngành học khác tại UFM, đừng ngần ngại hỏi mình nhé! 💡
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.003s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  4.143s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a Llama)     │  1.552s  │   PASS   │
+  │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  1.463s  │   PASS   │
+  │ 🔀 MULTI-QUERY NODE (Sinh biến thể)           │  1.152s  │   PASS   │
+  │ 📊 EMBEDDING NODE (BGE-M3 batch)              │  1.696s  │   PASS   │
+  │ 🗄️ RAG NODE (Hybrid Search DB)               │  0.110s  │   PASS   │
+  │ 🌐 RAG SEARCH PIPELINE (Evaluator + Web Searc │  0.000s  │   PASS   │
+  │ 🎯 RESPONSE NODE (Final Answer)               │  7.224s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  17.41s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260330_020411_học_UFM__cao__RA_TRUONG_CÓ_VIỆC_LÀM_KO.txt
+

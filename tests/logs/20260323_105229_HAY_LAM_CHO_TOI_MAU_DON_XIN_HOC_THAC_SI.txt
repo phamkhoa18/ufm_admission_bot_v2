@@ -1,0 +1,405 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test Runner                        ║
+║    2026-03-23 10:52:29                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260323_105229_HAY_LAM_CHO_TOI_MAU_DON_XIN_HOC_THAC_SI.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❷ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❹ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❺ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❻ Guard (Deep)       │ openrouter/qwen/qwen3.5-flash-02-23             │
+  │ ❼ Multi-Query        │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❽ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❾a Vector Router     │ openrouter/baai/bge-m3                          │
+  │ ❾b Semantic Rtr      │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫c Web Search        │ openrouter/openai/gpt-4o-mini-search-preview    │
+  │ ⓫d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Care               │ openrouter/qwen/qwen3.5-flash-02-23             │
+  │ ⓭ Form Extract       │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓭ Form Draft         │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓮ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  📝 Input Query  : HAY LAM CHO TOI MAU DON XIN HOC THAC SI TEN TRAN QUOC GIANG
+  💬 Chat History : 2 messages
+     👤 TOI MUON THAM KHAO CHUONG TRINH DAO TAO THAC SI KDQT
+     🤖 Chào bạn!
+
+Bạn đang muốn tham khảo chương trình đào tạo **Thạc sĩ ngành Kinh doa
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.001s)
+                                        Message  │  [Fast-Scan PASS — 0.000s] Sạch, cho qua Context Node
+                             normalized_query  │  hay lam cho toi mau don xin hoc thac si ten tran quoc giang
+                                                       (59 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sạch, cho qua Context Node
+                                                       (52 chars)
+                                    next_node  │  context
+                                                       (7 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.399s)
+                                        Message  │  Reformulated: 'HAY LAM CHO TOI MAU DON XIN HOC THAC SI ' → 'Hãy làm cho tôi mẫu đơn xin học thạc sĩ cho người tên Trần Q'
+                             standalone_query  │  Hãy làm cho tôi mẫu đơn xin học thạc sĩ cho người tên Trần Quốc Giang.
+                                                       (70 chars)
+                                    next_node  │  contextual_guard
+                                                       (16 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a+2b)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (3.577s)
+                                        Message  │  [Contextual-Guard PASS — 3.576s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 3.576s] standalone_query an toàn
+                                                       (57 chars)
+                                    next_node  │  multi_query
+                                                       (11 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔀 [4] MULTI-QUERY NODE (Sinh biến thể)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.229s)
+                                multi_queries  │  [3 items]
+                                                         [0] "Cho tôi mẫu đơn đăng ký học cao học của anh Trần Quốc Giang."
+                                                         [1] "Cung cấp mẫu đơn ứng tuyển chương trình thạc sĩ dành cho Trần Quốc Giang."
+                                                         [2] "Xin bản mẫu đơn nhập học sau đại học của Trần Quốc Giang."
+                                    next_node  │  embedding
+                                                       (9 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  📊 [5] EMBEDDING NODE (BGE-M3 batch)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.435s)
+                                        Message  │  Nhúng 4 vectors × 1024D thành công
+                             query_embeddings  │  [4 vectors × 1024D]
+                                    next_node  │  cache
+                                                       (5 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🗄️ [6] RAG NODE (Hybrid Search DB)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.190s)
+                                        Message  │  Chunks=20, Top1Cosine=0.6228, Context=6659 chars ⚠️ CONFIDENCE FAILED
+                                  rag_context  │  [Nguồn 1 — Văn bản: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md | 5. Hồ sơ dự tuyển | Mục: 5. Hồ sơ dự tuyển | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026
+[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]
+[Mục: 5. Hồ sơ dự tuyển]
+
+a) Đơn xin dự tuyển *(theo mẫu do Trường quy định)*.
+b) Lý lịch khoa học *(theo mẫu do Trường quy định)*.
+c) Bản sao có chứng thực văn bằng thạc sĩ, hoặc đại học (loại giỏi) và bảng điểm thạc sĩ hoặc bản sao kèm theo bản chính để đối chiếu (trong trường hợp nộp hồ sơ trực tiếp).
+d) Minh chứng về kinh nghiệm nghiên cứu quy định tại Khoản 3.1, Mục 3 của Thông báo này.
+đ) Đề cương nghiên cứu và dự kiến kế hoạch học tập, nghiên cứu toàn khóa *(theo mẫu do Trường quy định, 06 bộ)*.
+e) Minh chứng về trình độ ngoại ngữ theo Khoản 3.2, Mục 3 của Thông báo này.
+g) Bản sao có chứng thực Giấy chứng nhận của Cục Quản lý chất lượng về công nhận văn bằng đối với những bằng thạc sĩ, bằng đại học do cơ sở đào tạo nước ngoài cấp.
+h) 01 Bản sao Căn cước công dân/Hộ chiếu bản sao y chứng thực hoặc bản sao kèm theo bản chính để đối chiếu
+
+* Link tải Mẫu hồ sơ dự tuyển NCS: https://daotaosdh.ufm.edu.vn/vi/bieu-mau-hoc-vu/mau-ho-so-xet-tuyen-nghien-cuu-sinh
+* Link đăng ký Tuyển sinh NCS trực tuyến: https://forms.gle/Wb8j3knjWFfkQgW39
+
+---
+
+[Nguồn 2 — Văn bản: phuluc1.md | 2. HỒ SƠ ĐĂNG KÝ DỰ TUYỂN | Mục: 2. HỒ SƠ ĐĂNG KÝ DỰ TUYỂN | Năm: 2026]
+# PHỤ LỤC 1
+*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*
+[Nguồn: phuluc1.md]
+[Mục: 2. HỒ SƠ ĐĂNG KÝ DỰ TUYỂN]
+
+a) 01 Phiếu đăng ký dự tuyển (theo mẫu);
+b) 01 Lý lịch khoa học (theo mẫu) có xác nhận của thủ trưởng cơ quan hoặc chính quyền địa phương;
+c) 02 Bản sao có công chứng (hoặc đối chiếu bản gốc) các giấy tờ sau:
+- Bằng và bảng điểm tốt nghiệp đại học; Bằng và bảng điểm Cao đẳng đối với thí sinh học hệ liên thông;
+- Văn bằng, chứng chỉ minh chứng trình độ ngoại ngữ bậc 3 (nếu có);
+- Bảng điểm bổ sung kiến thức (nếu thuộc đối tượng phải bổ sung kiến thức);
+- Các văn bằng, chứng chỉ khác (nếu có).
+d) 01 Giấy chứng nhận đủ sức khỏe để học tập của bệnh viện hoặc phòng khám đa khoa thời gian không quá 6 tháng;
+e) 04 Ảnh màu cỡ 3x4 (ghi rõ họ tên và ngày sinh của người dự tuyển);
+f) 01 CCCD hoặc Hộ chiếu photo công chứng (hoặc đối chiếu bản gốc);
+g) Đối với các văn bằng tốt nghiệp đại học do các cơ sở giáo dục nước ngoài cấp phải cung cấp văn bằng và kết quả học tập kèm theo bản dịch và Giấy chứng nhận văn bằng của Cục Quản lý chất lượng – Bộ Giáo dục và Đào tạo (ngoại trừ các văn bằng được miễn thực hiện thủ tục công nhận văn bằng theo quy định tại Điều 5 Thông tư số 13/2021/TT-BGDDT ngày 15/4/2021).
+
+- Link tải Mẫu hồ sơ dự tuyển: https://daotaosdh.ufm.edu.vn/vi/bieu-mau-hoc-vu/bieu-mau-ho-so-tuyen-sinh-cao-hoc
+- Link đăng ký Tuyển sinh Sau đại học trực tuyến: https://tuyensinhsdh.ufm.edu.vn/DangKy/CaoHoc
+
+---
+
+[Nguồn 3 — Văn bản: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md | KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH & CÁC PHỤ LỤC | Mục: KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH & CÁC PHỤ LỤC | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026
+[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]
+[Mục: CÁC PHỤ LỤC > KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH]
+
+Cơ sở đào tạo: [**]
+Họ và tên nghiên cứu sinh: []
+Tên đề tài: [*]
+Ngành đào tạo: []
+Mã ngành đào tạo: [***____________________________________________________________________]
+
+|Năm học|Nội dung học tập, nghiên cứu|Khối lượng học tập, nghiên cứu đăng ký|Kết quả dự kiến|
+|-|-|-|-|
+|Năm thứ 1|*Các học phần về chuyên môn bổ sung (nếu có)*|*10 - 12 tín chỉ*|*Chứng nhận kết thúc học phần*|
+||*Các học phần về phương pháp nghiên cứu*|*04 - 06 tín chỉ*|*Chứng nhận kết thúc học phần*|
+||*Thực hiện phần 1 của Luận án*|*đến 24 tín chỉ*|*Chương Tổng quan về vấn đề nghiên cứu, phương pháp nghiên cứu,...*|
+|Năm thứ 2|*Thực hiện phần 2 của Luận án*|*đến 30 tín chỉ*|*Luận án và các bài công bố,...*|
+|Năm thứ 3|*Thực hiện phần 3 của Luận án*|*Số tín chỉ còn lại của chương trình 04 năm*|*Luận án và các bài công bố,...*|
+
+
+
+<u>*Lưu ý:*</u> *Phần in nghiêng là ví dụ về các nội dung trong kế hoạch học tập, nghiên cứu toàn khóa. Kế hoạch cụ thể của nghiên cứu sinh được xây dựng căn cứ vào quy định của cơ sở đào tạo về chương trình đào tạo tiến sĩ đã công bố.*
+
+**Phụ lục I: Kế hoạch học tập, nghiên cứu toàn khóa của nghiên cứu sinh**
+*(Kèm theo Thông báo số 185 /TB-ĐHTCM ngày 15 /01/2026)*
+
+---
+
+[Nguồn 4 — Văn bản: phuluc1.md | 1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.1. Yêu cầu đối với người dự tuyển: | Mục: 1.1. Yêu cầu đối với người dự tuyển: | Năm: 2026]
+# PHỤ LỤC 1
+*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*
+[Nguồn: phuluc1.md]
+[Mục: 1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.1. Yêu cầu đối với người dự tuyển:]
+
+a) Đã tốt nghiệp hoặc đã đủ điều kiện công nhận tốt nghiệp đại học (hoặc trình độ tương đương trở lên) ngành phù hợp; đối với chương trình định hướng nghiên cứu yêu cầu hạng tốt nghiệp từ khá trở lên hoặc có công bố khoa học liên quan đến lĩnh vực sẽ học tập, nghiên cứu;
+b) Có năng lực ngoại ngữ từ Bậc 3 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam;
+c) Có đủ sức khỏe để học tập;
+d) Đáp ứng các yêu cầu khác của chuẩn chương trình đào tạo do Bộ Giáo dục và Đào tạo ban hành và theo quy định của chương trình đào tạo.
+
+---
+
+[Nguồn 5 — Văn bản: ThS Ke toan.txt | Thạc sĩ Kế Toán > ĐIỀU KIỆN XÉT TUYỂN | Mục: ĐIỀU KIỆN XÉT TUYỂN | Ngành: Kế Toán | Mã ngành: 8340301 | Năm: 2026]
+[Chương trình: Thạc sĩ Kế Toán (KT, kt, Kế toán) | Mã ngành: 8340301]
+ĐIỀU KIỆN XÉT TUYỂN
+
+Ứng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:
+
+* Về văn bằng: Đã tốt nghiệp đại học ngành Kế toán, Kiểm toán hoặc các ngành phù hợp/ngành gần/ngành khác (có bổ sung kiến thức).
+* Phương thức tuyển sinh: Xét tuyển dựa trên hồ sơ văn bằng, kết quả học tập đại học và năng lực ngoại ngữ.
+* Môn xét tuyển: Đánh giá năng lực qua hai môn cơ sở ngành và chuyên ngành là Nguyên lý kế toán và Kế toán tài chính.
+* Trình độ ngoại ngữ: Ứng viên phải đạt năng lực ngoại ngữ từ Bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc sở hữu các văn bằng, chứng chỉ tương đương.
+
+Đối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Kế toán, Nhà trường tổ chức học bổ sung kiến thức trước khi xét tuyển:
+
+* Ngành gần: Bổ sung 02 môn (5 tín chỉ), gồm: Kinh tế học (3 TC) và Kế toán tài chính (2 TC).
+* Ngành khác: Bổ sung 04 môn (9 tín chỉ), gồm: Kinh tế học (3 TC), Kế toán tài chính (2 TC), Kế toán quản trị (2 TC) và Kiểm toán căn bản (2 TC).
+                                                       (6659 chars)
+                             retrieved_chunks  │  [20 items]
+                                                         [0] {"chunk_id": "f092955d-1e19-4d43-b54e-35c04067f09d", "chunk_level": "parent", "parent_id": null, "section_path": "5. Hồ sơ dự tuyển", "program_name": null, "score": 0.622800454759548, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 5. Hồ sơ dự tuyển]\n\na) Đơn xin dự tuyển *(theo mẫu do Trường quy định)*.\n", "source": "vector", "rrf_score": 0.01639344262295082}
+                                                         [1] {"chunk_id": "e2df40d4-c664-471c-bbd9-3ace5969cff3", "chunk_level": "child", "parent_id": "f092955d-1e19-4d43-b54e-35c04067f09d", "section_path": "5. Hồ sơ dự tuyển", "program_name": null, "score": 0.6209347248077393, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 5. Hồ sơ dự tuyển]\n\na) Đơn xin dự tuyển *(theo mẫu do Trường quy định)*. ", "source": "vector", "rrf_score": 0.016129032258064516}
+                                                         [2] {"chunk_id": "8157ab3b-a78a-4e56-b575-482b835dd102", "chunk_level": "child", "parent_id": "6843190b-1bbe-4b67-a930-bcb9f20063a5", "section_path": "2. HỒ SƠ ĐĂNG KÝ DỰ TUYỂN", "program_name": null, "score": 0.6002917826436588, "content_preview": "# PHỤ LỤC 1\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc1.md]\n[Mục: 2. HỒ SƠ ĐĂNG KÝ DỰ TUYỂN]\n\na) 01 Phiếu đăng ký dự tuyển (theo m", "source": "vector", "rrf_score": 0.015873015873015872}
+                                                         [3] {"chunk_id": "5d1a3abf-5cfb-47c9-8a32-72567c21d83b", "chunk_level": "parent", "parent_id": null, "section_path": "KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH & CÁC PHỤ LỤC", "program_name": null, "score": 0.5925777201308189, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: CÁC PHỤ LỤC > KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH]", "source": "vector", "rrf_score": 0.015625}
+                                                         [4] {"chunk_id": "0e0881db-1cc5-475d-9ad7-747b5f63a67a", "chunk_level": "child", "parent_id": "f092955d-1e19-4d43-b54e-35c04067f09d", "section_path": "5. Hồ sơ dự tuyển", "program_name": null, "score": 0.5920296068209185, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 5. Hồ sơ dự tuyển]\n\ng) Bản sao có chứng thực Giấy chứng nhận của Cục Quản", "source": "vector", "rrf_score": 0.015384615384615385}
+                                                         [5] {"chunk_id": "4fc9dfef-86e0-4d22-86a9-2028bc338a26", "chunk_level": "child", "parent_id": "9908aae3-d0d3-4459-8d53-f1223f37d41d", "section_path": "1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.1. Yêu cầu đối với người dự tuyển:", "program_name": null, "score": 0.5882398135519149, "content_preview": "# PHỤ LỤC 1\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc1.md]\n[Mục: 1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.1. Yêu cầu đối với người ", "source": "vector", "rrf_score": 0.015151515151515152}
+                                                         [6] {"chunk_id": "9908aae3-d0d3-4459-8d53-f1223f37d41d", "chunk_level": "parent", "parent_id": null, "section_path": "1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.1. Yêu cầu đối với người dự tuyển:", "program_name": null, "score": 0.5882398135519149, "content_preview": "# PHỤ LỤC 1\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc1.md]\n[Mục: 1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.1. Yêu cầu đối với người ", "source": "vector", "rrf_score": 0.014925373134328358}
+                                                         [7] {"chunk_id": "c7d41c54-e3f5-4af9-85c6-f01429f0953d", "chunk_level": "child", "parent_id": "c4289caa-d467-485f-9e62-eb3a891369f9", "section_path": "Thạc sĩ Kế Toán > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Kế Toán", "score": 0.5795733505360293, "content_preview": "[Chương trình: Thạc sĩ Kế Toán (KT, kt, Kế toán) | Mã ngành: 8340301] — ĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:", "source": "vector", "rrf_score": 0.014705882352941176}
+                                                         [8] {"chunk_id": "836727d9-7139-4eca-8956-238e7e24c773", "chunk_level": "child", "parent_id": "5d1a3abf-5cfb-47c9-8a32-72567c21d83b", "section_path": "KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH & CÁC PHỤ LỤC", "program_name": null, "score": 0.5779745751015718, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH & CÁC PHỤ LỤC]", "source": "vector", "rrf_score": 0.014492753623188406}
+                                                         [9] {"chunk_id": "9d82c16f-09c5-41ee-8b33-7fee6962db49", "chunk_level": "parent", "parent_id": null, "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 7. **ĐIỀU KIỆN DỰ TUYỂN; HỒ SƠ DỰ TUYỂN (Xem chi tiết Phụ lục 1)**", "program_name": null, "score": 0.5739586353302002, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 7.", "source": "vector", "rrf_score": 0.014285714285714285}
+                                                         [10] {"chunk_id": "6843190b-1bbe-4b67-a930-bcb9f20063a5", "chunk_level": "parent", "parent_id": null, "section_path": "2. HỒ SƠ ĐĂNG KÝ DỰ TUYỂN", "program_name": null, "score": 0.5721949934959412, "content_preview": "# PHỤ LỤC 1\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc1.md]\n[Mục: 2. HỒ SƠ ĐĂNG KÝ DỰ TUYỂN]\n\na) 01 Phiếu đăng ký dự tuyển (theo m", "source": "vector", "rrf_score": 0.014084507042253521}
+                                                         [11] {"chunk_id": "22d249ac-2e02-4e2a-9ee7-7c4cdb3425d6", "chunk_level": "parent", "parent_id": null, "section_path": "**5. Nội dung** > 7. Biểu mẫu", "program_name": null, "score": 0.5719560980796814, "content_preview": "# QUY TRÌNH CHẤT LƯỢNG\n# ĐÁNH GIÁ LUẬN VĂN/ĐỀ ÁN THẠC SĨ\nMã số quy trình: QT/SĐH/06\n[Nguồn: quytrinhdanhgia-luanvan-thacsi.md]\n[Mục: **5. Nội dung** > 7. Biểu mẫu]\n\n| TT | Mã số biểu mẫu | Tên biểu mẫ", "source": "vector", "rrf_score": 0.013888888888888888}
+                                                         [12] {"chunk_id": "29c18b5a-df68-4a20-b49c-1b9cb46cb9f7", "chunk_level": "child", "parent_id": "22d249ac-2e02-4e2a-9ee7-7c4cdb3425d6", "section_path": "**5. Nội dung** > 7. Biểu mẫu", "program_name": null, "score": 0.5719560980796814, "content_preview": "# QUY TRÌNH CHẤT LƯỢNG\n# ĐÁNH GIÁ LUẬN VĂN/ĐỀ ÁN THẠC SĨ\nMã số quy trình: QT/SĐH/06\n[Nguồn: quytrinhdanhgia-luanvan-thacsi.md]\n[Mục: **5. Nội dung** > 7. Biểu mẫu]\n\n| TT | Mã số biểu mẫu | Tên biểu mẫ", "source": "vector", "rrf_score": 0.0136986301369863}
+                                                         [13] {"chunk_id": "1513a865-3a58-414d-8329-59a89f36ca7e", "chunk_level": "child", "parent_id": "454b5ee8-ee08-462f-b3db-d0931ce798b2", "section_path": "Thạc sĩ Kinh Tế Học > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Kinh Tế Học", "score": 0.5660233756289864, "content_preview": "[Chương trình: Thạc sĩ Kinh Tế Học (KTH, kth, Kinh tế) | Mã ngành: 8310101] — ĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:", "source": "vector", "rrf_score": 0.013513513513513514}
+                                                         [14] {"chunk_id": "298df87c-67fd-4510-931d-6de576f41c1d", "chunk_level": "child", "parent_id": "5d05b110-4074-4d30-925b-66873c16fd0d", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Quản Trị Kinh Doanh", "score": 0.5659856368895068, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — ĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:", "source": "vector", "rrf_score": 0.013333333333333334}
+                                                         [15] {"chunk_id": "1c40c487-b5b6-4bad-b9c0-4d82c99629cf", "chunk_level": "child", "parent_id": "6843190b-1bbe-4b67-a930-bcb9f20063a5", "section_path": "2. HỒ SƠ ĐĂNG KÝ DỰ TUYỂN", "program_name": null, "score": 0.564172625541687, "content_preview": "# PHỤ LỤC 1\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc1.md]\n[Mục: 2. HỒ SƠ ĐĂNG KÝ DỰ TUYỂN]\n\ng) Đối với các văn bằng tốt nghiệp đ", "source": "vector", "rrf_score": 0.013157894736842105}
+                                                         [16] {"chunk_id": "4dabbc7e-579f-4550-9c7a-2a6db9dc8eaf", "chunk_level": "parent", "parent_id": null, "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.1. Phương thức tuyển sinh: xét tuyển đối với trình độ đại học và văn bằng, chứng chỉ ngoại ngữ đạt trình độ tương đương Bậc 3/6 trở lên. & 2.2. Các môn xét tuyển bao gồm:", "program_name": null, "score": 0.5640717484993795, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.1. Phương thức tuyển sinh: xét tuy", "source": "vector", "rrf_score": 0.012987012987012988}
+                                                         [17] {"chunk_id": "6f22d527-e5d1-48ee-b670-50f352a64d03", "chunk_level": "child", "parent_id": "4dabbc7e-579f-4550-9c7a-2a6db9dc8eaf", "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.1. Phương thức tuyển sinh: xét tuyển đối với trình độ đại học và văn bằng, chứng chỉ ngoại ngữ đạt trình độ tương đương Bậc 3/6 trở lên. & 2.2. Các môn xét tuyển bao gồm:", "program_name": null, "score": 0.5640717484993795, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.1. Phương thức tuyển sinh: xét tuy", "source": "vector", "rrf_score": 0.01282051282051282}
+                                                         [18] {"chunk_id": "de639893-fc35-44e8-b76a-275b3aa6e049", "chunk_level": "child", "parent_id": "eda72bd9-7b82-4ff5-b7d1-41718461d2e3", "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Kinh Doanh Quốc Tế", "score": 0.5624121688358693, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120] — ĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:", "source": "vector", "rrf_score": 0.012658227848101266}
+                                                         [19] {"chunk_id": "800cf663-b21d-415f-b539-ce65d0a37288", "chunk_level": "child", "parent_id": "8bd77a20-df5c-45d6-ac71-45262b2aa744", "section_path": "Thạc sĩ Tài Chính – Ngân Hàng > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Tài Chính – Ngân Hàng", "score": 0.5623339079419439, "content_preview": "[Chương trình: Thạc sĩ Tài Chính – Ngân Hàng (TC-NH, TCNH, tc-nh, tcnh, Tài chính Ngân hàng) | Mã ngành: 8340201] — ĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:", "source": "vector", "rrf_score": 0.0125}
+                        rag_confidence_failed  │  ✓ True
+                            top1_cosine_score  │  0.6228
+                                    next_node  │  intent
+                                                       (6 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [7] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.046s)
+                                        Message  │  intent='TAO_MAU_DON' → action='PROCEED_FORM' | summary='Mẫu đơn xin học thạc sĩ cho Trần Quốc Giang'
+                                       intent  │  TAO_MAU_DON
+                                                       (11 chars)
+                               intent_summary  │  Mẫu đơn xin học thạc sĩ cho Trần Quốc Giang
+                                                       (43 chars)
+                                intent_action  │  PROCEED_FORM
+                                                       (12 chars)
+                         program_level_filter  │  thac_si
+                                                       (7 chars)
+                          program_name_filter  │  null
+                                    next_node  │  form
+                                                       (4 chars)
+                              response_source  │  ""
+
+  🚦 Routing Decision: next_node='form' | intent_action='PROCEED_FORM'
+
+──────────────────────────────────────────────────────────────────────────
+  📝 [8] FORM NODE (Agent Mẫu đơn)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (18.004s)
+                                        Message  │  Response=1659 chars
+                               final_response  │  ```markdown
+CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM  
+Độc lập - Tự do - Hạnh phúc  
+
+**ĐƠN HÀNH CHÍNH CHUNG**  
+
+Kính gửi: **Hội đồng Tuyển sinh Trường Đại học Tài chính - Marketing**  
+
+Tôi tên là: **Trần Quốc Giang**  
+Ngày sinh: ....../......./..........
+Địa chỉ liên hệ: [Điền địa chỉ liên hệ]  
+Số điện thoại: [Điền số điện thoại]  
+Email: [Điền email]  
+Số CCCD/CMND: [Điền số CCCD/CMND]  
+Cơ quan công tác: [Điền nơi đang công tác hoặc học tập]  
+
+**Nội dung đơn:**  
+
+Tôi viết đơn này để **đăng ký nguyện vọng học tập tại Trường Đại học Tài chính - Marketing**.  
+
+**(Nội dung tham khảo)**  
+Ngành học / Nguyện vọng: **Quản trị Kinh doanh** (hoặc các ngành liên quan như Kinh tế, Tài chính - Ngân hàng, Marketing...). Tôi mong muốn được học tập và phát triển tại trường vì đây là một trong những cơ sở đào tạo uy tín, có chương trình học hiện đại, đội ngũ giảng viên chất lượng cao, phù hợp với định hướng nghề nghiệp của tôi trong tương lai.  
+
+**(Nội dung tham khảo)**  
+Lý do / Mong muốn: Tôi mong muốn được tham gia vào môi trường học tập năng động tại UFM để nâng cao kiến thức chuyên môn, kỹ năng mềm và cơ hội nghề nghiệp trong lĩnh vực kinh tế - tài chính. Đây là bước đệm quan trọng để tôi cống hiến cho xã hội và phát triển bản thân.  
+
+**(Nội dung tham khảo)**  
+Thông tin bổ sung: Tôi hiện đang học tập tại [điền nơi học tập] và có thành tích học tập ổn định, tích cực tham gia các hoạt động ngoại khóa. Tôi cũng có kinh nghiệm thực tập tại [điền nơi thực tập nếu có], giúp tôi hiểu rõ hơn về thực tiễn nghề nghiệp.  
+
+Tôi xin chân thành cảm ơn và mong nhận được sự xét duyệt từ Hội đồng Tuyển sinh.  
+
+**Kính thư,**  
+**Trần Quốc Giang**  
+```
+                                                       (1659 chars)
+                              response_source  │  form_template
+                                                       (13 chars)
+                                    next_node  │  response
+                                                       (8 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [9] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.001s)
+                                        Message  │  source='form_template', length=1659 chars
+                               final_response  │  ```markdown
+CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM  
+Độc lập - Tự do - Hạnh phúc  
+
+**ĐƠN HÀNH CHÍNH CHUNG**  
+
+Kính gửi: **Hội đồng Tuyển sinh Trường Đại học Tài chính - Marketing**  
+
+Tôi tên là: **Trần Quốc Giang**  
+Ngày sinh: ....../......./..........
+Địa chỉ liên hệ: [Điền địa chỉ liên hệ]  
+Số điện thoại: [Điền số điện thoại]  
+Email: [Điền email]  
+Số CCCD/CMND: [Điền số CCCD/CMND]  
+Cơ quan công tác: [Điền nơi đang công tác hoặc học tập]  
+
+**Nội dung đơn:**  
+
+Tôi viết đơn này để **đăng ký nguyện vọng học tập tại Trường Đại học Tài chính - Marketing**.  
+
+**(Nội dung tham khảo)**  
+Ngành học / Nguyện vọng: **Quản trị Kinh doanh** (hoặc các ngành liên quan như Kinh tế, Tài chính - Ngân hàng, Marketing...). Tôi mong muốn được học tập và phát triển tại trường vì đây là một trong những cơ sở đào tạo uy tín, có chương trình học hiện đại, đội ngũ giảng viên chất lượng cao, phù hợp với định hướng nghề nghiệp của tôi trong tương lai.  
+
+**(Nội dung tham khảo)**  
+Lý do / Mong muốn: Tôi mong muốn được tham gia vào môi trường học tập năng động tại UFM để nâng cao kiến thức chuyên môn, kỹ năng mềm và cơ hội nghề nghiệp trong lĩnh vực kinh tế - tài chính. Đây là bước đệm quan trọng để tôi cống hiến cho xã hội và phát triển bản thân.  
+
+**(Nội dung tham khảo)**  
+Thông tin bổ sung: Tôi hiện đang học tập tại [điền nơi học tập] và có thành tích học tập ổn định, tích cực tham gia các hoạt động ngoại khóa. Tôi cũng có kinh nghiệm thực tập tại [điền nơi thực tập nếu có], giúp tôi hiểu rõ hơn về thực tiễn nghề nghiệp.  
+
+Tôi xin chân thành cảm ơn và mong nhận được sự xét duyệt từ Hội đồng Tuyển sinh.  
+
+**Kính thư,**  
+**Trần Quốc Giang**  
+```
+                                                       (1659 chars)
+                              response_source  │  form_template
+                                                       (13 chars)
+                                    next_node  │  end
+                                                       (3 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : form_template
+  Intent          : TAO_MAU_DON → PROCEED_FORM
+  Response Length : 1659 chars
+  Total Time      : 28.90s
+  Nodes Executed  : 9
+──────────────────────────────────────────────────────────────────────────
+
+```markdown
+CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM  
+Độc lập - Tự do - Hạnh phúc  
+
+**ĐƠN HÀNH CHÍNH CHUNG**  
+
+Kính gửi: **Hội đồng Tuyển sinh Trường Đại học Tài chính - Marketing**  
+
+Tôi tên là: **Trần Quốc Giang**  
+Ngày sinh: ....../......./..........
+Địa chỉ liên hệ: [Điền địa chỉ liên hệ]  
+Số điện thoại: [Điền số điện thoại]  
+Email: [Điền email]  
+Số CCCD/CMND: [Điền số CCCD/CMND]  
+Cơ quan công tác: [Điền nơi đang công tác hoặc học tập]  
+
+**Nội dung đơn:**  
+
+Tôi viết đơn này để **đăng ký nguyện vọng học tập tại Trường Đại học Tài chính - Marketing**.  
+
+**(Nội dung tham khảo)**  
+Ngành học / Nguyện vọng: **Quản trị Kinh doanh** (hoặc các ngành liên quan như Kinh tế, Tài chính - Ngân hàng, Marketing...). Tôi mong muốn được học tập và phát triển tại trường vì đây là một trong những cơ sở đào tạo uy tín, có chương trình học hiện đại, đội ngũ giảng viên chất lượng cao, phù hợp với định hướng nghề nghiệp của tôi trong tương lai.  
+
+**(Nội dung tham khảo)**  
+Lý do / Mong muốn: Tôi mong muốn được tham gia vào môi trường học tập năng động tại UFM để nâng cao kiến thức chuyên môn, kỹ năng mềm và cơ hội nghề nghiệp trong lĩnh vực kinh tế - tài chính. Đây là bước đệm quan trọng để tôi cống hiến cho xã hội và phát triển bản thân.  
+
+**(Nội dung tham khảo)**  
+Thông tin bổ sung: Tôi hiện đang học tập tại [điền nơi học tập] và có thành tích học tập ổn định, tích cực tham gia các hoạt động ngoại khóa. Tôi cũng có kinh nghiệm thực tập tại [điền nơi thực tập nếu có], giúp tôi hiểu rõ hơn về thực tiễn nghề nghiệp.  
+
+Tôi xin chân thành cảm ơn và mong nhận được sự xét duyệt từ Hội đồng Tuyển sinh.  
+
+**Kính thư,**  
+**Trần Quốc Giang**  
+```
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ FAST SCAN NODE (Guard Layer 0-1)             │  0.001s  │   PASS   │
+  │ CONTEXT NODE (Query Reformulation)           │  1.399s  │   PASS   │
+  │ CONTEXTUAL GUARD NODE (Layer 2a+2b)          │  3.577s  │   PASS   │
+  │ MULTI-QUERY NODE (Sinh biến thể)             │  1.229s  │   PASS   │
+  │ EMBEDDING NODE (BGE-M3 batch)                │  2.435s  │   PASS   │
+  │ RAG NODE (Hybrid Search DB)                  │  0.190s  │   PASS   │
+  │ INTENT NODE (Router Phân Loại Ý Định)        │  2.046s  │   PASS   │
+  │ FORM NODE (Agent Mẫu đơn)                    │ 18.004s  │   PASS   │
+  │ RESPONSE NODE (Final Answer)                 │  0.001s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  28.90s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260323_105229_HAY_LAM_CHO_TOI_MAU_DON_XIN_HOC_THAC_SI.txt
+

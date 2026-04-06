@@ -1,0 +1,512 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-30 01:46:01                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260330_014601_học_UFM__cao__RA_TRUONG_CÓ_VIỆC_LÀM_KO.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.5-flash              │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash              │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Extract       │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ⓫ Form Draft         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : học UFM % cao  RA TRUONG CÓ VIỆC LÀM KO
+  💬 Chat History : 4 messages
+     👤 hãy viết cho tôi bài thơ con mèo
+     🤖 Kính chào bạn,
+Xin lỗi vì sự bất tiện, nhưng yêu cầu của bạn có dấu hiệu không p
+     👤 cam kết cơ hội việc làm cho tôi
+     🤖 Kính chào bạn,
+Xin lỗi vì sự bất tiện, nhưng yêu cầu của bạn có dấu hiệu không p
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.004s)
+                                        Message  │  [Fast-Scan PASS — 0.000s] Sach, cho qua Context Node
+                                 chat_history  │  [4 items]
+                                                         [0] {"role": "user", "content": "hãy viết cho tôi bài thơ con mèo"}
+                                                         [1] {"role": "assistant", "content": "Kính chào bạn,\nXin lỗi vì sự bất tiện, nhưng yêu cầu của bạn có dấu hiệu không phù hợp hoặc nằm ngoài phạm vi hỗ trợ của hệ thống tư vấn tuyển sinh.\nĐể đảm bảo tính chính xác và an toàn thông tin, mình không thể xử lý nội dung này. Hệ thống chỉ hỗ trợ các câu hỏi liên quan đến ngành học, học phí, cũng như phương thức và điều kiện xét tuyển tại Trường Đại học Tài chính – Marketing (UFM).\nBạn vui lòng điều chỉnh hoặc đặt lại câu hỏi phù hợp để mình có thể hỗ trợ bạn một cách nhanh chóng và hiệu quả hơn.\nNgoài ra, dưới đây là một số thông tin liên hệ của Trường Đại học Tài chính – Marketing (UFM) để bạn tham khảo thêm khi cần:\n🌟 **Kênh Hỗ trợ Tư vấn Tuyển sinh UFM**\n\n🔹 **Tuyển sinh Đại học Chính quy (Cử nhân)**\n📍 *Địa chỉ:* Phòng A.007, 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM\n📞 *Hotline:* (028) 3772 0406 | (028) 3772 0407\n📧 *Email:* [tuyensinh@ufm.edu.vn](mailto:tuyensinh@ufm.edu.vn)\n🌐 *Website:* [tuyensinh.ufm.edu.vn](https://tuyensinh.ufm.edu.vn)\n💬 *Zalo:* [zalo.me/ufmhcm](https://zalo.me/ufmhcm) | *Fanpage:* [tuyensinhufm](https://www.facebook.com/tuyensinhufm)\n\n🔹 **Tuyển sinh Sau đại học (Thạc sĩ, Tiến sĩ)**\n📍 *Địa chỉ:* Viện Đào tạo Sau đại học (Phòng D.006)\n📞 *Hotline:* 0967 657 532 (Thầy Tuấn) | 0966 286 386 (Thầy Thành)\n📧 *Email:* [daotaosdh@ufm.edu.vn](mailto:daotaosdh@ufm.edu.vn)\n🌐 *Website:* [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn)\n\n🔹 **Các hệ đào tạo khác**\n💻 **Từ xa (E-Learning):** 0394 494 931 (Cô Ngân) | 🌐 [ufm-elearning.edu.vn](https://ufm-elearning.edu.vn)\n🏢 **Vừa làm vừa học:** Hotline: 0986 08 42 42 | 🌐 [ice.ufm.edu.vn](http://ice.ufm.edu.vn)\n🌍 **Liên kết Quốc tế ISFM:** Hotline: 0983 373 450 | 🌐 [isfm.ufm.edu.vn](https://isfm.ufm.edu.vn)"}
+                                                         [2] {"role": "user", "content": "cam kết cơ hội việc làm cho tôi"}
+                                                         [3] {"role": "assistant", "content": "Kính chào bạn,\nXin lỗi vì sự bất tiện, nhưng yêu cầu của bạn có dấu hiệu không phù hợp hoặc nằm ngoài phạm vi hỗ trợ của hệ thống tư vấn tuyển sinh.\nĐể đảm bảo tính chính xác và an toàn thông tin, mình không thể xử lý nội dung này. Hệ thống chỉ hỗ trợ các câu hỏi liên quan đến ngành học, học phí, cũng như phương thức và điều kiện xét tuyển tại Trường Đại học Tài chính – Marketing (UFM).\nBạn vui lòng điều chỉnh hoặc đặt lại câu hỏi phù hợp để mình có thể hỗ trợ bạn một cách nhanh chóng và hiệu quả hơn.\nNgoài ra, dưới đây là một số thông tin liên hệ của Trường Đại học Tài chính – Marketing (UFM) để bạn tham khảo thêm khi cần:\n🌟 **Kênh Hỗ trợ Tư vấn Tuyển sinh UFM**\n\n🔹 **Tuyển sinh Đại học Chính quy (Cử nhân)**\n📍 *Địa chỉ:* Phòng A.007, 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM\n📞 *Hotline:* (028) 3772 0406 | (028) 3772 0407\n📧 *Email:* [tuyensinh@ufm.edu.vn](mailto:tuyensinh@ufm.edu.vn)\n🌐 *Website:* [tuyensinh.ufm.edu.vn](https://tuyensinh.ufm.edu.vn)\n💬 *Zalo:* [zalo.me/ufmhcm](https://zalo.me/ufmhcm) | *Fanpage:* [tuyensinhufm](https://www.facebook.com/tuyensinhufm)\n\n🔹 **Tuyển sinh Sau đại học (Thạc sĩ, Tiến sĩ)**\n📍 *Địa chỉ:* Viện Đào tạo Sau đại học (Phòng D.006)\n📞 *Hotline:* 0967 657 532 (Thầy Tuấn) | 0966 286 386 (Thầy Thành)\n📧 *Email:* [daotaosdh@ufm.edu.vn](mailto:daotaosdh@ufm.edu.vn)\n🌐 *Website:* [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn)\n\n🔹 **Các hệ đào tạo khác**\n💻 **Từ xa (E-Learning):** 0394 494 931 (Cô Ngân) | 🌐 [ufm-elearning.edu.vn](https://ufm-elearning.edu.vn)\n🏢 **Vừa làm vừa học:** Hotline: 0986 08 42 42 | 🌐 [ice.ufm.edu.vn](http://ice.ufm.edu.vn)\n🌍 **Liên kết Quốc tế ISFM:** Hotline: 0983 373 450 | 🌐 [isfm.ufm.edu.vn](https://isfm.ufm.edu.vn)"}
+                                   user_query  │  học UFM % cao  RA TRUONG CÓ VIỆC LÀM KO
+                                                      >(39 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  học ufm % cao  ra truong có việc làm không
+                                                      >(42 chars)
+                             standalone_query  │  ""
+                                multi_queries  │  []
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  null
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  ""
+                             query_embeddings  │  []
+                                       intent  │  ""
+                               intent_summary  │  ""
+                                intent_action  │  ""
+                         program_level_filter  │  null
+                          program_name_filter  │  null
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                               final_response  │  ""
+                              response_source  │  ""
+                                    next_node  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (3.327s)
+                                        Message  │  Reformulated → 'Tỷ lệ có việc làm sau khi tốt nghiệp trường Đại học UFM là bao nhiêu?'
+                                 chat_history  │  [4 items]
+                                                         [0] {"role": "user", "content": "hãy viết cho tôi bài thơ con mèo"}
+                                                         [1] {"role": "assistant", "content": "Kính chào bạn,\nXin lỗi vì sự bất tiện, nhưng yêu cầu của bạn có dấu hiệu không phù hợp hoặc nằm ngoài phạm vi hỗ trợ của hệ thống tư vấn tuyển sinh.\nĐể đảm bảo tính chính xác và an toàn thông tin, mình không thể xử lý nội dung này. Hệ thống chỉ hỗ trợ các câu hỏi liên quan đến ngành học, học phí, cũng như phương thức và điều kiện xét tuyển tại Trường Đại học Tài chính – Marketing (UFM).\nBạn vui lòng điều chỉnh hoặc đặt lại câu hỏi phù hợp để mình có thể hỗ trợ bạn một cách nhanh chóng và hiệu quả hơn.\nNgoài ra, dưới đây là một số thông tin liên hệ của Trường Đại học Tài chính – Marketing (UFM) để bạn tham khảo thêm khi cần:\n🌟 **Kênh Hỗ trợ Tư vấn Tuyển sinh UFM**\n\n🔹 **Tuyển sinh Đại học Chính quy (Cử nhân)**\n📍 *Địa chỉ:* Phòng A.007, 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM\n📞 *Hotline:* (028) 3772 0406 | (028) 3772 0407\n📧 *Email:* [tuyensinh@ufm.edu.vn](mailto:tuyensinh@ufm.edu.vn)\n🌐 *Website:* [tuyensinh.ufm.edu.vn](https://tuyensinh.ufm.edu.vn)\n💬 *Zalo:* [zalo.me/ufmhcm](https://zalo.me/ufmhcm) | *Fanpage:* [tuyensinhufm](https://www.facebook.com/tuyensinhufm)\n\n🔹 **Tuyển sinh Sau đại học (Thạc sĩ, Tiến sĩ)**\n📍 *Địa chỉ:* Viện Đào tạo Sau đại học (Phòng D.006)\n📞 *Hotline:* 0967 657 532 (Thầy Tuấn) | 0966 286 386 (Thầy Thành)\n📧 *Email:* [daotaosdh@ufm.edu.vn](mailto:daotaosdh@ufm.edu.vn)\n🌐 *Website:* [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn)\n\n🔹 **Các hệ đào tạo khác**\n💻 **Từ xa (E-Learning):** 0394 494 931 (Cô Ngân) | 🌐 [ufm-elearning.edu.vn](https://ufm-elearning.edu.vn)\n🏢 **Vừa làm vừa học:** Hotline: 0986 08 42 42 | 🌐 [ice.ufm.edu.vn](http://ice.ufm.edu.vn)\n🌍 **Liên kết Quốc tế ISFM:** Hotline: 0983 373 450 | 🌐 [isfm.ufm.edu.vn](https://isfm.ufm.edu.vn)"}
+                                                         [2] {"role": "user", "content": "cam kết cơ hội việc làm cho tôi"}
+                                                         [3] {"role": "assistant", "content": "Kính chào bạn,\nXin lỗi vì sự bất tiện, nhưng yêu cầu của bạn có dấu hiệu không phù hợp hoặc nằm ngoài phạm vi hỗ trợ của hệ thống tư vấn tuyển sinh.\nĐể đảm bảo tính chính xác và an toàn thông tin, mình không thể xử lý nội dung này. Hệ thống chỉ hỗ trợ các câu hỏi liên quan đến ngành học, học phí, cũng như phương thức và điều kiện xét tuyển tại Trường Đại học Tài chính – Marketing (UFM).\nBạn vui lòng điều chỉnh hoặc đặt lại câu hỏi phù hợp để mình có thể hỗ trợ bạn một cách nhanh chóng và hiệu quả hơn.\nNgoài ra, dưới đây là một số thông tin liên hệ của Trường Đại học Tài chính – Marketing (UFM) để bạn tham khảo thêm khi cần:\n🌟 **Kênh Hỗ trợ Tư vấn Tuyển sinh UFM**\n\n🔹 **Tuyển sinh Đại học Chính quy (Cử nhân)**\n📍 *Địa chỉ:* Phòng A.007, 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM\n📞 *Hotline:* (028) 3772 0406 | (028) 3772 0407\n📧 *Email:* [tuyensinh@ufm.edu.vn](mailto:tuyensinh@ufm.edu.vn)\n🌐 *Website:* [tuyensinh.ufm.edu.vn](https://tuyensinh.ufm.edu.vn)\n💬 *Zalo:* [zalo.me/ufmhcm](https://zalo.me/ufmhcm) | *Fanpage:* [tuyensinhufm](https://www.facebook.com/tuyensinhufm)\n\n🔹 **Tuyển sinh Sau đại học (Thạc sĩ, Tiến sĩ)**\n📍 *Địa chỉ:* Viện Đào tạo Sau đại học (Phòng D.006)\n📞 *Hotline:* 0967 657 532 (Thầy Tuấn) | 0966 286 386 (Thầy Thành)\n📧 *Email:* [daotaosdh@ufm.edu.vn](mailto:daotaosdh@ufm.edu.vn)\n🌐 *Website:* [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn)\n\n🔹 **Các hệ đào tạo khác**\n💻 **Từ xa (E-Learning):** 0394 494 931 (Cô Ngân) | 🌐 [ufm-elearning.edu.vn](https://ufm-elearning.edu.vn)\n🏢 **Vừa làm vừa học:** Hotline: 0986 08 42 42 | 🌐 [ice.ufm.edu.vn](http://ice.ufm.edu.vn)\n🌍 **Liên kết Quốc tế ISFM:** Hotline: 0983 373 450 | 🌐 [isfm.ufm.edu.vn](https://isfm.ufm.edu.vn)"}
+                                   user_query  │  học UFM % cao  RA TRUONG CÓ VIỆC LÀM KO
+                                                      >(39 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  học ufm % cao  ra truong có việc làm không
+                                                      >(42 chars)
+                             standalone_query  │  Tỷ lệ có việc làm sau khi tốt nghiệp trường Đại học UFM là bao nhiêu?
+                                                      >(69 chars)
+                                multi_queries  │  []
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  null
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  ""
+                             query_embeddings  │  []
+                                       intent  │  ""
+                               intent_summary  │  ""
+                                intent_action  │  ""
+                         program_level_filter  │  null
+                          program_name_filter  │  null
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                               final_response  │  ""
+                              response_source  │  ""
+                                    next_node  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a Llama)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.516s)
+                                        Message  │  [Contextual-Guard PASS — 1.515s] standalone_query an toan
+                                 chat_history  │  [4 items]
+                                                         [0] {"role": "user", "content": "hãy viết cho tôi bài thơ con mèo"}
+                                                         [1] {"role": "assistant", "content": "Kính chào bạn,\nXin lỗi vì sự bất tiện, nhưng yêu cầu của bạn có dấu hiệu không phù hợp hoặc nằm ngoài phạm vi hỗ trợ của hệ thống tư vấn tuyển sinh.\nĐể đảm bảo tính chính xác và an toàn thông tin, mình không thể xử lý nội dung này. Hệ thống chỉ hỗ trợ các câu hỏi liên quan đến ngành học, học phí, cũng như phương thức và điều kiện xét tuyển tại Trường Đại học Tài chính – Marketing (UFM).\nBạn vui lòng điều chỉnh hoặc đặt lại câu hỏi phù hợp để mình có thể hỗ trợ bạn một cách nhanh chóng và hiệu quả hơn.\nNgoài ra, dưới đây là một số thông tin liên hệ của Trường Đại học Tài chính – Marketing (UFM) để bạn tham khảo thêm khi cần:\n🌟 **Kênh Hỗ trợ Tư vấn Tuyển sinh UFM**\n\n🔹 **Tuyển sinh Đại học Chính quy (Cử nhân)**\n📍 *Địa chỉ:* Phòng A.007, 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM\n📞 *Hotline:* (028) 3772 0406 | (028) 3772 0407\n📧 *Email:* [tuyensinh@ufm.edu.vn](mailto:tuyensinh@ufm.edu.vn)\n🌐 *Website:* [tuyensinh.ufm.edu.vn](https://tuyensinh.ufm.edu.vn)\n💬 *Zalo:* [zalo.me/ufmhcm](https://zalo.me/ufmhcm) | *Fanpage:* [tuyensinhufm](https://www.facebook.com/tuyensinhufm)\n\n🔹 **Tuyển sinh Sau đại học (Thạc sĩ, Tiến sĩ)**\n📍 *Địa chỉ:* Viện Đào tạo Sau đại học (Phòng D.006)\n📞 *Hotline:* 0967 657 532 (Thầy Tuấn) | 0966 286 386 (Thầy Thành)\n📧 *Email:* [daotaosdh@ufm.edu.vn](mailto:daotaosdh@ufm.edu.vn)\n🌐 *Website:* [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn)\n\n🔹 **Các hệ đào tạo khác**\n💻 **Từ xa (E-Learning):** 0394 494 931 (Cô Ngân) | 🌐 [ufm-elearning.edu.vn](https://ufm-elearning.edu.vn)\n🏢 **Vừa làm vừa học:** Hotline: 0986 08 42 42 | 🌐 [ice.ufm.edu.vn](http://ice.ufm.edu.vn)\n🌍 **Liên kết Quốc tế ISFM:** Hotline: 0983 373 450 | 🌐 [isfm.ufm.edu.vn](https://isfm.ufm.edu.vn)"}
+                                                         [2] {"role": "user", "content": "cam kết cơ hội việc làm cho tôi"}
+                                                         [3] {"role": "assistant", "content": "Kính chào bạn,\nXin lỗi vì sự bất tiện, nhưng yêu cầu của bạn có dấu hiệu không phù hợp hoặc nằm ngoài phạm vi hỗ trợ của hệ thống tư vấn tuyển sinh.\nĐể đảm bảo tính chính xác và an toàn thông tin, mình không thể xử lý nội dung này. Hệ thống chỉ hỗ trợ các câu hỏi liên quan đến ngành học, học phí, cũng như phương thức và điều kiện xét tuyển tại Trường Đại học Tài chính – Marketing (UFM).\nBạn vui lòng điều chỉnh hoặc đặt lại câu hỏi phù hợp để mình có thể hỗ trợ bạn một cách nhanh chóng và hiệu quả hơn.\nNgoài ra, dưới đây là một số thông tin liên hệ của Trường Đại học Tài chính – Marketing (UFM) để bạn tham khảo thêm khi cần:\n🌟 **Kênh Hỗ trợ Tư vấn Tuyển sinh UFM**\n\n🔹 **Tuyển sinh Đại học Chính quy (Cử nhân)**\n📍 *Địa chỉ:* Phòng A.007, 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM\n📞 *Hotline:* (028) 3772 0406 | (028) 3772 0407\n📧 *Email:* [tuyensinh@ufm.edu.vn](mailto:tuyensinh@ufm.edu.vn)\n🌐 *Website:* [tuyensinh.ufm.edu.vn](https://tuyensinh.ufm.edu.vn)\n💬 *Zalo:* [zalo.me/ufmhcm](https://zalo.me/ufmhcm) | *Fanpage:* [tuyensinhufm](https://www.facebook.com/tuyensinhufm)\n\n🔹 **Tuyển sinh Sau đại học (Thạc sĩ, Tiến sĩ)**\n📍 *Địa chỉ:* Viện Đào tạo Sau đại học (Phòng D.006)\n📞 *Hotline:* 0967 657 532 (Thầy Tuấn) | 0966 286 386 (Thầy Thành)\n📧 *Email:* [daotaosdh@ufm.edu.vn](mailto:daotaosdh@ufm.edu.vn)\n🌐 *Website:* [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn)\n\n🔹 **Các hệ đào tạo khác**\n💻 **Từ xa (E-Learning):** 0394 494 931 (Cô Ngân) | 🌐 [ufm-elearning.edu.vn](https://ufm-elearning.edu.vn)\n🏢 **Vừa làm vừa học:** Hotline: 0986 08 42 42 | 🌐 [ice.ufm.edu.vn](http://ice.ufm.edu.vn)\n🌍 **Liên kết Quốc tế ISFM:** Hotline: 0983 373 450 | 🌐 [isfm.ufm.edu.vn](https://isfm.ufm.edu.vn)"}
+                                   user_query  │  học UFM % cao  RA TRUONG CÓ VIỆC LÀM KO
+                                                      >(39 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  học ufm % cao  ra truong có việc làm không
+                                                      >(42 chars)
+                             standalone_query  │  Tỷ lệ có việc làm sau khi tốt nghiệp trường Đại học UFM là bao nhiêu?
+                                                      >(69 chars)
+                                multi_queries  │  []
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.515s] standalone_query an toan
+                                                      >(57 chars)
+                             query_embeddings  │  []
+                                       intent  │  ""
+                               intent_summary  │  ""
+                                intent_action  │  ""
+                         program_level_filter  │  null
+                          program_name_filter  │  null
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                               final_response  │  ""
+                              response_source  │  ""
+                                    next_node  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [4] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.921s)
+                                        Message  │  intent='CO_HOI_VIEC_LAM' → action='PROCEED_RAG_PR_SEARCH' → next='rag_search'
+                                 chat_history  │  [4 items]
+                                                         [0] {"role": "user", "content": "hãy viết cho tôi bài thơ con mèo"}
+                                                         [1] {"role": "assistant", "content": "Kính chào bạn,\nXin lỗi vì sự bất tiện, nhưng yêu cầu của bạn có dấu hiệu không phù hợp hoặc nằm ngoài phạm vi hỗ trợ của hệ thống tư vấn tuyển sinh.\nĐể đảm bảo tính chính xác và an toàn thông tin, mình không thể xử lý nội dung này. Hệ thống chỉ hỗ trợ các câu hỏi liên quan đến ngành học, học phí, cũng như phương thức và điều kiện xét tuyển tại Trường Đại học Tài chính – Marketing (UFM).\nBạn vui lòng điều chỉnh hoặc đặt lại câu hỏi phù hợp để mình có thể hỗ trợ bạn một cách nhanh chóng và hiệu quả hơn.\nNgoài ra, dưới đây là một số thông tin liên hệ của Trường Đại học Tài chính – Marketing (UFM) để bạn tham khảo thêm khi cần:\n🌟 **Kênh Hỗ trợ Tư vấn Tuyển sinh UFM**\n\n🔹 **Tuyển sinh Đại học Chính quy (Cử nhân)**\n📍 *Địa chỉ:* Phòng A.007, 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM\n📞 *Hotline:* (028) 3772 0406 | (028) 3772 0407\n📧 *Email:* [tuyensinh@ufm.edu.vn](mailto:tuyensinh@ufm.edu.vn)\n🌐 *Website:* [tuyensinh.ufm.edu.vn](https://tuyensinh.ufm.edu.vn)\n💬 *Zalo:* [zalo.me/ufmhcm](https://zalo.me/ufmhcm) | *Fanpage:* [tuyensinhufm](https://www.facebook.com/tuyensinhufm)\n\n🔹 **Tuyển sinh Sau đại học (Thạc sĩ, Tiến sĩ)**\n📍 *Địa chỉ:* Viện Đào tạo Sau đại học (Phòng D.006)\n📞 *Hotline:* 0967 657 532 (Thầy Tuấn) | 0966 286 386 (Thầy Thành)\n📧 *Email:* [daotaosdh@ufm.edu.vn](mailto:daotaosdh@ufm.edu.vn)\n🌐 *Website:* [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn)\n\n🔹 **Các hệ đào tạo khác**\n💻 **Từ xa (E-Learning):** 0394 494 931 (Cô Ngân) | 🌐 [ufm-elearning.edu.vn](https://ufm-elearning.edu.vn)\n🏢 **Vừa làm vừa học:** Hotline: 0986 08 42 42 | 🌐 [ice.ufm.edu.vn](http://ice.ufm.edu.vn)\n🌍 **Liên kết Quốc tế ISFM:** Hotline: 0983 373 450 | 🌐 [isfm.ufm.edu.vn](https://isfm.ufm.edu.vn)"}
+                                                         [2] {"role": "user", "content": "cam kết cơ hội việc làm cho tôi"}
+                                                         [3] {"role": "assistant", "content": "Kính chào bạn,\nXin lỗi vì sự bất tiện, nhưng yêu cầu của bạn có dấu hiệu không phù hợp hoặc nằm ngoài phạm vi hỗ trợ của hệ thống tư vấn tuyển sinh.\nĐể đảm bảo tính chính xác và an toàn thông tin, mình không thể xử lý nội dung này. Hệ thống chỉ hỗ trợ các câu hỏi liên quan đến ngành học, học phí, cũng như phương thức và điều kiện xét tuyển tại Trường Đại học Tài chính – Marketing (UFM).\nBạn vui lòng điều chỉnh hoặc đặt lại câu hỏi phù hợp để mình có thể hỗ trợ bạn một cách nhanh chóng và hiệu quả hơn.\nNgoài ra, dưới đây là một số thông tin liên hệ của Trường Đại học Tài chính – Marketing (UFM) để bạn tham khảo thêm khi cần:\n🌟 **Kênh Hỗ trợ Tư vấn Tuyển sinh UFM**\n\n🔹 **Tuyển sinh Đại học Chính quy (Cử nhân)**\n📍 *Địa chỉ:* Phòng A.007, 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM\n📞 *Hotline:* (028) 3772 0406 | (028) 3772 0407\n📧 *Email:* [tuyensinh@ufm.edu.vn](mailto:tuyensinh@ufm.edu.vn)\n🌐 *Website:* [tuyensinh.ufm.edu.vn](https://tuyensinh.ufm.edu.vn)\n💬 *Zalo:* [zalo.me/ufmhcm](https://zalo.me/ufmhcm) | *Fanpage:* [tuyensinhufm](https://www.facebook.com/tuyensinhufm)\n\n🔹 **Tuyển sinh Sau đại học (Thạc sĩ, Tiến sĩ)**\n📍 *Địa chỉ:* Viện Đào tạo Sau đại học (Phòng D.006)\n📞 *Hotline:* 0967 657 532 (Thầy Tuấn) | 0966 286 386 (Thầy Thành)\n📧 *Email:* [daotaosdh@ufm.edu.vn](mailto:daotaosdh@ufm.edu.vn)\n🌐 *Website:* [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn)\n\n🔹 **Các hệ đào tạo khác**\n💻 **Từ xa (E-Learning):** 0394 494 931 (Cô Ngân) | 🌐 [ufm-elearning.edu.vn](https://ufm-elearning.edu.vn)\n🏢 **Vừa làm vừa học:** Hotline: 0986 08 42 42 | 🌐 [ice.ufm.edu.vn](http://ice.ufm.edu.vn)\n🌍 **Liên kết Quốc tế ISFM:** Hotline: 0983 373 450 | 🌐 [isfm.ufm.edu.vn](https://isfm.ufm.edu.vn)"}
+                                   user_query  │  học UFM % cao  RA TRUONG CÓ VIỆC LÀM KO
+                                                      >(39 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  học ufm % cao  ra truong có việc làm không
+                                                      >(42 chars)
+                             standalone_query  │  Tỷ lệ có việc làm sau khi tốt nghiệp trường Đại học UFM là bao nhiêu?
+                                                      >(69 chars)
+                                multi_queries  │  []
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.515s] standalone_query an toan
+                                                      >(57 chars)
+                             query_embeddings  │  []
+                                       intent  │  CO_HOI_VIEC_LAM
+                                                      >(15 chars)
+                               intent_summary  │  ""
+                                intent_action  │  PROCEED_RAG_PR_SEARCH
+                                                      >(21 chars)
+                         program_level_filter  │  dai_hoc
+                                                      >(7 chars)
+                          program_name_filter  │  null
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                               final_response  │  ""
+                              response_source  │  ""
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔀 [5] MULTI-QUERY NODE (Sinh biến thể)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.960s)
+                                        Message  │  Sinh 2 biến thể
+                                 chat_history  │  [4 items]
+                                                         [0] {"role": "user", "content": "hãy viết cho tôi bài thơ con mèo"}
+                                                         [1] {"role": "assistant", "content": "Kính chào bạn,\nXin lỗi vì sự bất tiện, nhưng yêu cầu của bạn có dấu hiệu không phù hợp hoặc nằm ngoài phạm vi hỗ trợ của hệ thống tư vấn tuyển sinh.\nĐể đảm bảo tính chính xác và an toàn thông tin, mình không thể xử lý nội dung này. Hệ thống chỉ hỗ trợ các câu hỏi liên quan đến ngành học, học phí, cũng như phương thức và điều kiện xét tuyển tại Trường Đại học Tài chính – Marketing (UFM).\nBạn vui lòng điều chỉnh hoặc đặt lại câu hỏi phù hợp để mình có thể hỗ trợ bạn một cách nhanh chóng và hiệu quả hơn.\nNgoài ra, dưới đây là một số thông tin liên hệ của Trường Đại học Tài chính – Marketing (UFM) để bạn tham khảo thêm khi cần:\n🌟 **Kênh Hỗ trợ Tư vấn Tuyển sinh UFM**\n\n🔹 **Tuyển sinh Đại học Chính quy (Cử nhân)**\n📍 *Địa chỉ:* Phòng A.007, 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM\n📞 *Hotline:* (028) 3772 0406 | (028) 3772 0407\n📧 *Email:* [tuyensinh@ufm.edu.vn](mailto:tuyensinh@ufm.edu.vn)\n🌐 *Website:* [tuyensinh.ufm.edu.vn](https://tuyensinh.ufm.edu.vn)\n💬 *Zalo:* [zalo.me/ufmhcm](https://zalo.me/ufmhcm) | *Fanpage:* [tuyensinhufm](https://www.facebook.com/tuyensinhufm)\n\n🔹 **Tuyển sinh Sau đại học (Thạc sĩ, Tiến sĩ)**\n📍 *Địa chỉ:* Viện Đào tạo Sau đại học (Phòng D.006)\n📞 *Hotline:* 0967 657 532 (Thầy Tuấn) | 0966 286 386 (Thầy Thành)\n📧 *Email:* [daotaosdh@ufm.edu.vn](mailto:daotaosdh@ufm.edu.vn)\n🌐 *Website:* [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn)\n\n🔹 **Các hệ đào tạo khác**\n💻 **Từ xa (E-Learning):** 0394 494 931 (Cô Ngân) | 🌐 [ufm-elearning.edu.vn](https://ufm-elearning.edu.vn)\n🏢 **Vừa làm vừa học:** Hotline: 0986 08 42 42 | 🌐 [ice.ufm.edu.vn](http://ice.ufm.edu.vn)\n🌍 **Liên kết Quốc tế ISFM:** Hotline: 0983 373 450 | 🌐 [isfm.ufm.edu.vn](https://isfm.ufm.edu.vn)"}
+                                                         [2] {"role": "user", "content": "cam kết cơ hội việc làm cho tôi"}
+                                                         [3] {"role": "assistant", "content": "Kính chào bạn,\nXin lỗi vì sự bất tiện, nhưng yêu cầu của bạn có dấu hiệu không phù hợp hoặc nằm ngoài phạm vi hỗ trợ của hệ thống tư vấn tuyển sinh.\nĐể đảm bảo tính chính xác và an toàn thông tin, mình không thể xử lý nội dung này. Hệ thống chỉ hỗ trợ các câu hỏi liên quan đến ngành học, học phí, cũng như phương thức và điều kiện xét tuyển tại Trường Đại học Tài chính – Marketing (UFM).\nBạn vui lòng điều chỉnh hoặc đặt lại câu hỏi phù hợp để mình có thể hỗ trợ bạn một cách nhanh chóng và hiệu quả hơn.\nNgoài ra, dưới đây là một số thông tin liên hệ của Trường Đại học Tài chính – Marketing (UFM) để bạn tham khảo thêm khi cần:\n🌟 **Kênh Hỗ trợ Tư vấn Tuyển sinh UFM**\n\n🔹 **Tuyển sinh Đại học Chính quy (Cử nhân)**\n📍 *Địa chỉ:* Phòng A.007, 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM\n📞 *Hotline:* (028) 3772 0406 | (028) 3772 0407\n📧 *Email:* [tuyensinh@ufm.edu.vn](mailto:tuyensinh@ufm.edu.vn)\n🌐 *Website:* [tuyensinh.ufm.edu.vn](https://tuyensinh.ufm.edu.vn)\n💬 *Zalo:* [zalo.me/ufmhcm](https://zalo.me/ufmhcm) | *Fanpage:* [tuyensinhufm](https://www.facebook.com/tuyensinhufm)\n\n🔹 **Tuyển sinh Sau đại học (Thạc sĩ, Tiến sĩ)**\n📍 *Địa chỉ:* Viện Đào tạo Sau đại học (Phòng D.006)\n📞 *Hotline:* 0967 657 532 (Thầy Tuấn) | 0966 286 386 (Thầy Thành)\n📧 *Email:* [daotaosdh@ufm.edu.vn](mailto:daotaosdh@ufm.edu.vn)\n🌐 *Website:* [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn)\n\n🔹 **Các hệ đào tạo khác**\n💻 **Từ xa (E-Learning):** 0394 494 931 (Cô Ngân) | 🌐 [ufm-elearning.edu.vn](https://ufm-elearning.edu.vn)\n🏢 **Vừa làm vừa học:** Hotline: 0986 08 42 42 | 🌐 [ice.ufm.edu.vn](http://ice.ufm.edu.vn)\n🌍 **Liên kết Quốc tế ISFM:** Hotline: 0983 373 450 | 🌐 [isfm.ufm.edu.vn](https://isfm.ufm.edu.vn)"}
+                                   user_query  │  học UFM % cao  RA TRUONG CÓ VIỆC LÀM KO
+                                                      >(39 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  học ufm % cao  ra truong có việc làm không
+                                                      >(42 chars)
+                             standalone_query  │  Tỷ lệ có việc làm sau khi tốt nghiệp trường Đại học UFM là bao nhiêu?
+                                                      >(69 chars)
+                                multi_queries  │  [2 items]
+                                                         [0] "Tỷ lệ sinh viên UFM tìm được việc làm sau khi ra trường là bao nhiêu?"
+                                                         [1] "Sau khi tốt nghiệp Đại học Tài chính Marketing, bao nhiêu phần trăm sinh viên có việc làm?"
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.515s] standalone_query an toan
+                                                      >(57 chars)
+                             query_embeddings  │  []
+                                       intent  │  CO_HOI_VIEC_LAM
+                                                      >(15 chars)
+                               intent_summary  │  ""
+                                intent_action  │  PROCEED_RAG_PR_SEARCH
+                                                      >(21 chars)
+                         program_level_filter  │  dai_hoc
+                                                      >(7 chars)
+                          program_name_filter  │  null
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                               final_response  │  ""
+                              response_source  │  ""
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  📊 [6] EMBEDDING NODE (BGE-M3 batch)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.755s)
+                                        Message  │  Nhúng 3 vectors × 1024D
+                                 chat_history  │  [4 items]
+                                                         [0] {"role": "user", "content": "hãy viết cho tôi bài thơ con mèo"}
+                                                         [1] {"role": "assistant", "content": "Kính chào bạn,\nXin lỗi vì sự bất tiện, nhưng yêu cầu của bạn có dấu hiệu không phù hợp hoặc nằm ngoài phạm vi hỗ trợ của hệ thống tư vấn tuyển sinh.\nĐể đảm bảo tính chính xác và an toàn thông tin, mình không thể xử lý nội dung này. Hệ thống chỉ hỗ trợ các câu hỏi liên quan đến ngành học, học phí, cũng như phương thức và điều kiện xét tuyển tại Trường Đại học Tài chính – Marketing (UFM).\nBạn vui lòng điều chỉnh hoặc đặt lại câu hỏi phù hợp để mình có thể hỗ trợ bạn một cách nhanh chóng và hiệu quả hơn.\nNgoài ra, dưới đây là một số thông tin liên hệ của Trường Đại học Tài chính – Marketing (UFM) để bạn tham khảo thêm khi cần:\n🌟 **Kênh Hỗ trợ Tư vấn Tuyển sinh UFM**\n\n🔹 **Tuyển sinh Đại học Chính quy (Cử nhân)**\n📍 *Địa chỉ:* Phòng A.007, 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM\n📞 *Hotline:* (028) 3772 0406 | (028) 3772 0407\n📧 *Email:* [tuyensinh@ufm.edu.vn](mailto:tuyensinh@ufm.edu.vn)\n🌐 *Website:* [tuyensinh.ufm.edu.vn](https://tuyensinh.ufm.edu.vn)\n💬 *Zalo:* [zalo.me/ufmhcm](https://zalo.me/ufmhcm) | *Fanpage:* [tuyensinhufm](https://www.facebook.com/tuyensinhufm)\n\n🔹 **Tuyển sinh Sau đại học (Thạc sĩ, Tiến sĩ)**\n📍 *Địa chỉ:* Viện Đào tạo Sau đại học (Phòng D.006)\n📞 *Hotline:* 0967 657 532 (Thầy Tuấn) | 0966 286 386 (Thầy Thành)\n📧 *Email:* [daotaosdh@ufm.edu.vn](mailto:daotaosdh@ufm.edu.vn)\n🌐 *Website:* [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn)\n\n🔹 **Các hệ đào tạo khác**\n💻 **Từ xa (E-Learning):** 0394 494 931 (Cô Ngân) | 🌐 [ufm-elearning.edu.vn](https://ufm-elearning.edu.vn)\n🏢 **Vừa làm vừa học:** Hotline: 0986 08 42 42 | 🌐 [ice.ufm.edu.vn](http://ice.ufm.edu.vn)\n🌍 **Liên kết Quốc tế ISFM:** Hotline: 0983 373 450 | 🌐 [isfm.ufm.edu.vn](https://isfm.ufm.edu.vn)"}
+                                                         [2] {"role": "user", "content": "cam kết cơ hội việc làm cho tôi"}
+                                                         [3] {"role": "assistant", "content": "Kính chào bạn,\nXin lỗi vì sự bất tiện, nhưng yêu cầu của bạn có dấu hiệu không phù hợp hoặc nằm ngoài phạm vi hỗ trợ của hệ thống tư vấn tuyển sinh.\nĐể đảm bảo tính chính xác và an toàn thông tin, mình không thể xử lý nội dung này. Hệ thống chỉ hỗ trợ các câu hỏi liên quan đến ngành học, học phí, cũng như phương thức và điều kiện xét tuyển tại Trường Đại học Tài chính – Marketing (UFM).\nBạn vui lòng điều chỉnh hoặc đặt lại câu hỏi phù hợp để mình có thể hỗ trợ bạn một cách nhanh chóng và hiệu quả hơn.\nNgoài ra, dưới đây là một số thông tin liên hệ của Trường Đại học Tài chính – Marketing (UFM) để bạn tham khảo thêm khi cần:\n🌟 **Kênh Hỗ trợ Tư vấn Tuyển sinh UFM**\n\n🔹 **Tuyển sinh Đại học Chính quy (Cử nhân)**\n📍 *Địa chỉ:* Phòng A.007, 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM\n📞 *Hotline:* (028) 3772 0406 | (028) 3772 0407\n📧 *Email:* [tuyensinh@ufm.edu.vn](mailto:tuyensinh@ufm.edu.vn)\n🌐 *Website:* [tuyensinh.ufm.edu.vn](https://tuyensinh.ufm.edu.vn)\n💬 *Zalo:* [zalo.me/ufmhcm](https://zalo.me/ufmhcm) | *Fanpage:* [tuyensinhufm](https://www.facebook.com/tuyensinhufm)\n\n🔹 **Tuyển sinh Sau đại học (Thạc sĩ, Tiến sĩ)**\n📍 *Địa chỉ:* Viện Đào tạo Sau đại học (Phòng D.006)\n📞 *Hotline:* 0967 657 532 (Thầy Tuấn) | 0966 286 386 (Thầy Thành)\n📧 *Email:* [daotaosdh@ufm.edu.vn](mailto:daotaosdh@ufm.edu.vn)\n🌐 *Website:* [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn)\n\n🔹 **Các hệ đào tạo khác**\n💻 **Từ xa (E-Learning):** 0394 494 931 (Cô Ngân) | 🌐 [ufm-elearning.edu.vn](https://ufm-elearning.edu.vn)\n🏢 **Vừa làm vừa học:** Hotline: 0986 08 42 42 | 🌐 [ice.ufm.edu.vn](http://ice.ufm.edu.vn)\n🌍 **Liên kết Quốc tế ISFM:** Hotline: 0983 373 450 | 🌐 [isfm.ufm.edu.vn](https://isfm.ufm.edu.vn)"}
+                                   user_query  │  học UFM % cao  RA TRUONG CÓ VIỆC LÀM KO
+                                                      >(39 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  học ufm % cao  ra truong có việc làm không
+                                                      >(42 chars)
+                             standalone_query  │  Tỷ lệ có việc làm sau khi tốt nghiệp trường Đại học UFM là bao nhiêu?
+                                                      >(69 chars)
+                                multi_queries  │  [2 items]
+                                                         [0] "Tỷ lệ sinh viên UFM tìm được việc làm sau khi ra trường là bao nhiêu?"
+                                                         [1] "Sau khi tốt nghiệp Đại học Tài chính Marketing, bao nhiêu phần trăm sinh viên có việc làm?"
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.515s] standalone_query an toan
+                                                      >(57 chars)
+                             query_embeddings  │  [3 vectors × 1024D]
+                                       intent  │  CO_HOI_VIEC_LAM
+                                                      >(15 chars)
+                               intent_summary  │  ""
+                                intent_action  │  PROCEED_RAG_PR_SEARCH
+                                                      >(21 chars)
+                         program_level_filter  │  dai_hoc
+                                                      >(7 chars)
+                          program_name_filter  │  null
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                               final_response  │  ""
+                              response_source  │  ""
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🗄️ [7] RAG NODE (Hybrid Search DB)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.151s)
+                                        Message  │  Chunks=0, Context=0 chars
+                                 chat_history  │  [4 items]
+                                                         [0] {"role": "user", "content": "hãy viết cho tôi bài thơ con mèo"}
+                                                         [1] {"role": "assistant", "content": "Kính chào bạn,\nXin lỗi vì sự bất tiện, nhưng yêu cầu của bạn có dấu hiệu không phù hợp hoặc nằm ngoài phạm vi hỗ trợ của hệ thống tư vấn tuyển sinh.\nĐể đảm bảo tính chính xác và an toàn thông tin, mình không thể xử lý nội dung này. Hệ thống chỉ hỗ trợ các câu hỏi liên quan đến ngành học, học phí, cũng như phương thức và điều kiện xét tuyển tại Trường Đại học Tài chính – Marketing (UFM).\nBạn vui lòng điều chỉnh hoặc đặt lại câu hỏi phù hợp để mình có thể hỗ trợ bạn một cách nhanh chóng và hiệu quả hơn.\nNgoài ra, dưới đây là một số thông tin liên hệ của Trường Đại học Tài chính – Marketing (UFM) để bạn tham khảo thêm khi cần:\n🌟 **Kênh Hỗ trợ Tư vấn Tuyển sinh UFM**\n\n🔹 **Tuyển sinh Đại học Chính quy (Cử nhân)**\n📍 *Địa chỉ:* Phòng A.007, 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM\n📞 *Hotline:* (028) 3772 0406 | (028) 3772 0407\n📧 *Email:* [tuyensinh@ufm.edu.vn](mailto:tuyensinh@ufm.edu.vn)\n🌐 *Website:* [tuyensinh.ufm.edu.vn](https://tuyensinh.ufm.edu.vn)\n💬 *Zalo:* [zalo.me/ufmhcm](https://zalo.me/ufmhcm) | *Fanpage:* [tuyensinhufm](https://www.facebook.com/tuyensinhufm)\n\n🔹 **Tuyển sinh Sau đại học (Thạc sĩ, Tiến sĩ)**\n📍 *Địa chỉ:* Viện Đào tạo Sau đại học (Phòng D.006)\n📞 *Hotline:* 0967 657 532 (Thầy Tuấn) | 0966 286 386 (Thầy Thành)\n📧 *Email:* [daotaosdh@ufm.edu.vn](mailto:daotaosdh@ufm.edu.vn)\n🌐 *Website:* [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn)\n\n🔹 **Các hệ đào tạo khác**\n💻 **Từ xa (E-Learning):** 0394 494 931 (Cô Ngân) | 🌐 [ufm-elearning.edu.vn](https://ufm-elearning.edu.vn)\n🏢 **Vừa làm vừa học:** Hotline: 0986 08 42 42 | 🌐 [ice.ufm.edu.vn](http://ice.ufm.edu.vn)\n🌍 **Liên kết Quốc tế ISFM:** Hotline: 0983 373 450 | 🌐 [isfm.ufm.edu.vn](https://isfm.ufm.edu.vn)"}
+                                                         [2] {"role": "user", "content": "cam kết cơ hội việc làm cho tôi"}
+                                                         [3] {"role": "assistant", "content": "Kính chào bạn,\nXin lỗi vì sự bất tiện, nhưng yêu cầu của bạn có dấu hiệu không phù hợp hoặc nằm ngoài phạm vi hỗ trợ của hệ thống tư vấn tuyển sinh.\nĐể đảm bảo tính chính xác và an toàn thông tin, mình không thể xử lý nội dung này. Hệ thống chỉ hỗ trợ các câu hỏi liên quan đến ngành học, học phí, cũng như phương thức và điều kiện xét tuyển tại Trường Đại học Tài chính – Marketing (UFM).\nBạn vui lòng điều chỉnh hoặc đặt lại câu hỏi phù hợp để mình có thể hỗ trợ bạn một cách nhanh chóng và hiệu quả hơn.\nNgoài ra, dưới đây là một số thông tin liên hệ của Trường Đại học Tài chính – Marketing (UFM) để bạn tham khảo thêm khi cần:\n🌟 **Kênh Hỗ trợ Tư vấn Tuyển sinh UFM**\n\n🔹 **Tuyển sinh Đại học Chính quy (Cử nhân)**\n📍 *Địa chỉ:* Phòng A.007, 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM\n📞 *Hotline:* (028) 3772 0406 | (028) 3772 0407\n📧 *Email:* [tuyensinh@ufm.edu.vn](mailto:tuyensinh@ufm.edu.vn)\n🌐 *Website:* [tuyensinh.ufm.edu.vn](https://tuyensinh.ufm.edu.vn)\n💬 *Zalo:* [zalo.me/ufmhcm](https://zalo.me/ufmhcm) | *Fanpage:* [tuyensinhufm](https://www.facebook.com/tuyensinhufm)\n\n🔹 **Tuyển sinh Sau đại học (Thạc sĩ, Tiến sĩ)**\n📍 *Địa chỉ:* Viện Đào tạo Sau đại học (Phòng D.006)\n📞 *Hotline:* 0967 657 532 (Thầy Tuấn) | 0966 286 386 (Thầy Thành)\n📧 *Email:* [daotaosdh@ufm.edu.vn](mailto:daotaosdh@ufm.edu.vn)\n🌐 *Website:* [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn)\n\n🔹 **Các hệ đào tạo khác**\n💻 **Từ xa (E-Learning):** 0394 494 931 (Cô Ngân) | 🌐 [ufm-elearning.edu.vn](https://ufm-elearning.edu.vn)\n🏢 **Vừa làm vừa học:** Hotline: 0986 08 42 42 | 🌐 [ice.ufm.edu.vn](http://ice.ufm.edu.vn)\n🌍 **Liên kết Quốc tế ISFM:** Hotline: 0983 373 450 | 🌐 [isfm.ufm.edu.vn](https://isfm.ufm.edu.vn)"}
+                                   user_query  │  học UFM % cao  RA TRUONG CÓ VIỆC LÀM KO
+                                                      >(39 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  học ufm % cao  ra truong có việc làm không
+                                                      >(42 chars)
+                             standalone_query  │  Tỷ lệ có việc làm sau khi tốt nghiệp trường Đại học UFM là bao nhiêu?
+                                                      >(69 chars)
+                                multi_queries  │  [2 items]
+                                                         [0] "Tỷ lệ sinh viên UFM tìm được việc làm sau khi ra trường là bao nhiêu?"
+                                                         [1] "Sau khi tốt nghiệp Đại học Tài chính Marketing, bao nhiêu phần trăm sinh viên có việc làm?"
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.515s] standalone_query an toan
+                                                      >(57 chars)
+                             query_embeddings  │  [3 vectors × 1024D]
+                                       intent  │  CO_HOI_VIEC_LAM
+                                                      >(15 chars)
+                               intent_summary  │  ""
+                                intent_action  │  PROCEED_RAG_PR_SEARCH
+                                                      >(21 chars)
+                         program_level_filter  │  dai_hoc
+                                                      >(7 chars)
+                          program_name_filter  │  null
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                               final_response  │  ""
+                              response_source  │  ""
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🌐 [8] RAG SEARCH PIPELINE (Evaluator + Web Search)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.005s)
+                                        Message  │  cache=MISS, citations=0
+                                 chat_history  │  [4 items]
+                                                         [0] {"role": "user", "content": "hãy viết cho tôi bài thơ con mèo"}
+                                                         [1] {"role": "assistant", "content": "Kính chào bạn,\nXin lỗi vì sự bất tiện, nhưng yêu cầu của bạn có dấu hiệu không phù hợp hoặc nằm ngoài phạm vi hỗ trợ của hệ thống tư vấn tuyển sinh.\nĐể đảm bảo tính chính xác và an toàn thông tin, mình không thể xử lý nội dung này. Hệ thống chỉ hỗ trợ các câu hỏi liên quan đến ngành học, học phí, cũng như phương thức và điều kiện xét tuyển tại Trường Đại học Tài chính – Marketing (UFM).\nBạn vui lòng điều chỉnh hoặc đặt lại câu hỏi phù hợp để mình có thể hỗ trợ bạn một cách nhanh chóng và hiệu quả hơn.\nNgoài ra, dưới đây là một số thông tin liên hệ của Trường Đại học Tài chính – Marketing (UFM) để bạn tham khảo thêm khi cần:\n🌟 **Kênh Hỗ trợ Tư vấn Tuyển sinh UFM**\n\n🔹 **Tuyển sinh Đại học Chính quy (Cử nhân)**\n📍 *Địa chỉ:* Phòng A.007, 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM\n📞 *Hotline:* (028) 3772 0406 | (028) 3772 0407\n📧 *Email:* [tuyensinh@ufm.edu.vn](mailto:tuyensinh@ufm.edu.vn)\n🌐 *Website:* [tuyensinh.ufm.edu.vn](https://tuyensinh.ufm.edu.vn)\n💬 *Zalo:* [zalo.me/ufmhcm](https://zalo.me/ufmhcm) | *Fanpage:* [tuyensinhufm](https://www.facebook.com/tuyensinhufm)\n\n🔹 **Tuyển sinh Sau đại học (Thạc sĩ, Tiến sĩ)**\n📍 *Địa chỉ:* Viện Đào tạo Sau đại học (Phòng D.006)\n📞 *Hotline:* 0967 657 532 (Thầy Tuấn) | 0966 286 386 (Thầy Thành)\n📧 *Email:* [daotaosdh@ufm.edu.vn](mailto:daotaosdh@ufm.edu.vn)\n🌐 *Website:* [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn)\n\n🔹 **Các hệ đào tạo khác**\n💻 **Từ xa (E-Learning):** 0394 494 931 (Cô Ngân) | 🌐 [ufm-elearning.edu.vn](https://ufm-elearning.edu.vn)\n🏢 **Vừa làm vừa học:** Hotline: 0986 08 42 42 | 🌐 [ice.ufm.edu.vn](http://ice.ufm.edu.vn)\n🌍 **Liên kết Quốc tế ISFM:** Hotline: 0983 373 450 | 🌐 [isfm.ufm.edu.vn](https://isfm.ufm.edu.vn)"}
+                                                         [2] {"role": "user", "content": "cam kết cơ hội việc làm cho tôi"}
+                                                         [3] {"role": "assistant", "content": "Kính chào bạn,\nXin lỗi vì sự bất tiện, nhưng yêu cầu của bạn có dấu hiệu không phù hợp hoặc nằm ngoài phạm vi hỗ trợ của hệ thống tư vấn tuyển sinh.\nĐể đảm bảo tính chính xác và an toàn thông tin, mình không thể xử lý nội dung này. Hệ thống chỉ hỗ trợ các câu hỏi liên quan đến ngành học, học phí, cũng như phương thức và điều kiện xét tuyển tại Trường Đại học Tài chính – Marketing (UFM).\nBạn vui lòng điều chỉnh hoặc đặt lại câu hỏi phù hợp để mình có thể hỗ trợ bạn một cách nhanh chóng và hiệu quả hơn.\nNgoài ra, dưới đây là một số thông tin liên hệ của Trường Đại học Tài chính – Marketing (UFM) để bạn tham khảo thêm khi cần:\n🌟 **Kênh Hỗ trợ Tư vấn Tuyển sinh UFM**\n\n🔹 **Tuyển sinh Đại học Chính quy (Cử nhân)**\n📍 *Địa chỉ:* Phòng A.007, 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM\n📞 *Hotline:* (028) 3772 0406 | (028) 3772 0407\n📧 *Email:* [tuyensinh@ufm.edu.vn](mailto:tuyensinh@ufm.edu.vn)\n🌐 *Website:* [tuyensinh.ufm.edu.vn](https://tuyensinh.ufm.edu.vn)\n💬 *Zalo:* [zalo.me/ufmhcm](https://zalo.me/ufmhcm) | *Fanpage:* [tuyensinhufm](https://www.facebook.com/tuyensinhufm)\n\n🔹 **Tuyển sinh Sau đại học (Thạc sĩ, Tiến sĩ)**\n📍 *Địa chỉ:* Viện Đào tạo Sau đại học (Phòng D.006)\n📞 *Hotline:* 0967 657 532 (Thầy Tuấn) | 0966 286 386 (Thầy Thành)\n📧 *Email:* [daotaosdh@ufm.edu.vn](mailto:daotaosdh@ufm.edu.vn)\n🌐 *Website:* [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn)\n\n🔹 **Các hệ đào tạo khác**\n💻 **Từ xa (E-Learning):** 0394 494 931 (Cô Ngân) | 🌐 [ufm-elearning.edu.vn](https://ufm-elearning.edu.vn)\n🏢 **Vừa làm vừa học:** Hotline: 0986 08 42 42 | 🌐 [ice.ufm.edu.vn](http://ice.ufm.edu.vn)\n🌍 **Liên kết Quốc tế ISFM:** Hotline: 0983 373 450 | 🌐 [isfm.ufm.edu.vn](https://isfm.ufm.edu.vn)"}
+                                   user_query  │  học UFM % cao  RA TRUONG CÓ VIỆC LÀM KO
+                                                      >(39 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  học ufm % cao  ra truong có việc làm không
+                                                      >(42 chars)
+                             standalone_query  │  Tỷ lệ có việc làm sau khi tốt nghiệp trường Đại học UFM là bao nhiêu?
+                                                      >(69 chars)
+                                multi_queries  │  [2 items]
+                                                         [0] "Tỷ lệ sinh viên UFM tìm được việc làm sau khi ra trường là bao nhiêu?"
+                                                         [1] "Sau khi tốt nghiệp Đại học Tài chính Marketing, bao nhiêu phần trăm sinh viên có việc làm?"
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.515s] standalone_query an toan
+                                                      >(57 chars)
+                             query_embeddings  │  [3 vectors × 1024D]
+                                       intent  │  CO_HOI_VIEC_LAM
+                                                      >(15 chars)
+                               intent_summary  │  ""
+                                intent_action  │  PROCEED_RAG_PR_SEARCH
+                                                      >(21 chars)
+                         program_level_filter  │  dai_hoc
+                                                      >(7 chars)
+                          program_name_filter  │  null
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                               final_response  │  ""
+                              response_source  │  rag_db_only
+                                                      >(11 chars)
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+                           ufm_search_queries  │  null
+                              pr_search_query  │  null
+                           web_search_results  │  null
+                         web_search_citations  │  null
+                             search_cache_hit  │  ✗ False
+                      search_cache_similarity  │  0.0000
+                         sanitizer_loop_count  │  0
+                           sanitizer_critique  │  null
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [9] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.831s)
+                                        Message  │  source='rag_db_only_generated', length=1620 chars
+                                 chat_history  │  [4 items]
+                                                         [0] {"role": "user", "content": "hãy viết cho tôi bài thơ con mèo"}
+                                                         [1] {"role": "assistant", "content": "Kính chào bạn,\nXin lỗi vì sự bất tiện, nhưng yêu cầu của bạn có dấu hiệu không phù hợp hoặc nằm ngoài phạm vi hỗ trợ của hệ thống tư vấn tuyển sinh.\nĐể đảm bảo tính chính xác và an toàn thông tin, mình không thể xử lý nội dung này. Hệ thống chỉ hỗ trợ các câu hỏi liên quan đến ngành học, học phí, cũng như phương thức và điều kiện xét tuyển tại Trường Đại học Tài chính – Marketing (UFM).\nBạn vui lòng điều chỉnh hoặc đặt lại câu hỏi phù hợp để mình có thể hỗ trợ bạn một cách nhanh chóng và hiệu quả hơn.\nNgoài ra, dưới đây là một số thông tin liên hệ của Trường Đại học Tài chính – Marketing (UFM) để bạn tham khảo thêm khi cần:\n🌟 **Kênh Hỗ trợ Tư vấn Tuyển sinh UFM**\n\n🔹 **Tuyển sinh Đại học Chính quy (Cử nhân)**\n📍 *Địa chỉ:* Phòng A.007, 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM\n📞 *Hotline:* (028) 3772 0406 | (028) 3772 0407\n📧 *Email:* [tuyensinh@ufm.edu.vn](mailto:tuyensinh@ufm.edu.vn)\n🌐 *Website:* [tuyensinh.ufm.edu.vn](https://tuyensinh.ufm.edu.vn)\n💬 *Zalo:* [zalo.me/ufmhcm](https://zalo.me/ufmhcm) | *Fanpage:* [tuyensinhufm](https://www.facebook.com/tuyensinhufm)\n\n🔹 **Tuyển sinh Sau đại học (Thạc sĩ, Tiến sĩ)**\n📍 *Địa chỉ:* Viện Đào tạo Sau đại học (Phòng D.006)\n📞 *Hotline:* 0967 657 532 (Thầy Tuấn) | 0966 286 386 (Thầy Thành)\n📧 *Email:* [daotaosdh@ufm.edu.vn](mailto:daotaosdh@ufm.edu.vn)\n🌐 *Website:* [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn)\n\n🔹 **Các hệ đào tạo khác**\n💻 **Từ xa (E-Learning):** 0394 494 931 (Cô Ngân) | 🌐 [ufm-elearning.edu.vn](https://ufm-elearning.edu.vn)\n🏢 **Vừa làm vừa học:** Hotline: 0986 08 42 42 | 🌐 [ice.ufm.edu.vn](http://ice.ufm.edu.vn)\n🌍 **Liên kết Quốc tế ISFM:** Hotline: 0983 373 450 | 🌐 [isfm.ufm.edu.vn](https://isfm.ufm.edu.vn)"}
+                                                         [2] {"role": "user", "content": "cam kết cơ hội việc làm cho tôi"}
+                                                         [3] {"role": "assistant", "content": "Kính chào bạn,\nXin lỗi vì sự bất tiện, nhưng yêu cầu của bạn có dấu hiệu không phù hợp hoặc nằm ngoài phạm vi hỗ trợ của hệ thống tư vấn tuyển sinh.\nĐể đảm bảo tính chính xác và an toàn thông tin, mình không thể xử lý nội dung này. Hệ thống chỉ hỗ trợ các câu hỏi liên quan đến ngành học, học phí, cũng như phương thức và điều kiện xét tuyển tại Trường Đại học Tài chính – Marketing (UFM).\nBạn vui lòng điều chỉnh hoặc đặt lại câu hỏi phù hợp để mình có thể hỗ trợ bạn một cách nhanh chóng và hiệu quả hơn.\nNgoài ra, dưới đây là một số thông tin liên hệ của Trường Đại học Tài chính – Marketing (UFM) để bạn tham khảo thêm khi cần:\n🌟 **Kênh Hỗ trợ Tư vấn Tuyển sinh UFM**\n\n🔹 **Tuyển sinh Đại học Chính quy (Cử nhân)**\n📍 *Địa chỉ:* Phòng A.007, 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM\n📞 *Hotline:* (028) 3772 0406 | (028) 3772 0407\n📧 *Email:* [tuyensinh@ufm.edu.vn](mailto:tuyensinh@ufm.edu.vn)\n🌐 *Website:* [tuyensinh.ufm.edu.vn](https://tuyensinh.ufm.edu.vn)\n💬 *Zalo:* [zalo.me/ufmhcm](https://zalo.me/ufmhcm) | *Fanpage:* [tuyensinhufm](https://www.facebook.com/tuyensinhufm)\n\n🔹 **Tuyển sinh Sau đại học (Thạc sĩ, Tiến sĩ)**\n📍 *Địa chỉ:* Viện Đào tạo Sau đại học (Phòng D.006)\n📞 *Hotline:* 0967 657 532 (Thầy Tuấn) | 0966 286 386 (Thầy Thành)\n📧 *Email:* [daotaosdh@ufm.edu.vn](mailto:daotaosdh@ufm.edu.vn)\n🌐 *Website:* [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn)\n\n🔹 **Các hệ đào tạo khác**\n💻 **Từ xa (E-Learning):** 0394 494 931 (Cô Ngân) | 🌐 [ufm-elearning.edu.vn](https://ufm-elearning.edu.vn)\n🏢 **Vừa làm vừa học:** Hotline: 0986 08 42 42 | 🌐 [ice.ufm.edu.vn](http://ice.ufm.edu.vn)\n🌍 **Liên kết Quốc tế ISFM:** Hotline: 0983 373 450 | 🌐 [isfm.ufm.edu.vn](https://isfm.ufm.edu.vn)"}
+                                   user_query  │  học UFM % cao  RA TRUONG CÓ VIỆC LÀM KO
+                                                      >(39 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             normalized_query  │  học ufm % cao  ra truong có việc làm không
+                                                      >(42 chars)
+                             standalone_query  │  Tỷ lệ có việc làm sau khi tốt nghiệp trường Đại học UFM là bao nhiêu?
+                                                      >(69 chars)
+                                multi_queries  │  [2 items]
+                                                         [0] "Tỷ lệ sinh viên UFM tìm được việc làm sau khi ra trường là bao nhiêu?"
+                                                         [1] "Sau khi tốt nghiệp Đại học Tài chính Marketing, bao nhiêu phần trăm sinh viên có việc làm?"
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sach, cho qua Context Node
+                                                      >(52 chars)
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.515s] standalone_query an toan
+                                                      >(57 chars)
+                             query_embeddings  │  [3 vectors × 1024D]
+                                       intent  │  CO_HOI_VIEC_LAM
+                                                      >(15 chars)
+                               intent_summary  │  ""
+                                intent_action  │  PROCEED_RAG_PR_SEARCH
+                                                      >(21 chars)
+                         program_level_filter  │  dai_hoc
+                                                      >(7 chars)
+                          program_name_filter  │  null
+                             retrieved_chunks  │  []
+                                  rag_context  │  ""
+                           ufm_search_queries  │  null
+                              pr_search_query  │  null
+                           web_search_results  │  null
+                         web_search_citations  │  null
+                           sanitizer_critique  │  null
+                         sanitizer_loop_count  │  0
+                             search_cache_hit  │  ✗ False
+                      search_cache_similarity  │  0.0000
+                               final_response  │  Chào bạn, mình hiểu rằng bạn đang rất quan tâm đến cơ hội việc làm sau khi tốt nghiệp tại UFM, đây là một trong những yếu tố quan trọng giúp bạn đưa ra quyết định đúng đắn cho tương lai của mình! 🎓
+
+Hiện tại, mình chưa có số liệu cụ thể về tỷ lệ có việc làm sau khi tốt nghiệp của UFM trong dữ liệu được cung cấp. Tuy nhiên, mình có thể chia sẻ với bạn những thông tin chung và định hướng để bạn có cái nhìn tổng quan hơn nhé:
+
+*   **Chất lượng đào tạo:** UFM luôn chú trọng vào chất lượng đào tạo, cập nhật chương trình học theo sát nhu cầu thị trường lao động. Điều này giúp sinh viên UFM được trang bị kiến thức và kỹ năng cần thiết, tăng khả năng cạnh tranh sau khi ra trường.
+*   **Mối quan hệ với doanh nghiệp:** Trường có mối quan hệ hợp tác chặt chẽ với nhiều doanh nghiệp lớn, tạo điều kiện cho sinh viên thực tập, kiến tập và tìm kiếm việc làm ngay từ khi còn ngồi trên ghế nhà trường. Các buổi hội thảo, ngày hội việc làm thường xuyên được tổ chức, giúp sinh viên tiếp cận trực tiếp với nhà tuyển dụng.
+*   **Kỹ năng mềm và hoạt động ngoại khóa:** UFM khuyến khích sinh viên tham gia các hoạt động ngoại khóa, câu lạc bộ, rèn luyện kỹ năng mềm như giao tiếp, làm việc nhóm, tư duy phản biện... Đây là những yếu tố được nhà tuyển dụng đánh giá cao.
+
+Để có thông tin chính xác và cập nhật nhất về tỷ lệ việc làm sau tốt nghiệp, mình khuyến khích bạn liên hệ trực tiếp với Phòng Công tác Sinh viên hoặc Phòng Tuyển sinh của UFM. Các thầy cô sẽ cung cấp cho bạn những số liệu và thông tin chi tiết nhất nhé.
+
+Bạn có muốn mình chia sẻ thêm về các chương trình đào tạo hay cơ hội phát triển kỹ năng tại UFM không? 🌟
+                                                      >(1620 chars)
+                              response_source  │  rag_db_only_generated
+                                                      >(21 chars)
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : rag_db_only_generated
+  Intent          : CO_HOI_VIEC_LAM → PROCEED_RAG_PR_SEARCH
+  Response Length : 1620 chars
+  Total Time      : 12.53s
+  Nodes Executed  : 9
+──────────────────────────────────────────────────────────────────────────
+
+Chào bạn, mình hiểu rằng bạn đang rất quan tâm đến cơ hội việc làm sau khi tốt nghiệp tại UFM, đây là một trong những yếu tố quan trọng giúp bạn đưa ra quyết định đúng đắn cho tương lai của mình! 🎓
+
+Hiện tại, mình chưa có số liệu cụ thể về tỷ lệ có việc làm sau khi tốt nghiệp của UFM trong dữ liệu được cung cấp. Tuy nhiên, mình có thể chia sẻ với bạn những thông tin chung và định hướng để bạn có cái nhìn tổng quan hơn nhé:
+
+*   **Chất lượng đào tạo:** UFM luôn chú trọng vào chất lượng đào tạo, cập nhật chương trình học theo sát nhu cầu thị trường lao động. Điều này giúp sinh viên UFM được trang bị kiến thức và kỹ năng cần thiết, tăng khả năng cạnh tranh sau khi ra trường.
+*   **Mối quan hệ với doanh nghiệp:** Trường có mối quan hệ hợp tác chặt chẽ với nhiều doanh nghiệp lớn, tạo điều kiện cho sinh viên thực tập, kiến tập và tìm kiếm việc làm ngay từ khi còn ngồi trên ghế nhà trường. Các buổi hội thảo, ngày hội việc làm thường xuyên được tổ chức, giúp sinh viên tiếp cận trực tiếp với nhà tuyển dụng.
+*   **Kỹ năng mềm và hoạt động ngoại khóa:** UFM khuyến khích sinh viên tham gia các hoạt động ngoại khóa, câu lạc bộ, rèn luyện kỹ năng mềm như giao tiếp, làm việc nhóm, tư duy phản biện... Đây là những yếu tố được nhà tuyển dụng đánh giá cao.
+
+Để có thông tin chính xác và cập nhật nhất về tỷ lệ việc làm sau tốt nghiệp, mình khuyến khích bạn liên hệ trực tiếp với Phòng Công tác Sinh viên hoặc Phòng Tuyển sinh của UFM. Các thầy cô sẽ cung cấp cho bạn những số liệu và thông tin chi tiết nhất nhé.
+
+Bạn có muốn mình chia sẻ thêm về các chương trình đào tạo hay cơ hội phát triển kỹ năng tại UFM không? 🌟
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.004s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  3.327s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a Llama)     │  1.516s  │   PASS   │
+  │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  0.921s  │   PASS   │
+  │ 🔀 MULTI-QUERY NODE (Sinh biến thể)           │  0.960s  │   PASS   │
+  │ 📊 EMBEDDING NODE (BGE-M3 batch)              │  2.755s  │   PASS   │
+  │ 🗄️ RAG NODE (Hybrid Search DB)               │  0.151s  │   PASS   │
+  │ 🌐 RAG SEARCH PIPELINE (Evaluator + Web Searc │  0.005s  │   PASS   │
+  │ 🎯 RESPONSE NODE (Final Answer)               │  2.831s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  12.53s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260330_014601_học_UFM__cao__RA_TRUONG_CÓ_VIỆC_LÀM_KO.txt
+

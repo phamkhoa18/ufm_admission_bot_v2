@@ -1,0 +1,175 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-25 10:46:50                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_104650_em_buồn_quá_đi.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.5-flash              │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash              │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Extract       │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Draft         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : em buồn quá đi
+  💬 Chat History : Trống (lượt đầu tiên)
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.007s)
+                                        Message  │  [Fast-Scan PASS — 0.000s] Sạch, cho qua Context Node
+                             normalized_query  │  em buồn quá đi
+                                                      >(14 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sạch, cho qua Context Node
+                                                      >(52 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.001s)
+                                        Message  │  Reformulated → 'em buồn quá đi'
+                             standalone_query  │  em buồn quá đi
+                                                      >(14 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a+2b)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.632s)
+                                        Message  │  [Contextual-Guard PASS — 1.628s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.628s] standalone_query an toàn
+                                                      >(57 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [4] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.691s)
+                                        Message  │  intent='HO_TRO_SINH_VIEN' → action='PROCEED_CARE' → next='care'
+                                       intent  │  HO_TRO_SINH_VIEN
+                                                      >(16 chars)
+                               intent_summary  │  buồn
+                                                      >(4 chars)
+                                intent_action  │  PROCEED_CARE
+                                                      >(12 chars)
+                         program_level_filter  │  null
+                          program_name_filter  │  null
+                                    next_node  │  care
+                                                      >(4 chars)
+                              response_source  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  💚 [5] CARE NODE (Chăm sóc Sinh viên)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (3.057s)
+                                        Message  │  Response=631 chars
+                               final_response  │  Ôi, nghe bạn nói mình cũng thấy nặng lòng. Ai cũng có lúc như vậy mà, không sao đâu bạn. Có chuyện gì cứ tâm sự với mình nhé, mình ở đây lắng nghe bạn.
+
+Nếu bạn đang cảm thấy quá áp lực hay có những vấn đề cần được hỗ trợ, bạn có thể liên hệ với các kênh tư vấn của trường mình để được giúp đỡ nhé.
+
+*   **Nếu bạn cần tư vấn về học tập, tuyển sinh:**
+    *   **Tuyển sinh Đại học Chính quy:** Hotline (028) 3772 0406 hoặc (028) 3772 0407.
+    *   **Tuyển sinh Sau đại học:** Hotline 0967 657 532 (Thầy Tuấn) hoặc 0966 286 386 (Thầy Thành).
+
+Mọi thứ rồi sẽ ổn thôi, mình tin bạn mà 💪. Cứ từ từ rồi mình cùng tìm cách giải quyết nhé.
+                                                      >(631 chars)
+                              response_source  │  care_template
+                                                      >(13 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [6] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.003s)
+                                        Message  │  source='care_template', length=631 chars
+                               final_response  │  Ôi, nghe bạn nói mình cũng thấy nặng lòng. Ai cũng có lúc như vậy mà, không sao đâu bạn. Có chuyện gì cứ tâm sự với mình nhé, mình ở đây lắng nghe bạn.
+
+Nếu bạn đang cảm thấy quá áp lực hay có những vấn đề cần được hỗ trợ, bạn có thể liên hệ với các kênh tư vấn của trường mình để được giúp đỡ nhé.
+
+*   **Nếu bạn cần tư vấn về học tập, tuyển sinh:**
+    *   **Tuyển sinh Đại học Chính quy:** Hotline (028) 3772 0406 hoặc (028) 3772 0407.
+    *   **Tuyển sinh Sau đại học:** Hotline 0967 657 532 (Thầy Tuấn) hoặc 0966 286 386 (Thầy Thành).
+
+Mọi thứ rồi sẽ ổn thôi, mình tin bạn mà 💪. Cứ từ từ rồi mình cùng tìm cách giải quyết nhé.
+                                                      >(631 chars)
+                              response_source  │  care_template
+                                                      >(13 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : care_template
+  Intent          : HO_TRO_SINH_VIEN → PROCEED_CARE
+  Response Length : 631 chars
+  Total Time      : 6.42s
+  Nodes Executed  : 6
+──────────────────────────────────────────────────────────────────────────
+
+Ôi, nghe bạn nói mình cũng thấy nặng lòng. Ai cũng có lúc như vậy mà, không sao đâu bạn. Có chuyện gì cứ tâm sự với mình nhé, mình ở đây lắng nghe bạn.
+
+Nếu bạn đang cảm thấy quá áp lực hay có những vấn đề cần được hỗ trợ, bạn có thể liên hệ với các kênh tư vấn của trường mình để được giúp đỡ nhé.
+
+*   **Nếu bạn cần tư vấn về học tập, tuyển sinh:**
+    *   **Tuyển sinh Đại học Chính quy:** Hotline (028) 3772 0406 hoặc (028) 3772 0407.
+    *   **Tuyển sinh Sau đại học:** Hotline 0967 657 532 (Thầy Tuấn) hoặc 0966 286 386 (Thầy Thành).
+
+Mọi thứ rồi sẽ ổn thôi, mình tin bạn mà 💪. Cứ từ từ rồi mình cùng tìm cách giải quyết nhé.
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.007s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  0.001s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a+2b)        │  1.632s  │   PASS   │
+  │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  1.691s  │   PASS   │
+  │ 💚 CARE NODE (Chăm sóc Sinh viên)             │  3.057s  │   PASS   │
+  │ 🎯 RESPONSE NODE (Final Answer)               │  0.003s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │   6.42s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_104650_em_buồn_quá_đi.txt
+

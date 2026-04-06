@@ -1,0 +1,448 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test Runner                        ║
+║    2026-03-23 00:43:12                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260323_004312_Tôi_muốn_tham_khảo_ctdt_ngành_KDQT_THẠC.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❷ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❹ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❺ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❻ Guard (Deep)       │ openrouter/qwen/qwen3.5-flash-02-23             │
+  │ ❼ Multi-Query        │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❽ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❾a Vector Router     │ openrouter/baai/bge-m3                          │
+  │ ❾b Semantic Rtr      │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫c Web Search        │ openrouter/openai/gpt-4o-mini-search-preview    │
+  │ ⓫d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Care               │ openrouter/qwen/qwen3.5-flash-02-23             │
+  │ ⓭ Form Extract       │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓭ Form Draft         │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓮ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  📝 Input Query  : Tôi muốn tham khảo ctdt ngành KDQT THẠC SĨ
+  💬 Chat History : Trống (lượt đầu tiên)
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.003s)
+                                        Message  │  [Fast-Scan PASS — 0.003s] Sạch, cho qua Context Node
+                             normalized_query  │  tôi muốn tham khảo ctdt ngành kdqt thạc sĩ
+                                                       (42 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.003s] Sạch, cho qua Context Node
+                                                       (52 chars)
+                                    next_node  │  context
+                                                       (7 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.000s)
+                                        Message  │  Giữ nguyên (no history hoặc skip)
+                             standalone_query  │  Tôi muốn tham khảo ctdt ngành KDQT THẠC SĨ
+                                                       (42 chars)
+                                    next_node  │  contextual_guard
+                                                       (16 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a+2b)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (4.796s)
+                                        Message  │  [Contextual-Guard PASS — 4.796s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 4.796s] standalone_query an toàn
+                                                       (57 chars)
+                                    next_node  │  multi_query
+                                                       (11 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔀 [4] MULTI-QUERY NODE (Sinh biến thể)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.424s)
+                                multi_queries  │  [3 items]
+                                                         [0] "Tôi muốn xem chương trình đào tạo thạc sĩ ngành Kinh doanh quốc tế"
+                                                         [1] "Xin cho tôi thông tin về chương trình đào tạo cao học ngành Kinh doanh quốc tế"
+                                                         [2] "Tham khảo đề cương chi tiết chương trình thạc sĩ Kinh doanh quốc tế"
+                                    next_node  │  embedding
+                                                       (9 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  📊 [5] EMBEDDING NODE (BGE-M3 batch)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.976s)
+                                        Message  │  Nhúng 4 vectors × 1024D thành công
+                             query_embeddings  │  [4 vectors × 1024D]
+                                    next_node  │  cache
+                                                       (5 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🗄️ [6] RAG NODE (Hybrid Search DB)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.210s)
+                                        Message  │  Chunks=20, Top1Cosine=0.7802, Context=5372 chars ⚠️ CONFIDENCE FAILED
+                                  rag_context  │  [Nguồn 1 — Thạc sĩ Kinh Doanh Quốc Tế, CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ | CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ | Ngành: Kinh Doanh Quốc Tế]
+[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120]
+CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ
+
+Chương trình đào tạo Thạc sĩ ngành Kinh doanh quốc tế tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế theo hệ thống tín chỉ, cập nhật liên tục để đáp ứng nhu cầu nhân lực chất lượng cao trong bối cảnh toàn cầu hóa.
+
+Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt để người học lựa chọn phù hợp với mục tiêu nghề nghiệp:
+
+* Định hướng Nghiên cứu: Tập trung phát triển tư duy hàn lâm, năng lực nghiên cứu chuyên sâu về các vấn đề kinh doanh, thương mại và đầu tư quốc tế. Phù hợp với giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+* Định hướng Ứng dụng: Tập trung phát triển kỹ năng thực hành, năng lực quản trị và giải quyết các tình huống kinh doanh phức tạp trong môi trường quốc tế. Phù hợp với các nhà quản lý, doanh nhân, chuyên gia xuất nhập khẩu.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=vgYI12ybsQ9CjAUJSvAStg>
+
+---
+
+[Nguồn 2 — Thạc sĩ Kinh Doanh Quốc Tế, ĐIỀU KIỆN XÉT TUYỂN | ĐIỀU KIỆN XÉT TUYỂN | Ngành: Kinh Doanh Quốc Tế]
+[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120]
+ĐIỀU KIỆN XÉT TUYỂN
+
+Ứng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:
+
+* Về văn bằng: Đã tốt nghiệp đại học ngành Kinh doanh quốc tế hoặc các ngành phù hợp/ngành gần/ngành khác (có bổ sung kiến thức).
+* Phương thức tuyển sinh: Xét tuyển dựa trên hồ sơ văn bằng, kết quả học tập đại học và năng lực ngoại ngữ.
+* Môn xét tuyển: Đánh giá năng lực qua hai môn cơ sở ngành là Kinh tế học và Kinh doanh quốc tế.
+* Trình độ ngoại ngữ: Ứng viên phải đạt năng lực ngoại ngữ từ Bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc sở hữu các văn bằng, chứng chỉ tương đương.
+
+Đối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Kinh doanh quốc tế, Nhà trường tổ chức học bổ sung kiến thức trước khi xét tuyển:
+
+* Ngành gần: Bổ sung 02 môn (5 tín chỉ), gồm: Kinh tế học (3 TC) và Kinh doanh quốc tế (2 TC).
+* Ngành khác: Bổ sung 04 môn (9 tín chỉ), gồm: Kinh tế học (3 TC), Kinh doanh quốc tế (2 TC), Marketing căn bản (2 TC) và Kinh tế phát triển (2 TC).
+
+---
+
+[Nguồn 3 — Thạc sĩ Kinh Doanh Quốc Tế, CƠ HỘI NGHỀ NGHIỆP | CƠ HỘI NGHỀ NGHIỆP | Ngành: Kinh Doanh Quốc Tế]
+[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120]
+CƠ HỘI NGHỀ NGHIỆP
+
+Sau khi tốt nghiệp, Thạc sĩ Kinh doanh quốc tế có thể đảm nhiệm các vị trí:
+
+* Nhóm Quản lý & Thực hành (Định hướng Ứng dụng):
+  + Giám đốc kinh doanh quốc tế, Giám đốc xuất nhập khẩu tại các tập đoàn đa quốc gia.
+  + Chuyên gia tư vấn đầu tư quốc tế, xúc tiến thương mại, quản trị chuỗi cung ứng toàn cầu.
+  + Chuyên viên cao cấp tại các cơ quan quản lý nhà nước về kinh tế đối ngoại (Hải quan, Bộ Công thương...).
+* Nhóm Nghiên cứu & Giảng dạy (Định hướng Nghiên cứu):
+  + Giảng viên giảng dạy ngành Kinh doanh quốc tế tại các trường Đại học, Cao đẳng.
+  + Nhà nghiên cứu về thương mại và đầu tư quốc tế tại các Viện nghiên cứu.
+  + Tiếp tục nghiên cứu ở bậc học cao hơn (Tiến sĩ) trong và ngoài nước.
+
+---
+
+[Nguồn 4 — Thạc sĩ Kinh Doanh Quốc Tế, CHÍNH SÁCH ƯU ĐÃI HỌC PHÍ | CHÍNH SÁCH ƯU ĐÃI HỌC PHÍ | Ngành: Kinh Doanh Quốc Tế]
+[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120]
+CHÍNH SÁCH ƯU ĐÃI HỌC PHÍ
+
+* Giảm 10% học phí đối với học viên là cựu sinh viên của Trường.
+* Giảm 5% học phí đối với học viên có người thân đã và đang học cao học tại Trường
+
+---
+
+[Nguồn 5 — Thạc sĩ Quản Trị Kinh Doanh, CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH | CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH | Ngành: Quản Trị Kinh Doanh]
+[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]
+CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH
+
+Chương trình đào tạo Thạc sĩ ngành Quản trị kinh doanh tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế linh hoạt theo hệ thống tín chỉ, cập nhật liên tục để đáp ứng nhu cầu của nhà tuyển dụng và xu hướng quản trị hiện đại.
+
+**Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt:**
+
+* **Định hướng Nghiên cứu:** Tập trung vào phát triển tư duy hàn lâm, năng lực nghiên cứu khoa học chuyên sâu và khả năng giải quyết các vấn đề quản trị phức tạp bằng phương pháp luận khoa học. Phù hợp với giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+* **Định hướng Ứng dụng:** Tập trung vào phát triển kỹ năng thực hành, năng lực lãnh đạo và giải quyết các tình huống quản trị thực tiễn tại doanh nghiệp. Phù hợp với các nhà quản lý, điều hành, doanh nhân.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=ig3wGlAYnn1rof8yGKfbBA>
+                                                       (5372 chars)
+                             retrieved_chunks  │  [20 items]
+                                                         [0] {"chunk_id": "0922d4db-eee3-4f37-ac3b-b5f2e79a6741", "chunk_level": "child", "parent_id": "7a16c309-a7f3-4c5f-8557-17fc3dd77f5c", "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ", "program_name": "Kinh Doanh Quốc Tế", "score": 0.7801580661582374, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ\n\nThông tin chi tiết chương trình đào tạo: <https://daota", "source": "vector", "rrf_score": 0.01639344262295082}
+                                                         [1] {"chunk_id": "82b313b1-e62c-40df-9b38-bb95af403128", "chunk_level": "child", "parent_id": "7a16c309-a7f3-4c5f-8557-17fc3dd77f5c", "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ", "program_name": "Kinh Doanh Quốc Tế", "score": 0.7629678986687735, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ\n\nChương trình đào tạo Thạc sĩ ngành Kinh doanh quốc tế t", "source": "vector", "rrf_score": 0.016129032258064516}
+                                                         [2] {"chunk_id": "7a16c309-a7f3-4c5f-8557-17fc3dd77f5c", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ", "program_name": "Kinh Doanh Quốc Tế", "score": 0.7612842321395874, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120]\nCHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ\n\nChương trình đào tạo Thạc sĩ ngành Kinh doanh quốc tế tại", "source": "vector", "rrf_score": 0.015873015873015872}
+                                                         [3] {"chunk_id": "aa4c847c-7871-46bc-8c6e-ee68ae1d382e", "chunk_level": "child", "parent_id": "7a16c309-a7f3-4c5f-8557-17fc3dd77f5c", "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ", "program_name": "Kinh Doanh Quốc Tế", "score": 0.7541332244873047, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ\n\n* Định hướng Nghiên cứu: Tập trung phát triển tư duy hà", "source": "vector", "rrf_score": 0.015625}
+                                                         [4] {"chunk_id": "510e8642-dc02-4926-8ad9-82334193b0f2", "chunk_level": "child", "parent_id": "7a16c309-a7f3-4c5f-8557-17fc3dd77f5c", "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ", "program_name": "Kinh Doanh Quốc Tế", "score": 0.7324389655851714, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ\n\nNăm 2026, chương trình cung cấp hai định hướng đào tạo ", "source": "vector", "rrf_score": 0.015384615384615385}
+                                                         [5] {"chunk_id": "6706c047-2e25-43c8-b0a0-de45df569e2a", "chunk_level": "child", "parent_id": "eda72bd9-7b82-4ff5-b7d1-41718461d2e3", "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Kinh Doanh Quốc Tế", "score": 0.7241554476069051, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120] — ĐIỀU KIỆN XÉT TUYỂN\n\n* Về văn bằng: Đã tốt nghiệp đại học ngành Kinh doanh quốc tế hoặc các ngành phù hợp/ngàn", "source": "vector", "rrf_score": 0.015151515151515152}
+                                                         [6] {"chunk_id": "20268560-f17c-4b7f-9d83-2bb358e8f6cf", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > CƠ HỘI NGHỀ NGHIỆP", "program_name": "Kinh Doanh Quốc Tế", "score": 0.7184992050677305, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120]\nCƠ HỘI NGHỀ NGHIỆP\n\nSau khi tốt nghiệp, Thạc sĩ Kinh doanh quốc tế có thể đảm nhiệm các vị trí:\n\n* Nhóm Quản lý ", "source": "vector", "rrf_score": 0.014925373134328358}
+                                                         [7] {"chunk_id": "eda72bd9-7b82-4ff5-b7d1-41718461d2e3", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Kinh Doanh Quốc Tế", "score": 0.7177859972587834, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120]\nĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:\n\n* Về văn bằng: Đã tốt nghiệp đ", "source": "vector", "rrf_score": 0.014705882352941176}
+                                                         [8] {"chunk_id": "4d871cc7-f8db-4033-9859-b6b1c2a95946", "chunk_level": "child", "parent_id": "20268560-f17c-4b7f-9d83-2bb358e8f6cf", "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > CƠ HỘI NGHỀ NGHIỆP", "program_name": "Kinh Doanh Quốc Tế", "score": 0.7158088684082031, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120] — CƠ HỘI NGHỀ NGHIỆP\n\nSau khi tốt nghiệp, Thạc sĩ Kinh doanh quốc tế có thể đảm nhiệm các vị trí:\n\n* Nhóm Quản l", "source": "vector", "rrf_score": 0.014492753623188406}
+                                                         [9] {"chunk_id": "b12558ae-a6fe-469d-9bc4-c9ad4c32eb69", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > CHÍNH SÁCH ƯU ĐÃI HỌC PHÍ", "program_name": "Kinh Doanh Quốc Tế", "score": 0.7157207300829465, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120]\nCHÍNH SÁCH ƯU ĐÃI HỌC PHÍ\n\n* Giảm 10% học phí đối với học viên là cựu sinh viên của Trường.\n* Giảm 5% học phí đố", "source": "vector", "rrf_score": 0.014285714285714285}
+                                                         [10] {"chunk_id": "4c7c4024-043b-4ef7-99b9-a20d4f83f7c1", "chunk_level": "child", "parent_id": "b12558ae-a6fe-469d-9bc4-c9ad4c32eb69", "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > CHÍNH SÁCH ƯU ĐÃI HỌC PHÍ", "program_name": "Kinh Doanh Quốc Tế", "score": 0.7109812498092651, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120] — CHÍNH SÁCH ƯU ĐÃI HỌC PHÍ\n\n* Giảm 10% học phí đối với học viên là cựu sinh viên của Trường.\n* Giảm 5% học phí ", "source": "vector", "rrf_score": 0.014084507042253521}
+                                                         [11] {"chunk_id": "96a58195-e18f-4e64-88cf-6366fbb871c2", "chunk_level": "child", "parent_id": "eda72bd9-7b82-4ff5-b7d1-41718461d2e3", "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Kinh Doanh Quốc Tế", "score": 0.7105468511581421, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120] — ĐIỀU KIỆN XÉT TUYỂN\n\nĐối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Kinh doanh quốc tế, Nhà trườn", "source": "vector", "rrf_score": 0.013888888888888888}
+                                                         [12] {"chunk_id": "fc729636-3644-42ee-a9a9-33ee70caa1f5", "chunk_level": "child", "parent_id": "7a16c309-a7f3-4c5f-8557-17fc3dd77f5c", "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ", "program_name": "Kinh Doanh Quốc Tế", "score": 0.7094979747381772, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ\n\nThời gian đào tạo trung bình là 02 năm (tối đa 04 năm) ", "source": "vector", "rrf_score": 0.0136986301369863}
+                                                         [13] {"chunk_id": "dc9e22ec-ee19-47b3-9bea-fd2fa5c8babd", "chunk_level": "child", "parent_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.7034763097763062, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nThông tin chi tiết chương trình đào tạo: <https://da", "source": "vector", "rrf_score": 0.013513513513513514}
+                                                         [14] {"chunk_id": "7bd3def2-e18a-41b0-911c-d0ecd1197bdc", "chunk_level": "child", "parent_id": "eda72bd9-7b82-4ff5-b7d1-41718461d2e3", "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Kinh Doanh Quốc Tế", "score": 0.69579621503308, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120] — ĐIỀU KIỆN XÉT TUYỂN\n\n* Ngành gần: Bổ sung 02 môn (5 tín chỉ), gồm: Kinh tế học (3 TC) và Kinh doanh quốc tế (2", "source": "vector", "rrf_score": 0.013333333333333334}
+                                                         [15] {"chunk_id": "f3c241fc-7938-456d-a0c5-31caaa8689e1", "chunk_level": "child", "parent_id": "ae0f5c99-2df3-40d5-95f0-cdd5bbff2298", "section_path": "Thạc sĩ Kinh Tế Học > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC", "program_name": "Kinh Tế Học", "score": 0.6952319145202637, "content_preview": "[Chương trình: Thạc sĩ Kinh Tế Học (KTH, kth, Kinh tế) | Mã ngành: 8310101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC\n\nThông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/Chi", "source": "vector", "rrf_score": 0.013157894736842105}
+                                                         [16] {"chunk_id": "de639893-fc35-44e8-b76a-275b3aa6e049", "chunk_level": "child", "parent_id": "eda72bd9-7b82-4ff5-b7d1-41718461d2e3", "section_path": "Thạc sĩ Kinh Doanh Quốc Tế > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Kinh Doanh Quốc Tế", "score": 0.6925860230573414, "content_preview": "[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120] — ĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:", "source": "vector", "rrf_score": 0.012987012987012988}
+                                                         [17] {"chunk_id": "c16af4c1-5d30-42c4-9412-3de793007683", "chunk_level": "child", "parent_id": "ae0f5c99-2df3-40d5-95f0-cdd5bbff2298", "section_path": "Thạc sĩ Kinh Tế Học > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC", "program_name": "Kinh Tế Học", "score": 0.6915361697397345, "content_preview": "[Chương trình: Thạc sĩ Kinh Tế Học (KTH, kth, Kinh tế) | Mã ngành: 8310101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC\n\nChương trình đào tạo Thạc sĩ ngành Kinh tế học tại Trường Đại học Tài chín", "source": "vector", "rrf_score": 0.01282051282051282}
+                                                         [18] {"chunk_id": "ae0f5c99-2df3-40d5-95f0-cdd5bbff2298", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Kinh Tế Học > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC", "program_name": "Kinh Tế Học", "score": 0.6835293377497598, "content_preview": "[Chương trình: Thạc sĩ Kinh Tế Học (KTH, kth, Kinh tế) | Mã ngành: 8310101]\nCHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC\n\nChương trình đào tạo Thạc sĩ ngành Kinh tế học tại Trường Đại học Tài chính ", "source": "vector", "rrf_score": 0.012658227848101266}
+                                                         [19] {"chunk_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.6805110383338367, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]\nCHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nChương trình đào tạo Thạc sĩ ngành Quản trị kinh doanh", "source": "vector", "rrf_score": 0.0125}
+                        rag_confidence_failed  │  ✓ True
+                            top1_cosine_score  │  0.7802
+                                    next_node  │  intent
+                                                       (6 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [7] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.436s)
+                                        Message  │  intent='CHUONG_TRINH_DAO_TAO' → action='PROCEED_RAG_UFM_SEARCH' | summary='Chương trình đào tạo ngành Kinh doanh quốc tế thạc sĩ'
+                                       intent  │  CHUONG_TRINH_DAO_TAO
+                                                       (20 chars)
+                               intent_summary  │  Chương trình đào tạo ngành Kinh doanh quốc tế thạc sĩ
+                                                       (53 chars)
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                                                       (22 chars)
+                         program_level_filter  │  thac_si
+                                                       (7 chars)
+                          program_name_filter  │  Kinh Doanh Quốc Tế
+                                                       (18 chars)
+                                    next_node  │  rag_search
+                                                       (10 chars)
+                              response_source  │  ""
+
+  🚦 Routing Decision: next_node='rag_search' | intent_action='PROCEED_RAG_UFM_SEARCH'
+
+──────────────────────────────────────────────────────────────────────────
+  🌐 [8] RAG SEARCH PIPELINE (Evaluator + Web Search)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.218s)
+                                        Message  │  source='rag_db_only', cache=MISS, citations=0
+                           ufm_search_queries  │  null
+                              pr_search_query  │  null
+                           web_search_results  │  null
+                         web_search_citations  │  null
+                             search_cache_hit  │  ✗ False
+                      search_cache_similarity  │  0.0000
+                               final_response  │  [Nguồn 1 — Thạc sĩ Kinh Doanh Quốc Tế, CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ | CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ | Ngành: Kinh Doanh Quốc Tế]
+[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120]
+CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ
+
+Chương trình đào tạo Thạc sĩ ngành Kinh doanh quốc tế tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế theo hệ thống tín chỉ, cập nhật liên tục để đáp ứng nhu cầu nhân lực chất lượng cao trong bối cảnh toàn cầu hóa.
+
+Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt để người học lựa chọn phù hợp với mục tiêu nghề nghiệp:
+
+* Định hướng Nghiên cứu: Tập trung phát triển tư duy hàn lâm, năng lực nghiên cứu chuyên sâu về các vấn đề kinh doanh, thương mại và đầu tư quốc tế. Phù hợp với giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+* Định hướng Ứng dụng: Tập trung phát triển kỹ năng thực hành, năng lực quản trị và giải quyết các tình huống kinh doanh phức tạp trong môi trường quốc tế. Phù hợp với các nhà quản lý, doanh nhân, chuyên gia xuất nhập khẩu.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=vgYI12ybsQ9CjAUJSvAStg>
+
+---
+
+[Nguồn 2 — Thạc sĩ Kinh Doanh Quốc Tế, ĐIỀU KIỆN XÉT TUYỂN | ĐIỀU KIỆN XÉT TUYỂN | Ngành: Kinh Doanh Quốc Tế]
+[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120]
+ĐIỀU KIỆN XÉT TUYỂN
+
+Ứng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:
+
+* Về văn bằng: Đã tốt nghiệp đại học ngành Kinh doanh quốc tế hoặc các ngành phù hợp/ngành gần/ngành khác (có bổ sung kiến thức).
+* Phương thức tuyển sinh: Xét tuyển dựa trên hồ sơ văn bằng, kết quả học tập đại học và năng lực ngoại ngữ.
+* Môn xét tuyển: Đánh giá năng lực qua hai môn cơ sở ngành là Kinh tế học và Kinh doanh quốc tế.
+* Trình độ ngoại ngữ: Ứng viên phải đạt năng lực ngoại ngữ từ Bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc sở hữu các văn bằng, chứng chỉ tương đương.
+
+Đối với ứng viên tốt nghiệp đại học không đúng chuyên ngành Kinh doanh quốc tế, Nhà trường tổ chức học bổ sung kiến thức trước khi xét tuyển:
+
+* Ngành gần: Bổ sung 02 môn (5 tín chỉ), gồm: Kinh tế học (3 TC) và Kinh doanh quốc tế (2 TC).
+* Ngành khác: Bổ sung 04 môn (9 tín chỉ), gồm: Kinh tế học (3 TC), Kinh doanh quốc tế (2 TC), Marketing căn bản (2 TC) và Kinh tế phát triển (2 TC).
+
+---
+
+[Nguồn 3 — Thạc sĩ Kinh Doanh Quốc Tế, CƠ HỘI NGHỀ NGHIỆP | CƠ HỘI NGHỀ NGHIỆP | Ngành: Kinh Doanh Quốc Tế]
+[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120]
+CƠ HỘI NGHỀ NGHIỆP
+
+Sau khi tốt nghiệp, Thạc sĩ Kinh doanh quốc tế có thể đảm nhiệm các vị trí:
+
+* Nhóm Quản lý & Thực hành (Định hướng Ứng dụng):
+  + Giám đốc kinh doanh quốc tế, Giám đốc xuất nhập khẩu tại các tập đoàn đa quốc gia.
+  + Chuyên gia tư vấn đầu tư quốc tế, xúc tiến thương mại, quản trị chuỗi cung ứng toàn cầu.
+  + Chuyên viên cao cấp tại các cơ quan quản lý nhà nước về kinh tế đối ngoại (Hải quan, Bộ Công thương...).
+* Nhóm Nghiên cứu & Giảng dạy (Định hướng Nghiên cứu):
+  + Giảng viên giảng dạy ngành Kinh doanh quốc tế tại các trường Đại học, Cao đẳng.
+  + Nhà nghiên cứu về thương mại và đầu tư quốc tế tại các Viện nghiên cứu.
+  + Tiếp tục nghiên cứu ở bậc học cao hơn (Tiến sĩ) trong và ngoài nước.
+
+---
+
+[Nguồn 4 — Thạc sĩ Kinh Doanh Quốc Tế, CHÍNH SÁCH ƯU ĐÃI HỌC PHÍ | CHÍNH SÁCH ƯU ĐÃI HỌC PHÍ | Ngành: Kinh Doanh Quốc Tế]
+[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120]
+CHÍNH SÁCH ƯU ĐÃI HỌC PHÍ
+
+* Giảm 10% học phí đối với học viên là cựu sinh viên của Trường.
+* Giảm 5% học phí đối với học viên có người thân đã và đang học cao học tại Trường
+
+---
+
+[Nguồn 5 — Thạc sĩ Quản Trị Kinh Doanh, CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH | CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH | Ngành: Quản Trị Kinh Doanh]
+[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101]
+CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH
+
+Chương trình đào tạo Thạc sĩ ngành Quản trị kinh doanh tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế linh hoạt theo hệ thống tín chỉ, cập nhật liên tục để đáp ứng nhu cầu của nhà tuyển dụng và xu hướng quản trị hiện đại.
+
+**Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt:**
+
+* **Định hướng Nghiên cứu:** Tập trung vào phát triển tư duy hàn lâm, năng lực nghiên cứu khoa học chuyên sâu và khả năng giải quyết các vấn đề quản trị phức tạp bằng phương pháp luận khoa học. Phù hợp với giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+* **Định hướng Ứng dụng:** Tập trung vào phát triển kỹ năng thực hành, năng lực lãnh đạo và giải quyết các tình huống quản trị thực tiễn tại doanh nghiệp. Phù hợp với các nhà quản lý, điều hành, doanh nhân.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=ig3wGlAYnn1rof8yGKfbBA>
+                                                       (5372 chars)
+                              response_source  │  rag_db_only
+                                                       (11 chars)
+                                    next_node  │  response
+                                                       (8 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [9] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (4.124s)
+                                        Message  │  source='rag_db_only_generated', length=3172 chars
+                               final_response  │  Chào bạn! Mình rất vui được cung cấp thông tin về chương trình đào tạo Thạc sĩ ngành **Kinh doanh quốc tế (Mã ngành: 8340120)** tại UFM.
+
+Chương trình được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập", thiết kế theo hệ thống tín chỉ và cập nhật liên tục để đáp ứng nhu cầu nhân lực chất lượng cao trong bối cảnh toàn cầu hóa.
+
+Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt để bạn lựa chọn phù hợp với mục tiêu nghề nghiệp:
+
+-   **Định hướng Nghiên cứu**:
+    -   Tập trung phát triển tư duy hàn lâm, năng lực nghiên cứu chuyên sâu về các vấn đề kinh doanh, thương mại và đầu tư quốc tế.
+    -   Phù hợp với giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+-   **Định hướng Ứng dụng**:
+    -   Tập trung phát triển kỹ năng thực hành, năng lực quản trị và giải quyết các tình huống kinh doanh phức tạp trong môi trường quốc tế.
+    -   Phù hợp với các nhà quản lý, doanh nhân, chuyên gia xuất nhập khẩu.
+
+**Thời gian đào tạo** trung bình là **02 năm** (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là **61 tín chỉ**.
+
+Bạn có thể tham khảo thông tin chi tiết chương trình đào tạo tại đây: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=vgYI12ybsQ9CjAUJSvAStg>
+
+**Về điều kiện xét tuyển:**
+
+-   **Văn bằng**: Đã tốt nghiệp đại học ngành Kinh doanh quốc tế hoặc các ngành phù hợp/ngành gần/ngành khác (có bổ sung kiến thức).
+-   **Phương thức tuyển sinh**: Xét tuyển dựa trên hồ sơ văn bằng, kết quả học tập đại học và năng lực ngoại ngữ.
+-   **Môn xét tuyển**: Đánh giá năng lực qua hai môn cơ sở ngành là **Kinh tế học** và **Kinh doanh quốc tế**.
+-   **Trình độ ngoại ngữ**: Đạt năng lực ngoại ngữ từ Bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc sở hữu các văn bằng, chứng chỉ tương đương.
+
+**Lưu ý về bổ sung kiến thức:**
+
+-   Đối với ứng viên tốt nghiệp đại học **ngành gần** Kinh doanh quốc tế, Nhà trường tổ chức học bổ sung **02 môn (5 tín chỉ)**, gồm: Kinh tế học (3 TC) và Kinh doanh quốc tế (2 TC).
+-   Đối với ứng viên tốt nghiệp đại học **ngành khác**, Nhà trường tổ chức học bổ sung **04 môn (9 tín chỉ)**, gồm: Kinh tế học (3 TC), Kinh doanh quốc tế (2 TC), Marketing căn bản (2 TC) và Kinh tế phát triển (2 TC).
+
+**Cơ hội nghề nghiệp sau khi tốt nghiệp:**
+
+-   **Nhóm Quản lý & Thực hành (Định hướng Ứng dụng)**:
+    -   Giám đốc kinh doanh quốc tế, Giám đốc xuất nhập khẩu tại các tập đoàn đa quốc gia.
+    -   Chuyên gia tư vấn đầu tư quốc tế, xúc tiến thương mại, quản trị chuỗi cung ứng toàn cầu.
+    -   Chuyên viên cao cấp tại các cơ quan quản lý nhà nước về kinh tế đối ngoại (Hải quan, Bộ Công thương...).
+-   **Nhóm Nghiên cứu & Giảng dạy (Định hướng Nghiên cứu)**:
+    -   Giảng viên giảng dạy ngành Kinh doanh quốc tế tại các trường Đại học, Cao đẳng.
+    -   Nhà nghiên cứu về thương mại và đầu tư quốc tế tại các Viện nghiên cứu.
+    -   Tiếp tục nghiên cứu ở bậc học cao hơn (Tiến sĩ) trong và ngoài nước.
+
+**Chính sách ưu đãi học phí:**
+
+-   Giảm **10%** học phí đối với học viên là cựu sinh viên của Trường.
+-   Giảm **5%** học phí đối với học viên có người thân đã và đang học cao học tại Trường.
+
+Bạn còn muốn tìm hiểu thêm điều gì không?
+                                                       (3172 chars)
+                              response_source  │  rag_db_only_generated
+                                                       (21 chars)
+                                    next_node  │  end
+                                                       (3 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : rag_db_only_generated
+  Intent          : CHUONG_TRINH_DAO_TAO → PROCEED_RAG_UFM_SEARCH
+  Response Length : 3172 chars
+  Total Time      : 16.20s
+  Nodes Executed  : 9
+──────────────────────────────────────────────────────────────────────────
+
+Chào bạn! Mình rất vui được cung cấp thông tin về chương trình đào tạo Thạc sĩ ngành **Kinh doanh quốc tế (Mã ngành: 8340120)** tại UFM.
+
+Chương trình được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập", thiết kế theo hệ thống tín chỉ và cập nhật liên tục để đáp ứng nhu cầu nhân lực chất lượng cao trong bối cảnh toàn cầu hóa.
+
+Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt để bạn lựa chọn phù hợp với mục tiêu nghề nghiệp:
+
+-   **Định hướng Nghiên cứu**:
+    -   Tập trung phát triển tư duy hàn lâm, năng lực nghiên cứu chuyên sâu về các vấn đề kinh doanh, thương mại và đầu tư quốc tế.
+    -   Phù hợp với giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+-   **Định hướng Ứng dụng**:
+    -   Tập trung phát triển kỹ năng thực hành, năng lực quản trị và giải quyết các tình huống kinh doanh phức tạp trong môi trường quốc tế.
+    -   Phù hợp với các nhà quản lý, doanh nhân, chuyên gia xuất nhập khẩu.
+
+**Thời gian đào tạo** trung bình là **02 năm** (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là **61 tín chỉ**.
+
+Bạn có thể tham khảo thông tin chi tiết chương trình đào tạo tại đây: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=vgYI12ybsQ9CjAUJSvAStg>
+
+**Về điều kiện xét tuyển:**
+
+-   **Văn bằng**: Đã tốt nghiệp đại học ngành Kinh doanh quốc tế hoặc các ngành phù hợp/ngành gần/ngành khác (có bổ sung kiến thức).
+-   **Phương thức tuyển sinh**: Xét tuyển dựa trên hồ sơ văn bằng, kết quả học tập đại học và năng lực ngoại ngữ.
+-   **Môn xét tuyển**: Đánh giá năng lực qua hai môn cơ sở ngành là **Kinh tế học** và **Kinh doanh quốc tế**.
+-   **Trình độ ngoại ngữ**: Đạt năng lực ngoại ngữ từ Bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc sở hữu các văn bằng, chứng chỉ tương đương.
+
+**Lưu ý về bổ sung kiến thức:**
+
+-   Đối với ứng viên tốt nghiệp đại học **ngành gần** Kinh doanh quốc tế, Nhà trường tổ chức học bổ sung **02 môn (5 tín chỉ)**, gồm: Kinh tế học (3 TC) và Kinh doanh quốc tế (2 TC).
+-   Đối với ứng viên tốt nghiệp đại học **ngành khác**, Nhà trường tổ chức học bổ sung **04 môn (9 tín chỉ)**, gồm: Kinh tế học (3 TC), Kinh doanh quốc tế (2 TC), Marketing căn bản (2 TC) và Kinh tế phát triển (2 TC).
+
+**Cơ hội nghề nghiệp sau khi tốt nghiệp:**
+
+-   **Nhóm Quản lý & Thực hành (Định hướng Ứng dụng)**:
+    -   Giám đốc kinh doanh quốc tế, Giám đốc xuất nhập khẩu tại các tập đoàn đa quốc gia.
+    -   Chuyên gia tư vấn đầu tư quốc tế, xúc tiến thương mại, quản trị chuỗi cung ứng toàn cầu.
+    -   Chuyên viên cao cấp tại các cơ quan quản lý nhà nước về kinh tế đối ngoại (Hải quan, Bộ Công thương...).
+-   **Nhóm Nghiên cứu & Giảng dạy (Định hướng Nghiên cứu)**:
+    -   Giảng viên giảng dạy ngành Kinh doanh quốc tế tại các trường Đại học, Cao đẳng.
+    -   Nhà nghiên cứu về thương mại và đầu tư quốc tế tại các Viện nghiên cứu.
+    -   Tiếp tục nghiên cứu ở bậc học cao hơn (Tiến sĩ) trong và ngoài nước.
+
+**Chính sách ưu đãi học phí:**
+
+-   Giảm **10%** học phí đối với học viên là cựu sinh viên của Trường.
+-   Giảm **5%** học phí đối với học viên có người thân đã và đang học cao học tại Trường.
+
+Bạn còn muốn tìm hiểu thêm điều gì không?
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ FAST SCAN NODE (Guard Layer 0-1)             │  0.003s  │   PASS   │
+  │ CONTEXT NODE (Query Reformulation)           │  0.000s  │   PASS   │
+  │ CONTEXTUAL GUARD NODE (Layer 2a+2b)          │  4.796s  │   PASS   │
+  │ MULTI-QUERY NODE (Sinh biến thể)             │  1.424s  │   PASS   │
+  │ EMBEDDING NODE (BGE-M3 batch)                │  2.976s  │   PASS   │
+  │ RAG NODE (Hybrid Search DB)                  │  0.210s  │   PASS   │
+  │ INTENT NODE (Router Phân Loại Ý Định)        │  1.436s  │   PASS   │
+  │ RAG SEARCH PIPELINE (Evaluator + Web Search) │  1.218s  │   PASS   │
+  │ RESPONSE NODE (Final Answer)                 │  4.124s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  16.20s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260323_004312_Tôi_muốn_tham_khảo_ctdt_ngành_KDQT_THẠC.txt
+

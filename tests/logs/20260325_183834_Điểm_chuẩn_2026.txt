@@ -1,0 +1,227 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-25 18:38:34                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_183834_Điểm_chuẩn_2026.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.5-flash              │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash              │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Extract       │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Draft         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : Điểm chuẩn 2026?
+  💬 Chat History : Trống (lượt đầu tiên)
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.011s)
+                                        Message  │  [Fast-Scan PASS — 0.003s] Sạch, cho qua Context Node
+                             normalized_query  │  điểm chuẩn 2026?
+                                                      >(16 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.003s] Sạch, cho qua Context Node
+                                                      >(52 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.002s)
+                                        Message  │  Reformulated → 'Điểm chuẩn 2026?'
+                             standalone_query  │  Điểm chuẩn 2026?
+                                                      >(16 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a Llama)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.466s)
+                                        Message  │  [Contextual-Guard PASS — 0.464s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 0.464s] standalone_query an toàn
+                                                      >(57 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [4] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.655s)
+                                        Message  │  intent='THONG_TIN_TUYEN_SINH' → action='PROCEED_RAG_UFM_SEARCH' → next='rag_search'
+                                       intent  │  THONG_TIN_TUYEN_SINH
+                                                      >(20 chars)
+                               intent_summary  │  hỏi điểm chuẩn năm 2026
+                                                      >(23 chars)
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                                                      >(22 chars)
+                         program_level_filter  │  null
+                          program_name_filter  │  null
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+                              response_source  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🔀 [5] MULTI-QUERY NODE (Sinh biến thể)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (5.954s)
+                                        Message  │  Sinh 3 biến thể
+                                multi_queries  │  [3 items]
+                                                         [0] "Mức điểm trúng tuyển năm 2026 của UFM là bao nhiêu?"
+                                                         [1] "Ngưỡng điểm xét tuyển vào trường Đại học Tài chính Marketing năm 2026?"
+                                                         [2] "Điểm sàn dự kiến cho kỳ tuyển sinh 2026 của UFM?"
+
+──────────────────────────────────────────────────────────────────────────
+  📊 [6] EMBEDDING NODE (BGE-M3 batch)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.891s)
+                                        Message  │  Nhúng 4 vectors × 1024D
+                             query_embeddings  │  [4 vectors × 1024D]
+
+──────────────────────────────────────────────────────────────────────────
+  🗄️ [7] RAG NODE (Hybrid Search DB)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.799s)
+                                        Message  │  Chunks=20, Context=0 chars
+                                  rag_context  │  ""
+                             retrieved_chunks  │  [20 items]
+                                                         [0] {"chunk_id": "bcedbcdc-e13c-4dca-8084-d0c56090e367", "chunk_level": "child", "parent_id": "3f57efc0-566f-46df-9c29-3bca36a9b084", "section_path": "Giới thiệu", "program_name": null, "score": 0.6692582171713255, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "vector", "rrf_score": 0.01639344262295082}
+                                                         [1] {"chunk_id": "3f57efc0-566f-46df-9c29-3bca36a9b084", "chunk_level": "parent", "parent_id": null, "section_path": "Giới thiệu", "program_name": null, "score": 0.6692336997161421, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "vector", "rrf_score": 0.016129032258064516}
+                                                         [2] {"chunk_id": "4fb7dde6-8a5d-44f1-be90-c1d9aa058015", "chunk_level": "child", "parent_id": "3f57efc0-566f-46df-9c29-3bca36a9b084", "section_path": "Giới thiệu", "program_name": null, "score": 0.6586222648620605, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "vector", "rrf_score": 0.015873015873015872}
+                                                         [3] {"chunk_id": "fecaeed2-27cf-470e-98c3-1396abc71e7b", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Marketing > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Marketing", "score": 0.6580293374666377, "content_preview": "[Chương trình: Thạc sĩ Marketing (MKT, mkt, Marketing) | Mã ngành: 8340115]\nĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:\n\n* Về văn bằng: Đã tốt nghiệp đại học ngành", "source": "vector", "rrf_score": 0.015625}
+                                                         [4] {"chunk_id": "cb879016-3d5b-4cb9-a7b3-83a5ef93c92c", "chunk_level": "parent", "parent_id": null, "section_path": "1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.2. Thí sinh tốt nghiệp đại học thuộc ngành gần (cùng lĩnh vực kinh doanh và quản lý), ngành khác (khác lĩnh vực nhưng có liên quan trực tiếp đến lĩnh vực quản trị, quản lý) với ngành dự tuyển cần học Bổ sung kiến thức. Danh mục ngành đúng, ngành gần, ngành khác và môn học Bổ sung kiến thức được nêu ở Phụ lục 2. & 1.3. Các văn bằng, chứng chỉ chứng minh năng lực ngoại ngữ từ Bậc 3 trở lên:", "program_name": null, "score": 0.6546827554702759, "content_preview": "# PHỤ LỤC 1\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc1.md]\n[Mục: 1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.2. Thí sinh tốt nghiệp đạ", "source": "vector", "rrf_score": 0.015384615384615385}
+                                                         [5] {"chunk_id": "b3ad2640-6d74-4949-a02d-a2b37f6214c4", "chunk_level": "child", "parent_id": "90afc9c1-eccf-4fcd-b6b8-eaa2eb164054", "section_path": "Giới thiệu > **Điều 4 . Văn bằng, chứng chỉ ngoại ngữ đủ điều kiện xét tốt nghiệp thạc sĩ**", "program_name": null, "score": 0.6477999880254268, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "vector", "rrf_score": 0.015151515151515152}
+                                                         [6] {"chunk_id": "90afc9c1-eccf-4fcd-b6b8-eaa2eb164054", "chunk_level": "parent", "parent_id": null, "section_path": "Giới thiệu > **Điều 4 . Văn bằng, chứng chỉ ngoại ngữ đủ điều kiện xét tốt nghiệp thạc sĩ**", "program_name": null, "score": 0.6477999880254268, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "vector", "rrf_score": 0.014925373134328358}
+                                                         [7] {"chunk_id": "5788cef2-4004-41ed-815f-8536937468b2", "chunk_level": "child", "parent_id": "cb879016-3d5b-4cb9-a7b3-83a5ef93c92c", "section_path": "1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.2. Thí sinh tốt nghiệp đại học thuộc ngành gần (cùng lĩnh vực kinh doanh và quản lý), ngành khác (khác lĩnh vực nhưng có liên quan trực tiếp đến lĩnh vực quản trị, quản lý) với ngành dự tuyển cần học Bổ sung kiến thức. Danh mục ngành đúng, ngành gần, ngành khác và môn học Bổ sung kiến thức được nêu ở Phụ lục 2. & 1.3. Các văn bằng, chứng chỉ chứng minh năng lực ngoại ngữ từ Bậc 3 trở lên:", "program_name": null, "score": 0.6373160481452942, "content_preview": "# PHỤ LỤC 1\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc1.md]\n[Mục: 1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.2. Thí sinh tốt nghiệp đạ", "source": "vector", "rrf_score": 0.014705882352941176}
+                                                         [8] {"chunk_id": "4206fd8d-0e48-47bc-9d4c-b22d7b8e7ccf", "chunk_level": "child", "parent_id": "eb4549aa-55aa-4978-8730-edde1346077d", "section_path": "1. Đối tượng > **❖ Đối với ngành Marketing:**", "program_name": null, "score": 0.633826494216919, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng > **❖ Đối với ngành Marketing:**]\n\n- Ngành gần: các", "source": "vector", "rrf_score": 0.014492753623188406}
+                                                         [9] {"chunk_id": "eb4549aa-55aa-4978-8730-edde1346077d", "chunk_level": "parent", "parent_id": null, "section_path": "1. Đối tượng > **❖ Đối với ngành Marketing:**", "program_name": null, "score": 0.633826494216919, "content_preview": "# PHỤ LỤC 2\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc2.md]\n[Mục: 1. Đối tượng > **❖ Đối với ngành Marketing:**]\n\n- Ngành gần: các", "source": "vector", "rrf_score": 0.014285714285714285}
+                                                         [10] {"chunk_id": "00c79694-a3d6-4611-8628-811c8aea0f20", "chunk_level": "child", "parent_id": "fecaeed2-27cf-470e-98c3-1396abc71e7b", "section_path": "Thạc sĩ Marketing > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Marketing", "score": 0.6333157012854729, "content_preview": "[Chương trình: Thạc sĩ Marketing (MKT, mkt, Marketing) | Mã ngành: 8340115] — ĐIỀU KIỆN XÉT TUYỂN\n\n* Về văn bằng: Đã tốt nghiệp đại học ngành Marketing hoặc các ngành phù hợp/ngành gần/ngành khác (có ", "source": "vector", "rrf_score": 0.014084507042253521}
+                                                         [11] {"chunk_id": "44ed5522-264b-450f-a8f2-2c93fbee7087", "chunk_level": "child", "parent_id": "fecaeed2-27cf-470e-98c3-1396abc71e7b", "section_path": "Thạc sĩ Marketing > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Marketing", "score": 0.6292303204536438, "content_preview": "[Chương trình: Thạc sĩ Marketing (MKT, mkt, Marketing) | Mã ngành: 8340115] — ĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên tham gia xét tuyển cần đáp ứng các tiêu chuẩn sau:", "source": "vector", "rrf_score": 0.013888888888888888}
+                                                         [12] {"chunk_id": "1e42db23-57b9-42aa-9dff-bada5875089b", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Marketing > GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING", "program_name": "Marketing", "score": 0.6274558749847605, "content_preview": "[Chương trình: Thạc sĩ Marketing (MKT, mkt, Marketing) | Mã ngành: 8340115]\nGIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING\n\nChương trình đào tạo Thạc sĩ ngành Marketing tại Trường Đại học Tài chính – Marketi", "source": "vector", "rrf_score": 0.0136986301369863}
+                                                         [13] {"chunk_id": "f6dd19d0-0d4b-4017-9ea7-f329e3c73e38", "chunk_level": "child", "parent_id": "fecaeed2-27cf-470e-98c3-1396abc71e7b", "section_path": "Thạc sĩ Marketing > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Marketing", "score": 0.6258282661437988, "content_preview": "[Chương trình: Thạc sĩ Marketing (MKT, mkt, Marketing) | Mã ngành: 8340115] — ĐIỀU KIỆN XÉT TUYỂN\n\n* Ngành gần: Bổ sung 02 môn (5 tín chỉ), gồm: Kinh tế học (3 TC) và Nguyên lý Marketing (2 TC).\n* Ngà", "source": "vector", "rrf_score": 0.013513513513513514}
+                                                         [14] {"chunk_id": "e4a96bc1-aba3-4620-9f82-487a76f91e62", "chunk_level": "parent", "parent_id": null, "section_path": "Giới thiệu > **Điều 6. Điều khoản thi hành**", "program_name": null, "score": 0.6198372840881348, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "vector", "rrf_score": 0.013333333333333334}
+                                                         [15] {"chunk_id": "47f2322e-013c-4547-b754-b87ccb3ef974", "chunk_level": "child", "parent_id": "e4a96bc1-aba3-4620-9f82-487a76f91e62", "section_path": "Giới thiệu > **Điều 6. Điều khoản thi hành**", "program_name": null, "score": 0.6198372840881348, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "vector", "rrf_score": 0.013157894736842105}
+                                                         [16] {"chunk_id": "6646db5c-916d-4327-9692-b0ad5ee4ec63", "chunk_level": "parent", "parent_id": null, "section_path": "9. Địa chỉ liên hệ đăng ký và nộp hồ sơ", "program_name": null, "score": 0.6134606965458819, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ]\n\nViện Đào tạo sau đại học – Trườ", "source": "vector", "rrf_score": 0.012987012987012988}
+                                                         [17] {"chunk_id": "7cbe1ebd-ab8d-444f-a697-29a3ecda2182", "chunk_level": "child", "parent_id": "6646db5c-916d-4327-9692-b0ad5ee4ec63", "section_path": "9. Địa chỉ liên hệ đăng ký và nộp hồ sơ", "program_name": null, "score": 0.6134606965458819, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ]\n\nViện Đào tạo sau đại học – Trườ", "source": "vector", "rrf_score": 0.01282051282051282}
+                                                         [18] {"chunk_id": "18135cd9-fda7-4ddf-92a9-689f14b9bd1e", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Tài Chính – Ngân Hàng > GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH TÀI CHÍNH – NGÂN HÀNG", "program_name": "Tài Chính – Ngân Hàng", "score": 0.610287070274353, "content_preview": "[Chương trình: Thạc sĩ Tài Chính – Ngân Hàng (TC-NH, TCNH, tc-nh, tcnh, Tài chính Ngân hàng) | Mã ngành: 8340201]\nGIỚI THIỆU CHƯƠNG TRÌNH NGÀNH TÀI CHÍNH – NGÂN HÀNG\n\nChương trình đào tạo thạc sĩ ngàn", "source": "vector", "rrf_score": 0.012658227848101266}
+                                                         [19] {"chunk_id": "6f22d527-e5d1-48ee-b670-50f352a64d03", "chunk_level": "child", "parent_id": "4dabbc7e-579f-4550-9c7a-2a6db9dc8eaf", "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.1. Phương thức tuyển sinh: xét tuyển đối với trình độ đại học và văn bằng, chứng chỉ ngoại ngữ đạt trình độ tương đương Bậc 3/6 trở lên. & 2.2. Các môn xét tuyển bao gồm:", "program_name": null, "score": 0.6102670198838137, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.1. Phương thức tuyển sinh: xét tuy", "source": "vector", "rrf_score": 0.0125}
+
+──────────────────────────────────────────────────────────────────────────
+  🌐 [8] RAG SEARCH PIPELINE (Evaluator + Web Search)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (3.070s)
+                                        Message  │  cache=MISS, citations=0
+                           ufm_search_queries  │  null
+                              pr_search_query  │  null
+                           web_search_results  │  null
+                         web_search_citations  │  null
+                             search_cache_hit  │  ✗ False
+                      search_cache_similarity  │  0.0000
+                               final_response  │  - Không có thông tin về điểm chuẩn năm 2026.
+                                                      >(44 chars)
+                              response_source  │  rag_search_synthesized
+                                                      >(22 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [9] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.736s)
+                                        Message  │  source='rag_search_synthesized_generated', length=967 chars
+                               final_response  │  Chào bạn nhé! 🌟
+
+Mình hiểu là bạn đang rất quan tâm đến điểm chuẩn để chuẩn bị tốt nhất cho kỳ tuyển sinh sắp tới phải không nè? Tuy nhiên, hiện tại thì **điểm chuẩn năm 2026** vẫn chưa có đâu bạn ạ. Thường thì các trường sẽ công bố điểm chuẩn sau khi kỳ thi tốt nghiệp THPT kết thúc và Bộ Giáo dục & Đào tạo có kết quả chung.
+
+Điểm chuẩn sẽ phụ thuộc vào nhiều yếu tố như:
+-   **Chỉ tiêu tuyển sinh** của từng ngành.
+-   **Số lượng thí sinh** đăng ký xét tuyển vào ngành đó.
+-   **Phổ điểm** của kỳ thi năm đó.
+
+Để bạn có cái nhìn tổng quan và định hướng tốt hơn, mình khuyên bạn nên tham khảo **điểm chuẩn của các năm gần nhất** (ví dụ như 2025, 2024) để ước lượng. Dù không phải là con số chính xác, nhưng nó sẽ giúp bạn có một mục tiêu phấn đấu rõ ràng hơn đó!
+
+Bạn có muốn mình chia sẻ thêm về cách tìm hiểu điểm chuẩn các năm trước hoặc các phương thức xét tuyển của UFM không? Hoặc bạn đang quan tâm đến ngành học cụ thể nào để mình có thể tư vấn kỹ hơn nhé! 🎓
+                                                      >(967 chars)
+                              response_source  │  rag_search_synthesized_generated
+                                                      >(32 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : rag_search_synthesized_generated
+  Intent          : THONG_TIN_TUYEN_SINH → PROCEED_RAG_UFM_SEARCH
+  Response Length : 967 chars
+  Total Time      : 19.62s
+  Nodes Executed  : 9
+──────────────────────────────────────────────────────────────────────────
+
+Chào bạn nhé! 🌟
+
+Mình hiểu là bạn đang rất quan tâm đến điểm chuẩn để chuẩn bị tốt nhất cho kỳ tuyển sinh sắp tới phải không nè? Tuy nhiên, hiện tại thì **điểm chuẩn năm 2026** vẫn chưa có đâu bạn ạ. Thường thì các trường sẽ công bố điểm chuẩn sau khi kỳ thi tốt nghiệp THPT kết thúc và Bộ Giáo dục & Đào tạo có kết quả chung.
+
+Điểm chuẩn sẽ phụ thuộc vào nhiều yếu tố như:
+-   **Chỉ tiêu tuyển sinh** của từng ngành.
+-   **Số lượng thí sinh** đăng ký xét tuyển vào ngành đó.
+-   **Phổ điểm** của kỳ thi năm đó.
+
+Để bạn có cái nhìn tổng quan và định hướng tốt hơn, mình khuyên bạn nên tham khảo **điểm chuẩn của các năm gần nhất** (ví dụ như 2025, 2024) để ước lượng. Dù không phải là con số chính xác, nhưng nó sẽ giúp bạn có một mục tiêu phấn đấu rõ ràng hơn đó!
+
+Bạn có muốn mình chia sẻ thêm về cách tìm hiểu điểm chuẩn các năm trước hoặc các phương thức xét tuyển của UFM không? Hoặc bạn đang quan tâm đến ngành học cụ thể nào để mình có thể tư vấn kỹ hơn nhé! 🎓
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.011s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  0.002s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a Llama)     │  0.466s  │   PASS   │
+  │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  1.655s  │   PASS   │
+  │ 🔀 MULTI-QUERY NODE (Sinh biến thể)           │  5.954s  │   PASS   │
+  │ 📊 EMBEDDING NODE (BGE-M3 batch)              │  2.891s  │   PASS   │
+  │ 🗄️ RAG NODE (Hybrid Search DB)               │  2.799s  │   PASS   │
+  │ 🌐 RAG SEARCH PIPELINE (Evaluator + Web Searc │  3.070s  │   PASS   │
+  │ 🎯 RESPONSE NODE (Final Answer)               │  2.736s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  19.62s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_183834_Điểm_chuẩn_2026.txt
+

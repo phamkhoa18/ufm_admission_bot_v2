@@ -1,0 +1,28 @@
+# ╔══════════════════════════════════════════════════════════════╗
+# ║  PROMPTS CONFIG — Toàn bộ System Prompt + User Prompt +    ║
+# ║  Fallback Messages theo thứ tự Pipeline                    ║
+# ║  File: app/core/config/yaml/prompts_config.yaml            ║
+# ║                                                              ║
+# ║  FILE NÀY LÀ "SÂN CHƠI" CỦA PROMPT ENGINEER.              ║
+# ║  Chỉ cần sửa nội dung ở đây, KHÔNG cần chạm code Python.  ║
+# ╚══════════════════════════════════════════════════════════════╝
+#
+# ┌─────────────────────────────────────────────────────────────┐
+# │  CÚ PHÁP JINJA2 HỖ TRỢ TRONG user_prompt:                 │
+# │    {{ variable }}                     → Chèn biến           │
+# │    {% if condition %} ... {% endif %} → Điều kiện           │
+# │    {% for item in list %} ... {% endfor %} → Vòng lặp      │
+# │                                                             │
+# │  BIẾN CÓ SẴN ĐƯỢC TRUYỀN TỪ GraphState:                    │
+# │    standalone_query   : Câu hỏi đã reformulate             │
+# │    user_query         : Câu hỏi gốc thô từ user            │
+# │    chat_history_text  : Lịch sử hội thoại đã format        │
+# │    rag_context        : Context từ VectorDB nội bộ          │
+# │    web_results        : Kết quả Web Search                  │
+# │    web_citations      : List dict {text, url}               │
+# │    draft              : Bản nháp từ Synthesizer             │
+# │    critique           : Lý do bác bỏ từ Sanitizer          │
+# │    intent_summary     : Tóm tắt ý định                     │
+# │    num_variants       : Số biến thể multi-query             │
+# │    final_response     : Context/Response từ node trước      │
+# └─────────────────────────────────────────────────────────────┘

@@ -1,0 +1,121 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-25 16:13:58                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_161358_em_buồn_ghê_lun.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.5-flash              │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash              │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Extract       │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Draft         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : em buồn ghê lun
+  💬 Chat History : 2 messages
+     👤 em buồn quá bị rớt ufm năm 2026 giờ sắp phải nhập ngũ, e còn cơ hội để tiếp tục 
+     🤖 Mình hiểu cảm giác của bạn lúc này, chắc hẳn bạn đang rất buồn và hoang mang khi
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.007s)
+                                        Message  │  [Fast-Scan PASS — 0.000s] Sạch, cho qua Context Node
+                             normalized_query  │  em buồn ghê lun
+                                                      >(15 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sạch, cho qua Context Node
+                                                      >(52 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (5.624s)
+                                        Message  │  Reformulated → 'Bạn đang rất buồn vì rớt UFM năm 2026 và sắp phải nhập ngũ đúng không?'
+                             standalone_query  │  Bạn đang rất buồn vì rớt UFM năm 2026 và sắp phải nhập ngũ đúng không?
+                                                      >(70 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a+2b)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ⛔ BLOCKED  (2.179s)
+                                        Message  │  [Contextual-Guard L2b — 2.177s] Câu hỏi có dấu hiệu bất thường, mình chưa thể xử lý được. Bạn thử diễn đạt lại nhé, hoặc liên hệ trực tiếp để được hỗ trợ nhanh nhất!
+ [Blocked by Layer 2b]
+                      contextual_guard_passed  │  ✗ False
+               contextual_guard_blocked_layer  │  2b
+                                                      >(2 chars)
+                     contextual_guard_message  │  [Contextual-Guard L2b — 2.177s] Câu hỏi có dấu hiệu bất thường, mình chưa thể xử lý được. Bạn thử diễn đạt lại nhé, hoặc liên hệ trực tiếp để được hỗ trợ nhanh nhất!
+
+                                                      >(166 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : contextual_guard
+  Intent          :  → 
+  Response Length : 286 chars
+  Total Time      : 7.83s
+  Nodes Executed  : 3
+──────────────────────────────────────────────────────────────────────────
+
+Câu hỏi có dấu hiệu bất thường, mình chưa thể xử lý được. Bạn thử diễn đạt lại nhé, hoặc liên hệ trực tiếp để được hỗ trợ nhanh nhất!
+
+
+💡 **Cần hỗ trợ trực tiếp?**
+📞 Hotline: (028) 3772 0406 (Cử nhân) | 0967 657 532 (Thạc sĩ/Tiến sĩ)
+💬 Zalo UFM: [zalo.me/ufmhcm](https://zalo.me/ufmhcm)
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.007s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  5.624s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a+2b)        │  2.179s  │ BLOCKED  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │   7.83s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_161358_em_buồn_ghê_lun.txt
+

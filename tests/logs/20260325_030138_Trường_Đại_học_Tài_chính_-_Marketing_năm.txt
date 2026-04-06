@@ -1,0 +1,341 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-25 03:01:38                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_030138_Trường_Đại_học_Tài_chính_-_Marketing_năm.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/qwen/qwen3.5-flash-02-23             │
+  │ ⓫ Form Extract       │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓫ Form Draft         │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : Trường Đại học Tài chính - Marketing năm nay xét tuyển bằng những phương thức nào?
+  💬 Chat History : 2 messages
+     👤 Học phí ngành Marketing chương trình chất lượng cao năm 2024 là bao nhiêu?
+     🤖 Xin lỗi bạn, mình chưa tìm thấy thông tin chính xác cho câu hỏi này trong cơ sở 
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.004s)
+                                        Message  │  [Fast-Scan PASS — 0.000s] Sạch, cho qua Context Node
+                             normalized_query  │  trường đại học tài chính - marketing năm nay xét tuyển bằng những phương thức nào?
+                                                      >(82 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sạch, cho qua Context Node
+                                                      >(52 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.296s)
+                                        Message  │  Reformulated → 'Trường Đại học Tài chính - Marketing năm 2024 xét tuyển bằng những phương thức n...'
+                             standalone_query  │  Trường Đại học Tài chính - Marketing năm 2024 xét tuyển bằng những phương thức nào?
+                                                      >(83 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a+2b)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.921s)
+                                        Message  │  [Contextual-Guard PASS — 1.918s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.918s] standalone_query an toàn
+                                                      >(57 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [4] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (5.483s)
+                                        Message  │  intent='THONG_TIN_TUYEN_SINH' → action='PROCEED_RAG_UFM_SEARCH' → next='rag_search'
+                                       intent  │  THONG_TIN_TUYEN_SINH
+                                                      >(20 chars)
+                               intent_summary  │  Phương thức xét tuyển của UFM năm 2024
+                                                      >(38 chars)
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                                                      >(22 chars)
+                         program_level_filter  │  dai_hoc
+                                                      >(7 chars)
+                          program_name_filter  │  Marketing
+                                                      >(9 chars)
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+                              response_source  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🔀 [5] MULTI-QUERY NODE (Sinh biến thể)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.379s)
+                                        Message  │  Sinh 3 biến thể
+                                multi_queries  │  [3 items]
+                                                         [0] "Các phương thức tuyển sinh Đại học Tài chính - Marketing 2024"
+                                                         [1] "UFM năm 2024 tuyển sinh theo những hình thức nào?"
+                                                         [2] "Trường UFM 2024 có những cách thức xét tuyển nào?"
+
+──────────────────────────────────────────────────────────────────────────
+  📊 [6] EMBEDDING NODE (BGE-M3 batch)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (14.213s)
+                                        Message  │  Nhúng 4 vectors × 1024D
+                             query_embeddings  │  [4 vectors × 1024D]
+
+──────────────────────────────────────────────────────────────────────────
+  🗄️ [7] RAG NODE (Hybrid Search DB)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.209s)
+                                        Message  │  Chunks=0, Top1Cosine=0.0000, Context=0 chars ⚠️ CONFIDENCE FAILED
+                                  rag_context  │  ""
+                             retrieved_chunks  │  []
+                        rag_confidence_failed  │  ✓ True
+                            top1_cosine_score  │  0.0000
+
+──────────────────────────────────────────────────────────────────────────
+  🌐 [8] RAG SEARCH PIPELINE (Evaluator + Web Search)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (16.918s)
+                                        Message  │  cache=MISS, citations=11
+                           ufm_search_queries  │  [2 items]
+                                                         [0] "Phương thức tuyển sinh UFM 2024"
+                                                         [1] "Tuyển sinh đại học chính quy UFM 2024"
+                              pr_search_query  │  null
+                           web_search_results  │  Trường Đại học Tài chính - Marketing (UFM) công bố 6 phương thức tuyển sinh đại học chính quy năm 2024 với tổng chỉ tiêu dự kiến là 4.300 cho 15 ngành và 30 chuyên ngành đào tạo.
+
+Các phương thức tuyển sinh bao gồm:
+1.  **Phương thức 1: Tuyển thẳng và ưu tiên xét tuyển** (mã phương thức: 301) theo Quy chế tuyển sinh của Bộ Giáo dục và Đào tạo. Thời gian nhận hồ sơ từ 22/4/2024 đến 30/6/2024.
+2.  **Phương thức 2: Xét tuyển học sinh có kết quả học tập THPT tốt** (học bạ) (mã phương thức: 201). Phương thức này chiếm 43% chỉ tiêu. Thời gian nhận hồ sơ từ 22/4/2024 đến 17/6/2024.
+3.  **Phương thức 3: Xét tuyển kết quả học tập THPT theo tổ hợp môn** (học bạ) (mã phương thức: 202). Phương thức này chiếm 5% chỉ tiêu, áp dụng cho học sinh có tổng điểm trung bình chung 3 môn trong tổ hợp xét tuyển từ 18 điểm trở lên. Thời gian nhận hồ sơ từ 22/4/2024 đến 17/6/2024.
+4.  **Phương thức 4: Xét tuyển dựa vào kết quả kỳ thi Đánh giá năng lực của Đại học Quốc gia Thành phố Hồ Chí Minh** (mã phương thức: 402). Phương thức này chiếm 30% chỉ tiêu. Thí sinh đăng ký và làm theo hướng dẫn tại Cổng đăng ký dự thi của Đại học Quốc gia TP.HCM từ ngày 16/4/2024 đến ngày 15/5/2024.
+5.  **Phương thức 5: Xét tuyển dựa vào kết quả kỳ thi Đánh giá đầu vào đại học trên máy tính (V-SAT)**. Thời gian nhận hồ sơ từ 22/4/2024 đến 17/6/2024.
+6.  **Phương thức 6: Xét tuyển bằng điểm thi Tốt nghiệp THPT 2024** (mã phương thức: 100). Phương thức này chiếm 20% chỉ tiêu.
+
+Thí sinh có thể đăng ký trực tuyến tại địa chỉ https://dms.ufm.edu.vn.
+Mã trường của UFM là DMS.
+Các tổ hợp xét tuyển bao gồm: A00, A01, D01, D72, D78 và D96.
+Để được giải đáp thắc mắc chi tiết, thí sinh có thể liên hệ hotline: 0283.772.0404; 0283.772.0406; 0283.772.0407.
+                                                      >(1726 chars)
+                         web_search_citations  │  [11 items]
+                                                         [0] {"text": "tuyensinh247.com", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEKg4qMp3pCdSjji0kgMo--QrbteyrZ58iD-7W4vq5IJKXTd7ytwBnHclI1fVbpB4ZjgYCJiu_Prm89iZW9WcyHrv3-5o5qE-yiQ_ngVQQ7oNHLrABZvV8qB1svk_jjakOOIdUhvJDBxAEK12xa1aerZAfx72jDYwS-hgkNQaiq2RoyZn3MRKF_DJymAp0liefwp15DilDLI0_4Q74="}
+                                                         [1] {"text": "ufm.edu.vn", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFnJxl4G2aEcuOiBlIQM69sO7UkmSpnfYtLzuSdB08hmNB0MoTQYas2PPQevtRVwmIubrxMLsVWjUAT4jbHUl3BcVEcjh7AN__GD4tqjD5TsUWfA21TSFP_84Bky0egZVIznEuQfdfxdslyPvmYJ0_rJF3Vib9z8lMnb0MIKN6eWCtprlLmW8TLCoTs7lp7PW3j85lqQgAdlMcgApbhZoe-MQYGCSubvqor4-Rqz72E_XTDeNEpbsGBuDtDfcb_TFPiC1RO22qa9qU2lnQlxg1tE-CrSw_iAJxgZxOJP3spg7GrlflkWzNQCpcnE_7ELXMyZ15Aevpnl0wKzRGvc9m5JiA-DL5laE8c61bvBVU4Bmx1q6MZvuM="}
+                                                         [2] {"text": "youtube.com", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGaGewqkH-U0k0jK7N3zC1AcX1N8_v1kI5XSgXq1dE8w7DkwRAYzdriD18sV4r6mawDkhgkkRInlokRoKOFPYiTR70WatESXf8lJosXZH_SPTcs01RMSLJbSGnX_AG1whRqjdjogOU="}
+                                                         [3] {"text": "ufm.edu.vn", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGMNiHH1E-E5wn2s7w3KYCE-KoHiQ2qE2LtPx_tCd6S0T1uAx_nkUyan2jlyI7u-tRN12JikAfff64XY1RyK4wa3qHD_HRUxRvgi1FkMUW0i4vc9jAcs2go2v82B7jOZIX0PM_VsJUqAB7NbYLo90T7fTpY68Q0udQG4kcEfZVq4aOY291xluA3OUbGo1hjMAMEKLbuGePeJVJ78N_4ogctsJt06_FieHFa"}
+                                                         [4] {"text": "nld.com.vn", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGwm2xfcaOsk2Udu3OSC6mDo4dKLtieboial-SLFrJKtW2pjuFgFrzC6GY7YWN5m0OL6JYAjzoIK30A7p48mAri91AGneq-H20TLM6xUSCrYDBzG1tOvuTcwAF5eu9zMPuucqS0iaYCJYSMLRNyMoek9yDmudIXoy--s4vGs614y2Jg1bIDLsaSNrDdC7Y6l6QHYABMPCIWA7l0vnY270zWg6nubneOUPaAhscd0JvIN5o="}
+                                                         [5] {"text": "giaoduc247.vn", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHnydzYmP_caMWnMmDQj9o0yKqEkQXv_hzDFu5ztw-VwpykTlI6nJLTrRtrP39TGBdHC7iRqcTJakwUGuSZPzDsLZLq7GE80cwqkcRpHumt0CFHLjvTVlKh26E4eEYoxGvVjOMC6QLa7yZnr_HkP9STH_lnPE2ztm4NRJCh6a_SS7zSPVJ3lzyJiQoPx1pntc0sCYVPF5IX00HEjYxYdyvZVTo7rzA="}
+                                                         [6] {"text": "chinhphu.vn", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGNUT74Aty68poQyaBbsXJqJyQykg0aNPI7GLWaE_gldE7uIWwEFHVMGLy_dg2dzBKystv6LaBfs2faeP52XPWU5aR1BDCP8CMqpjHz3F6nF-yXzR-Jy52gce46k2TioDOLAXGrSzTHy8SJPdrN8lMM6aI9tIFoehVws-4OnpksAX4x2i2onYhtjPItzK1capfeYrRBAeJUAPAHObPDGriPw-qS6ppYP0hIxFueQDisNPKDayKcDKQjsR26xBSEM6xn8xAD_ldJ"}
+                                                         [7] {"text": "ufm.edu.vn", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGvDKXehlhoNw6pK4wt1CVfBfKeIzBmOxmMNv2TuphJazZiWsH3ui7a0UZsHybSXV70Zik9rXB8ynKdIw6GIS56spkMyvCUqRuJq0lq8pOjhLYnpfhOR6CCP8RmsZY7aaK3Zzl2qXgAb83CqKs38zluoc-MarMkM7sZJpIvneAVyjT_j6zUeNZJRtNRnXhYXPpvCD6LD41xE_mJ03I="}
+                                                         [8] {"text": "youtube.com", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH_1zvFF-hNjWe12i0LAreQszdkMt5hEKa1hMOjQHsaXoEgnIDPSVfgWDWWxhRievOi3HvTnBjYD92FS5E4SH1zwEcBGx-rgiMeCgTJDaOLIJ2BHRlEf46Tzof9-zCqwBEMxGqhCME="}
+                                                         [9] {"text": "ufm.edu.vn", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFeKUdYnokOqx4Dqpfg5A3wbmFT2V1p_SsGhwP9DlcEXpfugT7Xr8IdJWGQjlivBpW0znDtkoCYMCs0tcdSnoKlEHMuz4L37n3faGj9TleD1CGGz0uqVg=="}
+                                                         [10] {"text": "ufm.edu.vn", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEyOB2SMtJ549B86-pozyE87p-x-mQpwXdqJtudd6s-R--85rDo5H29rcC22txtHPDTcfjtHizDNVoxXg7PNqWvYqQYWxS_rX5GVAfVUttcNBrJoKzRvdtgNfDxtL4mBZqKLFRpXDxjxeAAVF1hbrsx9uWUwzwleUF7MV47B44N2SLsUEIwJZWqJGY3nr_IfAksR_tTAXnclAF6FL9I5gy--PuPWDbXAV_fPUrMvGBo-hO6ai8b_c5Sxy1eIPYyHA=="}
+                             search_cache_hit  │  ✗ False
+                      search_cache_similarity  │  0.0000
+                               final_response  │  [DỮ LIỆU TỪ WEB]
+Trường Đại học Tài chính - Marketing (UFM) công bố 6 phương thức tuyển sinh đại học chính quy năm 2024 với tổng chỉ tiêu dự kiến là 4.300 cho 15 ngành và 30 chuyên ngành đào tạo.
+
+Các phương thức tuyển sinh bao gồm:
+1.  **Phương thức 1: Tuyển thẳng và ưu tiên xét tuyển** (mã phương thức: 301) theo Quy chế tuyển sinh của Bộ Giáo dục và Đào tạo. Thời gian nhận hồ sơ từ 22/4/2024 đến 30/6/2024.
+2.  **Phương thức 2: Xét tuyển học sinh có kết quả học tập THPT tốt** (học bạ) (mã phương thức: 201). Phương thức này chiếm 43% chỉ tiêu. Thời gian nhận hồ sơ từ 22/4/2024 đến 17/6/2024.
+3.  **Phương thức 3: Xét tuyển kết quả học tập THPT theo tổ hợp môn** (học bạ) (mã phương thức: 202). Phương thức này chiếm 5% chỉ tiêu, áp dụng cho học sinh có tổng điểm trung bình chung 3 môn trong tổ hợp xét tuyển từ 18 điểm trở lên. Thời gian nhận hồ sơ từ 22/4/2024 đến 17/6/2024.
+4.  **Phương thức 4: Xét tuyển dựa vào kết quả kỳ thi Đánh giá năng lực của Đại học Quốc gia Thành phố Hồ Chí Minh** (mã phương thức: 402). Phương thức này chiếm 30% chỉ tiêu. Thí sinh đăng ký và làm theo hướng dẫn tại Cổng đăng ký dự thi của Đại học Quốc gia TP.HCM từ ngày 16/4/2024 đến ngày 15/5/2024.
+5.  **Phương thức 5: Xét tuyển dựa vào kết quả kỳ thi Đánh giá đầu vào đại học trên máy tính (V-SAT)**. Thời gian nhận hồ sơ từ 22/4/2024 đến 17/6/2024.
+6.  **Phương thức 6: Xét tuyển bằng điểm thi Tốt nghiệp THPT 2024** (mã phương thức: 100). Phương thức này chiếm 20% chỉ tiêu.
+
+Thí sinh có thể đăng ký trực tuyến tại địa chỉ https://dms.ufm.edu.vn.
+Mã trường của UFM là DMS.
+Các tổ hợp xét tuyển bao gồm: A00, A01, D01, D72, D78 và D96.
+Để được giải đáp thắc mắc chi tiết, thí sinh có thể liên hệ hotline: 0283.772.0404; 0283.772.0406; 0283.772.0407.
+
+[NGUỒN TRÍCH DẪN]
+- [tuyensinh247.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEKg4qMp3pCdSjji0kgMo--QrbteyrZ58iD-7W4vq5IJKXTd7ytwBnHclI1fVbpB4ZjgYCJiu_Prm89iZW9WcyHrv3-5o5qE-yiQ_ngVQQ7oNHLrABZvV8qB1svk_jjakOOIdUhvJDBxAEK12xa1aerZAfx72jDYwS-hgkNQaiq2RoyZn3MRKF_DJymAp0liefwp15DilDLI0_4Q74=)
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFnJxl4G2aEcuOiBlIQM69sO7UkmSpnfYtLzuSdB08hmNB0MoTQYas2PPQevtRVwmIubrxMLsVWjUAT4jbHUl3BcVEcjh7AN__GD4tqjD5TsUWfA21TSFP_84Bky0egZVIznEuQfdfxdslyPvmYJ0_rJF3Vib9z8lMnb0MIKN6eWCtprlLmW8TLCoTs7lp7PW3j85lqQgAdlMcgApbhZoe-MQYGCSubvqor4-Rqz72E_XTDeNEpbsGBuDtDfcb_TFPiC1RO22qa9qU2lnQlxg1tE-CrSw_iAJxgZxOJP3spg7GrlflkWzNQCpcnE_7ELXMyZ15Aevpnl0wKzRGvc9m5JiA-DL5laE8c61bvBVU4Bmx1q6MZvuM=)
+- [youtube.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGaGewqkH-U0k0jK7N3zC1AcX1N8_v1kI5XSgXq1dE8w7DkwRAYzdriD18sV4r6mawDkhgkkRInlokRoKOFPYiTR70WatESXf8lJosXZH_SPTcs01RMSLJbSGnX_AG1whRqjdjogOU=)
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGMNiHH1E-E5wn2s7w3KYCE-KoHiQ2qE2LtPx_tCd6S0T1uAx_nkUyan2jlyI7u-tRN12JikAfff64XY1RyK4wa3qHD_HRUxRvgi1FkMUW0i4vc9jAcs2go2v82B7jOZIX0PM_VsJUqAB7NbYLo90T7fTpY68Q0udQG4kcEfZVq4aOY291xluA3OUbGo1hjMAMEKLbuGePeJVJ78N_4ogctsJt06_FieHFa)
+- [nld.com.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGwm2xfcaOsk2Udu3OSC6mDo4dKLtieboial-SLFrJKtW2pjuFgFrzC6GY7YWN5m0OL6JYAjzoIK30A7p48mAri91AGneq-H20TLM6xUSCrYDBzG1tOvuTcwAF5eu9zMPuucqS0iaYCJYSMLRNyMoek9yDmudIXoy--s4vGs614y2Jg1bIDLsaSNrDdC7Y6l6QHYABMPCIWA7l0vnY270zWg6nubneOUPaAhscd0JvIN5o=)
+- [giaoduc247.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHnydzYmP_caMWnMmDQj9o0yKqEkQXv_hzDFu5ztw-VwpykTlI6nJLTrRtrP39TGBdHC7iRqcTJakwUGuSZPzDsLZLq7GE80cwqkcRpHumt0CFHLjvTVlKh26E4eEYoxGvVjOMC6QLa7yZnr_HkP9STH_lnPE2ztm4NRJCh6a_SS7zSPVJ3lzyJiQoPx1pntc0sCYVPF5IX00HEjYxYdyvZVTo7rzA=)
+- [chinhphu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGNUT74Aty68poQyaBbsXJqJyQykg0aNPI7GLWaE_gldE7uIWwEFHVMGLy_dg2dzBKystv6LaBfs2faeP52XPWU5aR1BDCP8CMqpjHz3F6nF-yXzR-Jy52gce46k2TioDOLAXGrSzTHy8SJPdrN8lMM6aI9tIFoehVws-4OnpksAX4x2i2onYhtjPItzK1capfeYrRBAeJUAPAHObPDGriPw-qS6ppYP0hIxFueQDisNPKDayKcDKQjsR26xBSEM6xn8xAD_ldJ)
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGvDKXehlhoNw6pK4wt1CVfBfKeIzBmOxmMNv2TuphJazZiWsH3ui7a0UZsHybSXV70Zik9rXB8ynKdIw6GIS56spkMyvCUqRuJq0lq8pOjhLYnpfhOR6CCP8RmsZY7aaK3Zzl2qXgAb83CqKs38zluoc-MarMkM7sZJpIvneAVyjT_j6zUeNZJRtNRnXhYXPpvCD6LD41xE_mJ03I=)
+- [youtube.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH_1zvFF-hNjWe12i0LAreQszdkMt5hEKa1hMOjQHsaXoEgnIDPSVfgWDWWxhRievOi3HvTnBjYD92FS5E4SH1zwEcBGx-rgiMeCgTJDaOLIJ2BHRlEf46Tzof9-zCqwBEMxGqhCME=)
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFeKUdYnokOqx4Dqpfg5A3wbmFT2V1p_SsGhwP9DlcEXpfugT7Xr8IdJWGQjlivBpW0znDtkoCYMCs0tcdSnoKlEHMuz4L37n3faGj9TleD1CGGz0uqVg==)
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEyOB2SMtJ549B86-pozyE87p-x-mQpwXdqJtudd6s-R--85rDo5H29rcC22txtHPDTcfjtHizDNVoxXg7PNqWvYqQYWxS_rX5GVAfVUttcNBrJoKzRvdtgNfDxtL4mBZqKLFRpXDxjxeAAVF1hbrsx9uWUwzwleUF7MV47B44N2SLsUEIwJZWqJGY3nr_IfAksR_tTAXnclAF6FL9I5gy--PuPWDbXAV_fPUrMvGBo-hO6ai8b_c5Sxy1eIPYyHA==)
+                                                      >(5118 chars)
+                              response_source  │  rag_search_context
+                                                      >(18 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [9] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (12.071s)
+                                        Message  │  source='rag_search_context_generated', length=5761 chars
+                               final_response  │  Chào bạn nhé! Mình là Trợ lý Tuyển sinh UFM đây. Rất vui được giải đáp thắc mắc của bạn về các phương thức xét tuyển của trường mình trong năm 2024. 🎓
+
+Năm nay, Đại học Tài chính - Marketing (UFM) có tổng cộng **6 phương thức xét tuyển** đại học chính quy, với tổng chỉ tiêu dự kiến là **4.300** cho 15 ngành và 30 chuyên ngành đào tạo đấy. Bạn tham khảo chi tiết dưới đây nha:
+
+1.  **Phương thức 1: Tuyển thẳng và ưu tiên xét tuyển** (mã phương thức: 301)
+    *   Áp dụng theo Quy chế tuyển sinh của Bộ Giáo dục và Đào tạo.
+    *   Thời gian nhận hồ sơ: **22/4/2024 đến 30/6/2024**.
+
+2.  **Phương thức 2: Xét tuyển học sinh có kết quả học tập THPT tốt** (học bạ) (mã phương thức: 201)
+    *   Phương thức này chiếm **43%** tổng chỉ tiêu.
+    *   Thời gian nhận hồ sơ: **22/4/2024 đến 17/6/2024**.
+
+3.  **Phương thức 3: Xét tuyển kết quả học tập THPT theo tổ hợp môn** (học bạ) (mã phương thức: 202)
+    *   Chiếm **5%** chỉ tiêu.
+    *   Áp dụng cho học sinh có tổng điểm trung bình chung 3 môn trong tổ hợp xét tuyển từ **18 điểm** trở lên.
+    *   Thời gian nhận hồ sơ: **22/4/2024 đến 17/6/2024**.
+
+4.  **Phương thức 4: Xét tuyển dựa vào kết quả kỳ thi Đánh giá năng lực của Đại học Quốc gia Thành phố Hồ Chí Minh** (mã phương thức: 402)
+    *   Phương thức này chiếm **30%** chỉ tiêu.
+    *   Thí sinh đăng ký và làm theo hướng dẫn tại Cổng đăng ký dự thi của Đại học Quốc gia TP.HCM.
+    *   Thời gian đăng ký: **16/4/2024 đến 15/5/2024**.
+
+5.  **Phương thức 5: Xét tuyển dựa vào kết quả kỳ thi Đánh giá đầu vào đại học trên máy tính (V-SAT)**
+    *   Thời gian nhận hồ sơ: **22/4/2024 đến 17/6/2024**.
+
+6.  **Phương thức 6: Xét tuyển bằng điểm thi Tốt nghiệp THPT 2024** (mã phương thức: 100)
+    *   Phương thức này chiếm **20%** tổng chỉ tiêu.
+
+Bạn có thể đăng ký trực tuyến tại địa chỉ [https://dms.ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFeKUdYnokOqx4Dqpfg5A3wbmFT2V1p_SsGhwP9DlcEXpfugT7Xr8IdJWGQjlivBpW0znDtkoCYMCs0tcdSnoKlEHMuz4L37n3faGj9TleD1CGGz0uqVg==). Mã trường của UFM là **DMS** nhé.
+
+Các tổ hợp môn xét tuyển của UFM bao gồm: **A00, A01, D01, D72, D78 và D96**.
+
+Nếu bạn cần giải đáp thắc mắc chi tiết hơn hoặc muốn mình tư vấn kỹ hơn về từng phương thức, đừng ngần ngại liên hệ hotline của trường: **0283.772.0404; 0283.772.0406; 0283.772.0407** nha! 📞
+
+Bạn có muốn mình giải thích thêm về ngành nào cụ thể không?
+
+---
+📎 **Nguồn tham khảo:**
+- [tuyensinh247.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEKg4qMp3pCdSjji0kgMo--QrbteyrZ58iD-7W4vq5IJKXTd7ytwBnHclI1fVbpB4ZjgYCJiu_Prm89iZW9WcyHrv3-5o5qE-yiQ_ngVQQ7oNHLrABZvV8qB1svk_jjakOOIdUhvJDBxAEK12xa1aerZAfx72jDYwS-hgkNQaiq2RoyZn3MRKF_DJymAp0liefwp15DilDLI0_4Q74=)
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFnJxl4G2aEcuOiBlIQM69sO7UkmSpnfYtLzuSdB08hmNB0MoTQYas2PPQevtRVwmIubrxMLsVWjUAT4jbHUl3BcVEcjh7AN__GD4tqjD5TsUWfA21TSFP_84Bky0egZVIznEuQfdfxdslyPvmYJ0_rJF3Vib9z8lMnb0MIKN6eWCtprlLmW8TLCoTs7lp7PW3j85lqQgAdlMcgApbhZoe-MQYGCSubvqor4-Rqz72E_XTDeNEpbsGBuDtDfcb_TFPiC1RO22qa9qU2lnQlxg1tE-CrSw_iAJxgZxOJP3spg7GrlflkWzNQCpcnE_7ELXMyZ15Aevpnl0wKzRGvc9m5JiA-DL5laE8c61bvBVU4Bmx1q6MZvuM=)
+- [youtube.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGaGewqkH-U0k0jK7N3zC1AcX1N8_v1kI5XSgXq1dE8w7DkwRAYzdriD18sV4r6mawDkhgkkRInlokRoKOFPYiTR70WatESXf8lJosXZH_SPTcs01RMSLJbSGnX_AG1whRqjdjogOU=)
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGMNiHH1E-E5wn2s7w3KYCE-KoHiQ2qE2LtPx_tCd6S0T1uAx_nkUyan2jlyI7u-tRN12JikAfff64XY1RyK4wa3qHD_HRUxRvgi1FkMUW0i4vc9jAcs2go2v82B7jOZIX0PM_VsJUqAB7NbYLo90T7fTpY68Q0udQG4kcEfZVq4aOY291xluA3OUbGo1hjMAMEKLbuGePeJVJ78N_4ogctsJt06_FieHFa)
+- [nld.com.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGwm2xfcaOsk2Udu3OSC6mDo4dKLtieboial-SLFrJKtW2pjuFgFrzC6GY7YWN5m0OL6JYAjzoIK30A7p48mAri91AGneq-H20TLM6xUSCrYDBzG1tOvuTcwAF5eu9zMPuucqS0iaYCJYSMLRNyMoek9yDmudIXoy--s4vGs614y2Jg1bIDLsaSNrDdC7Y6l6QHYABMPCIWA7l0vnY270zWg6nubneOUPaAhscd0JvIN5o=)
+- [giaoduc247.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHnydzYmP_caMWnMmDQj9o0yKqEkQXv_hzDFu5ztw-VwpykTlI6nJLTrRtrP39TGBdHC7iRqcTJakwUGuSZPzDsLZLq7GE80cwqkcRpHumt0CFHLjvTVlKh26E4eEYoxGvVjOMC6QLa7yZnr_HkP9STH_lnPE2ztm4NRJCh6a_SS7zSPVJ3lzyJiQoPx1pntc0sCYVPF5IX00HEjYxYdyvZVTo7rzA=)
+- [chinhphu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGNUT74Aty68poQyaBbsXJqJyQykg0aNPI7GLWaE_gldE7uIWwEFHVMGLy_dg2dzBKystv6LaBfs2faeP52XPWU5aR1BDCP8CMqpjHz3F6nF-yXzR-Jy52gce46k2TioDOLAXGrSzTHy8SJPdrN8lMM6aI9tIFoehVws-4OnpksAX4x2i2onYhtjPItzK1capfeYrRBAeJUAPAHObPDGriPw-qS6ppYP0hIxFueQDisNPKDayKcDKQjsR26xBSEM6xn8xAD_ldJ)
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGvDKXehlhoNw6pK4wt1CVfBfKeIzBmOxmMNv2TuphJazZiWsH3ui7a0UZsHybSXV70Zik9rXB8ynKdIw6GIS56spkMyvCUqRuJq0lq8pOjhLYnpfhOR6CCP8RmsZY7aaK3Zzl2qXgAb83CqKs38zluoc-MarMkM7sZJpIvneAVyjT_j6zUeNZJRtNRnXhYXPpvCD6LD41xE_mJ03I=)
+- [youtube.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH_1zvFF-hNjWe12i0LAreQszdkMt5hEKa1hMOjQHsaXoEgnIDPSVfgWDWWxhRievOiH_HvTnBjYD92FS5E4SH1zwEcBGx-rgiMeCgTJDaOLIJ2BHRlEf46Tzof9-zCqwBEMxGqhCME=)
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFeKUdYnokOqx4Dqpfg5A3wbmFT2V1p_SsGhwP9DlcEXpfugT7Xr8IdJWGQjlivBpW0znDtkoCYMCs0tcdSnoKlEHMuz4L37n3faGj9TleD1CGGz0uqVg==)
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEyOB2SMtJ549B86-pozyE87p-x-mQpwXdqJtudd6s-R--85rDo5H29rcC22txtHPDTcfjtHizDNVoxXg7PNqWvYqQYWxS_rX5GVAfVUttcNBrJoKzRvdtgNfDxtL4mBZqKLFRpXDxjxeAAVF1hbrsx9uWUwzwleUF7MV47B44N2SLsUEIwJZWqJGY3nr_IfAksR_tTAXnclAF6FL9I5gy--PuPWDbXAV_fPUrMvGBo-hO6ai8b_c5Sxy1eIPYyHA==)
+                                                      >(5761 chars)
+                              response_source  │  rag_search_context_generated
+                                                      >(28 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : rag_search_context_generated
+  Intent          : THONG_TIN_TUYEN_SINH → PROCEED_RAG_UFM_SEARCH
+  Response Length : 5761 chars
+  Total Time      : 53.53s
+  Nodes Executed  : 9
+──────────────────────────────────────────────────────────────────────────
+
+Chào bạn nhé! Mình là Trợ lý Tuyển sinh UFM đây. Rất vui được giải đáp thắc mắc của bạn về các phương thức xét tuyển của trường mình trong năm 2024. 🎓
+
+Năm nay, Đại học Tài chính - Marketing (UFM) có tổng cộng **6 phương thức xét tuyển** đại học chính quy, với tổng chỉ tiêu dự kiến là **4.300** cho 15 ngành và 30 chuyên ngành đào tạo đấy. Bạn tham khảo chi tiết dưới đây nha:
+
+1.  **Phương thức 1: Tuyển thẳng và ưu tiên xét tuyển** (mã phương thức: 301)
+    *   Áp dụng theo Quy chế tuyển sinh của Bộ Giáo dục và Đào tạo.
+    *   Thời gian nhận hồ sơ: **22/4/2024 đến 30/6/2024**.
+
+2.  **Phương thức 2: Xét tuyển học sinh có kết quả học tập THPT tốt** (học bạ) (mã phương thức: 201)
+    *   Phương thức này chiếm **43%** tổng chỉ tiêu.
+    *   Thời gian nhận hồ sơ: **22/4/2024 đến 17/6/2024**.
+
+3.  **Phương thức 3: Xét tuyển kết quả học tập THPT theo tổ hợp môn** (học bạ) (mã phương thức: 202)
+    *   Chiếm **5%** chỉ tiêu.
+    *   Áp dụng cho học sinh có tổng điểm trung bình chung 3 môn trong tổ hợp xét tuyển từ **18 điểm** trở lên.
+    *   Thời gian nhận hồ sơ: **22/4/2024 đến 17/6/2024**.
+
+4.  **Phương thức 4: Xét tuyển dựa vào kết quả kỳ thi Đánh giá năng lực của Đại học Quốc gia Thành phố Hồ Chí Minh** (mã phương thức: 402)
+    *   Phương thức này chiếm **30%** chỉ tiêu.
+    *   Thí sinh đăng ký và làm theo hướng dẫn tại Cổng đăng ký dự thi của Đại học Quốc gia TP.HCM.
+    *   Thời gian đăng ký: **16/4/2024 đến 15/5/2024**.
+
+5.  **Phương thức 5: Xét tuyển dựa vào kết quả kỳ thi Đánh giá đầu vào đại học trên máy tính (V-SAT)**
+    *   Thời gian nhận hồ sơ: **22/4/2024 đến 17/6/2024**.
+
+6.  **Phương thức 6: Xét tuyển bằng điểm thi Tốt nghiệp THPT 2024** (mã phương thức: 100)
+    *   Phương thức này chiếm **20%** tổng chỉ tiêu.
+
+Bạn có thể đăng ký trực tuyến tại địa chỉ [https://dms.ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFeKUdYnokOqx4Dqpfg5A3wbmFT2V1p_SsGhwP9DlcEXpfugT7Xr8IdJWGQjlivBpW0znDtkoCYMCs0tcdSnoKlEHMuz4L37n3faGj9TleD1CGGz0uqVg==). Mã trường của UFM là **DMS** nhé.
+
+Các tổ hợp môn xét tuyển của UFM bao gồm: **A00, A01, D01, D72, D78 và D96**.
+
+Nếu bạn cần giải đáp thắc mắc chi tiết hơn hoặc muốn mình tư vấn kỹ hơn về từng phương thức, đừng ngần ngại liên hệ hotline của trường: **0283.772.0404; 0283.772.0406; 0283.772.0407** nha! 📞
+
+Bạn có muốn mình giải thích thêm về ngành nào cụ thể không?
+
+---
+📎 **Nguồn tham khảo:**
+- [tuyensinh247.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEKg4qMp3pCdSjji0kgMo--QrbteyrZ58iD-7W4vq5IJKXTd7ytwBnHclI1fVbpB4ZjgYCJiu_Prm89iZW9WcyHrv3-5o5qE-yiQ_ngVQQ7oNHLrABZvV8qB1svk_jjakOOIdUhvJDBxAEK12xa1aerZAfx72jDYwS-hgkNQaiq2RoyZn3MRKF_DJymAp0liefwp15DilDLI0_4Q74=)
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFnJxl4G2aEcuOiBlIQM69sO7UkmSpnfYtLzuSdB08hmNB0MoTQYas2PPQevtRVwmIubrxMLsVWjUAT4jbHUl3BcVEcjh7AN__GD4tqjD5TsUWfA21TSFP_84Bky0egZVIznEuQfdfxdslyPvmYJ0_rJF3Vib9z8lMnb0MIKN6eWCtprlLmW8TLCoTs7lp7PW3j85lqQgAdlMcgApbhZoe-MQYGCSubvqor4-Rqz72E_XTDeNEpbsGBuDtDfcb_TFPiC1RO22qa9qU2lnQlxg1tE-CrSw_iAJxgZxOJP3spg7GrlflkWzNQCpcnE_7ELXMyZ15Aevpnl0wKzRGvc9m5JiA-DL5laE8c61bvBVU4Bmx1q6MZvuM=)
+- [youtube.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGaGewqkH-U0k0jK7N3zC1AcX1N8_v1kI5XSgXq1dE8w7DkwRAYzdriD18sV4r6mawDkhgkkRInlokRoKOFPYiTR70WatESXf8lJosXZH_SPTcs01RMSLJbSGnX_AG1whRqjdjogOU=)
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGMNiHH1E-E5wn2s7w3KYCE-KoHiQ2qE2LtPx_tCd6S0T1uAx_nkUyan2jlyI7u-tRN12JikAfff64XY1RyK4wa3qHD_HRUxRvgi1FkMUW0i4vc9jAcs2go2v82B7jOZIX0PM_VsJUqAB7NbYLo90T7fTpY68Q0udQG4kcEfZVq4aOY291xluA3OUbGo1hjMAMEKLbuGePeJVJ78N_4ogctsJt06_FieHFa)
+- [nld.com.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGwm2xfcaOsk2Udu3OSC6mDo4dKLtieboial-SLFrJKtW2pjuFgFrzC6GY7YWN5m0OL6JYAjzoIK30A7p48mAri91AGneq-H20TLM6xUSCrYDBzG1tOvuTcwAF5eu9zMPuucqS0iaYCJYSMLRNyMoek9yDmudIXoy--s4vGs614y2Jg1bIDLsaSNrDdC7Y6l6QHYABMPCIWA7l0vnY270zWg6nubneOUPaAhscd0JvIN5o=)
+- [giaoduc247.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHnydzYmP_caMWnMmDQj9o0yKqEkQXv_hzDFu5ztw-VwpykTlI6nJLTrRtrP39TGBdHC7iRqcTJakwUGuSZPzDsLZLq7GE80cwqkcRpHumt0CFHLjvTVlKh26E4eEYoxGvVjOMC6QLa7yZnr_HkP9STH_lnPE2ztm4NRJCh6a_SS7zSPVJ3lzyJiQoPx1pntc0sCYVPF5IX00HEjYxYdyvZVTo7rzA=)
+- [chinhphu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGNUT74Aty68poQyaBbsXJqJyQykg0aNPI7GLWaE_gldE7uIWwEFHVMGLy_dg2dzBKystv6LaBfs2faeP52XPWU5aR1BDCP8CMqpjHz3F6nF-yXzR-Jy52gce46k2TioDOLAXGrSzTHy8SJPdrN8lMM6aI9tIFoehVws-4OnpksAX4x2i2onYhtjPItzK1capfeYrRBAeJUAPAHObPDGriPw-qS6ppYP0hIxFueQDisNPKDayKcDKQjsR26xBSEM6xn8xAD_ldJ)
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGvDKXehlhoNw6pK4wt1CVfBfKeIzBmOxmMNv2TuphJazZiWsH3ui7a0UZsHybSXV70Zik9rXB8ynKdIw6GIS56spkMyvCUqRuJq0lq8pOjhLYnpfhOR6CCP8RmsZY7aaK3Zzl2qXgAb83CqKs38zluoc-MarMkM7sZJpIvneAVyjT_j6zUeNZJRtNRnXhYXPpvCD6LD41xE_mJ03I=)
+- [youtube.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH_1zvFF-hNjWe12i0LAreQszdkMt5hEKa1hMOjQHsaXoEgnIDPSVfgWDWWxhRievOiH_HvTnBjYD92FS5E4SH1zwEcBGx-rgiMeCgTJDaOLIJ2BHRlEf46Tzof9-zCqwBEMxGqhCME=)
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFeKUdYnokOqx4Dqpfg5A3wbmFT2V1p_SsGhwP9DlcEXpfugT7Xr8IdJWGQjlivBpW0znDtkoCYMCs0tcdSnoKlEHMuz4L37n3faGj9TleD1CGGz0uqVg==)
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEyOB2SMtJ549B86-pozyE87p-x-mQpwXdqJtudd6s-R--85rDo5H29rcC22txtHPDTcfjtHizDNVoxXg7PNqWvYqQYWxS_rX5GVAfVUttcNBrJoKzRvdtgNfDxtL4mBZqKLFRpXDxjxeAAVF1hbrsx9uWUwzwleUF7MV47B44N2SLsUEIwJZWqJGY3nr_IfAksR_tTAXnclAF6FL9I5gy--PuPWDbXAV_fPUrMvGBo-hO6ai8b_c5Sxy1eIPYyHA==)
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.004s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  1.296s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a+2b)        │  1.921s  │   PASS   │
+  │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  5.483s  │   PASS   │
+  │ 🔀 MULTI-QUERY NODE (Sinh biến thể)           │  1.379s  │   PASS   │
+  │ 📊 EMBEDDING NODE (BGE-M3 batch)              │ 14.213s  │   PASS   │
+  │ 🗄️ RAG NODE (Hybrid Search DB)               │  0.209s  │   PASS   │
+  │ 🌐 RAG SEARCH PIPELINE (Evaluator + Web Searc │ 16.918s  │   PASS   │
+  │ 🎯 RESPONSE NODE (Final Answer)               │ 12.071s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  53.53s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_030138_Trường_Đại_học_Tài_chính_-_Marketing_năm.txt
+

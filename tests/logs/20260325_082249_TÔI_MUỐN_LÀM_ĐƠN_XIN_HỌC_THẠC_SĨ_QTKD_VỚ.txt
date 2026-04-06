@@ -1,0 +1,234 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-25 08:22:49                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_082249_TÔI_MUỐN_LÀM_ĐƠN_XIN_HỌC_THẠC_SĨ_QTKD_VỚ.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/qwen/qwen3.5-flash-02-23             │
+  │ ⓫ Form Extract       │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Draft         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : TÔI MUỐN LÀM ĐƠN XIN HỌC THẠC SĨ QTKD VỚI TÊN TRẦN QUỐC GIĂNG CCCD 054205002021 NGÀY SINH 13/6/2004 CÓ BẰNG LÁI XE A1 VÀ GIẢI THƯỞNG NGHIÊN CỨU SINH VIÊN, 5 TỐT CẤP TRUNG ƯƠNG
+  💬 Chat History : Trống (lượt đầu tiên)
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.006s)
+                                        Message  │  [Fast-Scan PASS — 0.002s] Sạch, cho qua Context Node
+                             normalized_query  │  tôi muốn làm đơn xin học thạc sĩ qtkd với tên trần quốc giăng cccd 054205002021 ngày sinh 13/6/2004 có bằng lái xe a1 và giải thưởng nghiên cứu sinh viên, 5 tốt cấp trung ương
+                                                      >(175 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.002s] Sạch, cho qua Context Node
+                                                      >(52 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.000s)
+                                        Message  │  Reformulated → 'TÔI MUỐN LÀM ĐƠN XIN HỌC THẠC SĨ QTKD VỚI TÊN TRẦN QUỐC GIĂNG CCCD 054205002021 ...'
+                             standalone_query  │  TÔI MUỐN LÀM ĐƠN XIN HỌC THẠC SĨ QTKD VỚI TÊN TRẦN QUỐC GIĂNG CCCD 054205002021 NGÀY SINH 13/6/2004 CÓ BẰNG LÁI XE A1 VÀ GIẢI THƯỞNG NGHIÊN CỨU SINH VIÊN, 5 TỐT CẤP TRUNG ƯƠNG
+                                                      >(175 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a+2b)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.579s)
+                                        Message  │  [Contextual-Guard PASS — 1.575s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.575s] standalone_query an toàn
+                                                      >(57 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [4] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.935s)
+                                        Message  │  intent='TAO_MAU_DON' → action='PROCEED_FORM' → next='form'
+                                       intent  │  TAO_MAU_DON
+                                                      >(11 chars)
+                               intent_summary  │  Mẫu đơn xin học thạc sĩ QTKD
+                                                      >(28 chars)
+                                intent_action  │  PROCEED_FORM
+                                                      >(12 chars)
+                         program_level_filter  │  tien_si
+                                                      >(7 chars)
+                          program_name_filter  │  Quản Trị Kinh Doanh
+                                                      >(19 chars)
+                                    next_node  │  form
+                                                      >(4 chars)
+                              response_source  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  📝 [5] FORM NODE (Agent Mẫu đơn)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (8.035s)
+                                        Message  │  Response=1111 chars
+                               final_response  │  **CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM**
+**Độc lập – Tự do – Hạnh phúc**
+# ĐƠN DỰ TUYỂN ĐÀO TẠO TRÌNH ĐỘ THẠC SĨ
+
+Kính gửi: Hội đồng tuyển sinh đào tạo trình độ Thạc sĩ
+Trường Đại Học Tài Chính - Marketing
+
+Tôi tên là: Trần Quốc Giăng
+Sinh ngày: 13/6/2004 tại: ___
+Hiện công tác tại: ___
+
+Sau khi nghiên cứu thông báo tuyển sinh đào tạo trình độ thạc sĩ Ngành Quản trị Kinh doanh năm 2026 của Trường Đại học Tài chính – Marketing, căn cứ yêu cầu công tác của cơ quan và nguyện vọng cá nhân.
+
+Tôi kính đề nghị Hội đồng tuyển sinh đào tạo trình độ Thạc sĩ cho phép tôi được ghi tên vào danh sách thí sinh dự tuyển tại Trường Đại học Tài chính - Marketing đợt 1 năm 2026.
+
+Ngành đăng ký dự tuyển: Quản trị Kinh doanh
+Hình thức đào tạo đăng ký dự tuyển: [ ] Chính quy
+Đăng ký Định hướng đào tạo: [ ] Nghiên cứu - [ ] Ứng dụng
+Đăng ký dự thi ngoại ngữ: ___
+Địa chỉ liên lạc: ___
+Điện thoại: ___ E-mail: ___
+
+Tôi cam kết chấp hành đầy đủ các quy chế, quy định về đào tạo trình độ Thạc sĩ của Bộ Giáo dục và Đào tạo và Trường Đại Học Tài Chính Marketing.
+
+Ngày___ tháng___ năm___
+
+Người làm đơn
+(Ký tên ghi rõ họ và tên)
+                                                      >(1111 chars)
+                              response_source  │  form_template
+                                                      >(13 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [6] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.000s)
+                                        Message  │  source='form_template', length=1111 chars
+                               final_response  │  **CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM**
+**Độc lập – Tự do – Hạnh phúc**
+# ĐƠN DỰ TUYỂN ĐÀO TẠO TRÌNH ĐỘ THẠC SĨ
+
+Kính gửi: Hội đồng tuyển sinh đào tạo trình độ Thạc sĩ
+Trường Đại Học Tài Chính - Marketing
+
+Tôi tên là: Trần Quốc Giăng
+Sinh ngày: 13/6/2004 tại: ___
+Hiện công tác tại: ___
+
+Sau khi nghiên cứu thông báo tuyển sinh đào tạo trình độ thạc sĩ Ngành Quản trị Kinh doanh năm 2026 của Trường Đại học Tài chính – Marketing, căn cứ yêu cầu công tác của cơ quan và nguyện vọng cá nhân.
+
+Tôi kính đề nghị Hội đồng tuyển sinh đào tạo trình độ Thạc sĩ cho phép tôi được ghi tên vào danh sách thí sinh dự tuyển tại Trường Đại học Tài chính - Marketing đợt 1 năm 2026.
+
+Ngành đăng ký dự tuyển: Quản trị Kinh doanh
+Hình thức đào tạo đăng ký dự tuyển: [ ] Chính quy
+Đăng ký Định hướng đào tạo: [ ] Nghiên cứu - [ ] Ứng dụng
+Đăng ký dự thi ngoại ngữ: ___
+Địa chỉ liên lạc: ___
+Điện thoại: ___ E-mail: ___
+
+Tôi cam kết chấp hành đầy đủ các quy chế, quy định về đào tạo trình độ Thạc sĩ của Bộ Giáo dục và Đào tạo và Trường Đại Học Tài Chính Marketing.
+
+Ngày___ tháng___ năm___
+
+Người làm đơn
+(Ký tên ghi rõ họ và tên)
+                                                      >(1111 chars)
+                              response_source  │  form_template
+                                                      >(13 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : form_template
+  Intent          : TAO_MAU_DON → PROCEED_FORM
+  Response Length : 1111 chars
+  Total Time      : 11.57s
+  Nodes Executed  : 6
+──────────────────────────────────────────────────────────────────────────
+
+**CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM**
+**Độc lập – Tự do – Hạnh phúc**
+# ĐƠN DỰ TUYỂN ĐÀO TẠO TRÌNH ĐỘ THẠC SĨ
+
+Kính gửi: Hội đồng tuyển sinh đào tạo trình độ Thạc sĩ
+Trường Đại Học Tài Chính - Marketing
+
+Tôi tên là: Trần Quốc Giăng
+Sinh ngày: 13/6/2004 tại: ___
+Hiện công tác tại: ___
+
+Sau khi nghiên cứu thông báo tuyển sinh đào tạo trình độ thạc sĩ Ngành Quản trị Kinh doanh năm 2026 của Trường Đại học Tài chính – Marketing, căn cứ yêu cầu công tác của cơ quan và nguyện vọng cá nhân.
+
+Tôi kính đề nghị Hội đồng tuyển sinh đào tạo trình độ Thạc sĩ cho phép tôi được ghi tên vào danh sách thí sinh dự tuyển tại Trường Đại học Tài chính - Marketing đợt 1 năm 2026.
+
+Ngành đăng ký dự tuyển: Quản trị Kinh doanh
+Hình thức đào tạo đăng ký dự tuyển: [ ] Chính quy
+Đăng ký Định hướng đào tạo: [ ] Nghiên cứu - [ ] Ứng dụng
+Đăng ký dự thi ngoại ngữ: ___
+Địa chỉ liên lạc: ___
+Điện thoại: ___ E-mail: ___
+
+Tôi cam kết chấp hành đầy đủ các quy chế, quy định về đào tạo trình độ Thạc sĩ của Bộ Giáo dục và Đào tạo và Trường Đại Học Tài Chính Marketing.
+
+Ngày___ tháng___ năm___
+
+Người làm đơn
+(Ký tên ghi rõ họ và tên)
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.006s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  0.000s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a+2b)        │  1.579s  │   PASS   │
+  │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  1.935s  │   PASS   │
+  │ 📝 FORM NODE (Agent Mẫu đơn)                  │  8.035s  │   PASS   │
+  │ 🎯 RESPONSE NODE (Final Answer)               │  0.000s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  11.57s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_082249_TÔI_MUỐN_LÀM_ĐƠN_XIN_HỌC_THẠC_SĨ_QTKD_VỚ.txt
+

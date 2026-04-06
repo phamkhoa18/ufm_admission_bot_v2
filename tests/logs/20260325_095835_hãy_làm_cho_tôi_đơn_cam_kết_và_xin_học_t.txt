@@ -1,0 +1,221 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-25 09:58:35                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_095835_hãy_làm_cho_tôi_đơn_cam_kết_và_xin_học_t.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.5-flash              │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash              │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Extract       │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Draft         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : hãy làm cho tôi đơn cam kết và xin học thạc sĩ với tên trần quốc giăng mssv 23133019 cam kết đúng các giấy chứng nhận thạc sĩ
+  💬 Chat History : Trống (lượt đầu tiên)
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.011s)
+                                        Message  │  [Fast-Scan PASS — 0.003s] Sạch, cho qua Context Node
+                             normalized_query  │  hãy làm cho tôi đơn cam kết và xin học thạc sĩ với tên trần quốc giăng mssv 23133019 cam kết đúng các giấy chứng nhận thạc sĩ
+                                                      >(125 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.003s] Sạch, cho qua Context Node
+                                                      >(52 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.001s)
+                                        Message  │  Reformulated → 'hãy làm cho tôi đơn cam kết và xin học thạc sĩ với tên trần quốc giăng mssv 2313...'
+                             standalone_query  │  hãy làm cho tôi đơn cam kết và xin học thạc sĩ với tên trần quốc giăng mssv 23133019 cam kết đúng các giấy chứng nhận thạc sĩ
+                                                      >(125 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a+2b)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.445s)
+                                        Message  │  [Contextual-Guard PASS — 1.445s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.445s] standalone_query an toàn
+                                                      >(57 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [4] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.612s)
+                                        Message  │  intent='TAO_MAU_DON' → action='PROCEED_FORM' → next='form'
+                                       intent  │  TAO_MAU_DON
+                                                      >(11 chars)
+                               intent_summary  │  Tạo đơn cam kết và xin học thạc sĩ cho Trần Quốc Giăng, MSSV 23133019, cam kết đúng các giấy chứng nhận thạc sĩ
+                                                      >(111 chars)
+                                intent_action  │  PROCEED_FORM
+                                                      >(12 chars)
+                         program_level_filter  │  thac_si
+                                                      >(7 chars)
+                          program_name_filter  │  null
+                                    next_node  │  form
+                                                      >(4 chars)
+                              response_source  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  📝 [5] FORM NODE (Agent Mẫu đơn)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (7.086s)
+                                        Message  │  Response=1190 chars
+                               final_response  │  **CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM**
+**<u>Độc lập – Tự do – Hạnh phúc</u>**
+*Tp.HCM, ngày ___ tháng ___ năm 20___ *
+# **GIẤY CAM ĐOAN**
+## **(dành cho đối tượng chỉ có giấy tốt nghiệp tạm thời)**
+
+**Kính gửi: - Ban Giám hiệu Trường ĐH Tài chính – Marketing**
+**- Viện trưởng Viện Đào tạo Sau Đại học**
+
+Tôi tên là: Trần Quốc Giăng
+Ngày sinh: ___
+Số điện thoại: ___
+Hôm nay, tôi đến Viện ĐTSĐH để nộp hồ sơ dự thi cao học Khóa___
+Nhưng chỉ có:
+☐ Giấy chứng nhận tốt nghiệp tạm thời (thời hạn đến___ )
+☐ Mới tốt nghiệp, chưa có Giấy chứng nhận Tốt nghiệp Đại học tạm thời (đến ngày___ mới có)
+Nay tôi cam kết tôi đã chính thức tốt nghiệp Đại học ngành [Điền ngành học]
+Khoá [Điền khóa học] tại trường [Điền tên trường đại học]
+Và xin được dự thi tuyển sinh trình độ Thạc sĩ đợt ___ /20___ ngành [Điền ngành Thạc sĩ dự thi]
+Tôi cam kết, nếu đến hết ngày nhận hồ sơ đăng ký dự thi, tôi vẫn không nộp được Bằng tốt nghiệp Đại học chính thức thì tôi sẽ không được dự thi tuyển sinh trình độ Cao học đợt___ /20___ theo quy định. Tôi tự nguyện đăng ký và tự chịu trách nhiệm với quyết định của mình mà không có bất cứ đòi hỏi, thắc mắc gì.
+
+**Người làm đơn**
+(kí và ghi rõ họ tên)
+Trần Quốc Giăng
+                                                      >(1190 chars)
+                              response_source  │  form_template
+                                                      >(13 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [6] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.007s)
+                                        Message  │  source='form_template', length=1190 chars
+                               final_response  │  **CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM**
+**<u>Độc lập – Tự do – Hạnh phúc</u>**
+*Tp.HCM, ngày ___ tháng ___ năm 20___ *
+# **GIẤY CAM ĐOAN**
+## **(dành cho đối tượng chỉ có giấy tốt nghiệp tạm thời)**
+
+**Kính gửi: - Ban Giám hiệu Trường ĐH Tài chính – Marketing**
+**- Viện trưởng Viện Đào tạo Sau Đại học**
+
+Tôi tên là: Trần Quốc Giăng
+Ngày sinh: ___
+Số điện thoại: ___
+Hôm nay, tôi đến Viện ĐTSĐH để nộp hồ sơ dự thi cao học Khóa___
+Nhưng chỉ có:
+☐ Giấy chứng nhận tốt nghiệp tạm thời (thời hạn đến___ )
+☐ Mới tốt nghiệp, chưa có Giấy chứng nhận Tốt nghiệp Đại học tạm thời (đến ngày___ mới có)
+Nay tôi cam kết tôi đã chính thức tốt nghiệp Đại học ngành [Điền ngành học]
+Khoá [Điền khóa học] tại trường [Điền tên trường đại học]
+Và xin được dự thi tuyển sinh trình độ Thạc sĩ đợt ___ /20___ ngành [Điền ngành Thạc sĩ dự thi]
+Tôi cam kết, nếu đến hết ngày nhận hồ sơ đăng ký dự thi, tôi vẫn không nộp được Bằng tốt nghiệp Đại học chính thức thì tôi sẽ không được dự thi tuyển sinh trình độ Cao học đợt___ /20___ theo quy định. Tôi tự nguyện đăng ký và tự chịu trách nhiệm với quyết định của mình mà không có bất cứ đòi hỏi, thắc mắc gì.
+
+**Người làm đơn**
+(kí và ghi rõ họ tên)
+Trần Quốc Giăng
+                                                      >(1190 chars)
+                              response_source  │  form_template
+                                                      >(13 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : form_template
+  Intent          : TAO_MAU_DON → PROCEED_FORM
+  Response Length : 1190 chars
+  Total Time      : 10.17s
+  Nodes Executed  : 6
+──────────────────────────────────────────────────────────────────────────
+
+**CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM**
+**<u>Độc lập – Tự do – Hạnh phúc</u>**
+*Tp.HCM, ngày ___ tháng ___ năm 20___ *
+# **GIẤY CAM ĐOAN**
+## **(dành cho đối tượng chỉ có giấy tốt nghiệp tạm thời)**
+
+**Kính gửi: - Ban Giám hiệu Trường ĐH Tài chính – Marketing**
+**- Viện trưởng Viện Đào tạo Sau Đại học**
+
+Tôi tên là: Trần Quốc Giăng
+Ngày sinh: ___
+Số điện thoại: ___
+Hôm nay, tôi đến Viện ĐTSĐH để nộp hồ sơ dự thi cao học Khóa___
+Nhưng chỉ có:
+☐ Giấy chứng nhận tốt nghiệp tạm thời (thời hạn đến___ )
+☐ Mới tốt nghiệp, chưa có Giấy chứng nhận Tốt nghiệp Đại học tạm thời (đến ngày___ mới có)
+Nay tôi cam kết tôi đã chính thức tốt nghiệp Đại học ngành [Điền ngành học]
+Khoá [Điền khóa học] tại trường [Điền tên trường đại học]
+Và xin được dự thi tuyển sinh trình độ Thạc sĩ đợt ___ /20___ ngành [Điền ngành Thạc sĩ dự thi]
+Tôi cam kết, nếu đến hết ngày nhận hồ sơ đăng ký dự thi, tôi vẫn không nộp được Bằng tốt nghiệp Đại học chính thức thì tôi sẽ không được dự thi tuyển sinh trình độ Cao học đợt___ /20___ theo quy định. Tôi tự nguyện đăng ký và tự chịu trách nhiệm với quyết định của mình mà không có bất cứ đòi hỏi, thắc mắc gì.
+
+**Người làm đơn**
+(kí và ghi rõ họ tên)
+Trần Quốc Giăng
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.011s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  0.001s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a+2b)        │  1.445s  │   PASS   │
+  │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  1.612s  │   PASS   │
+  │ 📝 FORM NODE (Agent Mẫu đơn)                  │  7.086s  │   PASS   │
+  │ 🎯 RESPONSE NODE (Final Answer)               │  0.007s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  10.17s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_095835_hãy_làm_cho_tôi_đơn_cam_kết_và_xin_học_t.txt
+

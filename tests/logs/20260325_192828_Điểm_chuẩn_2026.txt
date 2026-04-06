@@ -1,0 +1,381 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-25 19:28:28                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_192828_Điểm_chuẩn_2026.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.5-flash              │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash              │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Extract       │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Draft         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : Điểm chuẩn 2026?
+  💬 Chat History : 4 messages
+     👤 cụ thể về tcnh
+     🤖 Cảm ơn bạn đã đặt câu hỏi, mình chưa hiểu muốn hỏi cụ thể về ngành nào hay chủ đ
+     👤 CHO TÔI CTRINH ĐÀO TẠO TIẾN SĨ BẠN ĐANG CÓ
+     🤖 Chào bạn nhé! Mình là Trợ lý Tuyển sinh UFM đây. Bạn đang quan tâm đến chương tr
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.002s)
+                                        Message  │  [Fast-Scan PASS — 0.000s] Sạch, cho qua Context Node
+                             normalized_query  │  điểm chuẩn 2026?
+                                                      >(16 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sạch, cho qua Context Node
+                                                      >(52 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (8.001s)
+                                        Message  │  Reformulated → 'Điểm chuẩn năm 2026 của các ngành đào tạo Tiến sĩ là bao nhiêu?'
+                             standalone_query  │  Điểm chuẩn năm 2026 của các ngành đào tạo Tiến sĩ là bao nhiêu?
+                                                      >(63 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a Llama)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.495s)
+                                        Message  │  [Contextual-Guard PASS — 0.493s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 0.493s] standalone_query an toàn
+                                                      >(57 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [4] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (3.051s)
+                                        Message  │  intent='THONG_TIN_TUYEN_SINH' → action='PROCEED_RAG_UFM_SEARCH' → next='rag_search'
+                                       intent  │  THONG_TIN_TUYEN_SINH
+                                                      >(20 chars)
+                               intent_summary  │  Hỏi điểm chuẩn năm 2026 của các ngành đào tạo Tiến sĩ.
+                                                      >(54 chars)
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                                                      >(22 chars)
+                         program_level_filter  │  tien_si
+                                                      >(7 chars)
+                          program_name_filter  │  null
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+                              response_source  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🔀 [5] MULTI-QUERY NODE (Sinh biến thể)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (3.501s)
+                                        Message  │  Sinh 3 biến thể
+                                multi_queries  │  [3 items]
+                                                         [0] "Mức điểm chuẩn đầu vào cho các chương trình Tiến sĩ năm 2026 là bao nhiêu?"
+                                                         [1] "Điểm sàn xét tuyển cho bậc Tiến sĩ UFM năm 2026 là bao nhiêu?"
+                                                         [2] "Các ngành Tiến sĩ UFM năm 2026 có điểm chuẩn bao nhiêu?"
+
+──────────────────────────────────────────────────────────────────────────
+  📊 [6] EMBEDDING NODE (BGE-M3 batch)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.350s)
+                                        Message  │  Nhúng 4 vectors × 1024D
+                             query_embeddings  │  [4 vectors × 1024D]
+
+──────────────────────────────────────────────────────────────────────────
+  🗄️ [7] RAG NODE (Hybrid Search DB)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (8.024s)
+                                        Message  │  Chunks=20, Context=3415 chars
+                                  rag_context  │  [Nguồn 1 — Tài liệu: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md | Số: /185/TB-ĐHTCM | 3. Điều kiện dự tuyển | Mục: 3. Điều kiện dự tuyển | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026
+[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]
+[Mục: 3. Điều kiện dự tuyển]
+
+Người dự tuyển đào tạo trình độ tiến sĩ phải đáp ứng các điều kiện sau:
+
+3.1.Yêu cầu chung đối với người dự tuyển:
+
+a) Đã tốt nghiệp thạc sĩ hoặc tốt nghiệp đại học hạng giỏi trở lên ngành phù hợp (quy định tại Phụ lục III của Thông báo này); nếu bằng tốt nghiệp đại học hay thạc sĩ do cơ sở giáo dục nước ngoài cấp phải được công nhận văn bằng theo quy định hiện hành tại thời điểm dự tuyển;
+
+b) Có kinh nghiệm nghiên cứu thể hiện qua luận văn thạc sĩ của chương trình đào tạo định hướng nghiên cứu; hoặc bài báo, báo cáo khoa học đã công bố; hoặc có thời gian công tác từ 02 năm (24 tháng) trở lên là giảng viên, nghiên cứu viên của các cơ sở đào tạo, tổ chức khoa học và công nghệ;
+
+c) Có dự thảo đề cương nghiên cứu và dự kiến kế hoạch học tập, nghiên cứu toàn khóa.
+
+3.2. Người dự tuyển là công dân Việt Nam phải đạt yêu cầu về năng lực ngoại ngữ được minh chứng bằng một trong những văn bằng, chứng chỉ sau:
+
+a) Bằng tốt nghiệp trình độ đại học trở lên do một cơ sở đào tạo nước ngoài, phân hiệu của cơ sở đào tạo nước ngoài ở Việt Nam hoặc cơ sở đào tạo của Việt Nam cấp cho người học toàn thời gian bằng tiếng nước ngoài; nếu bằng tốt nghiệp đại học hay thạc sĩ do cơ sở đào tạo nước ngoài cấp phải được công nhận văn bằng theo quy định hiện hành tại thời điểm dự tuyển;
+
+b) Bằng tốt nghiệp trình độ đại học ngành ngôn ngữ tiếng nước ngoài do các cơ sở đào tạo của Việt Nam cấp;
+
+c) Có một trong các chứng chỉ ngoại ngữ quy định tại Phụ lục II của Thông báo này còn hiệu lực tính đến ngày đăng ký dự tuyển hoặc các chứng chỉ ngoại ngữ khác tương đương trình độ bậc 4 (theo khung năng ngoại ngữ 6 bậc dùng cho Việt Nam) do Bộ Giáo dục Đào tạo công bố.
+
+3.3. Người dự tuyển là công dân nước ngoài nếu đăng ký theo học chương trình đào tạo trình độ tiến sĩ bằng tiếng Việt phải có chứng chỉ tiếng Việt tối thiểu từ bậc 4 trở lên theo Khung năng lực tiếng Việt dùng cho người nước ngoài và phải đáp ứng yêu cầu về ngôn ngữ thứ hai theo quy định tại Khoản 3.2, Mục 3 của Thông báo này, trừ trường hợp là người bản ngữ của ngôn ngữ được sử dụng trong chương trình đào tạo trình độ tiến sĩ.
+
+---
+
+[Nguồn 3 — Tài liệu: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md | Số: /185/TB-ĐHTCM | 1. Ngành tuyển sinh: | Mục: 1. Ngành tuyển sinh: | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026
+[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]
+[Mục: 1. Ngành tuyển sinh:]
+
+|STT|Ngành|Mã ngành|Chỉ tiêu|
+|-|-|-|-|
+|1.|Tài chính – Ngân hàng|9340201|50|
+|2.|Quản trị kinh doanh|9340101|80|
+|3.|Quản lý kinh tế|9310110|10|
+
+---
+
+[Nguồn 5 — Tài liệu: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md | Số: /185/TB-ĐHTCM | 6. Lịch trình xét tuyển dự kiến | Mục: 6. Lịch trình xét tuyển dự kiến | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026
+[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]
+[Mục: 6. Lịch trình xét tuyển dự kiến]
+
+* Phát và nhận hồ sơ: từ ngày có Thông báo này đến hết ngày 24/4/2026.
+* Trình bày bài luận nghiên cứu: 28 - 29/4/2026.
+* Công bố kết quả: 06/5/2026.
+* Thời gian nhập học dự kiến: 07 – 14/5/2026.
+* Bắt đầu khóa học: 21/5/2026.
+                                                      >(3415 chars)
+                             retrieved_chunks  │  [20 items]
+                                                         [0] {"chunk_id": "59999003-81ef-4644-9b1d-29f6f0e5bdfa", "chunk_level": "child", "parent_id": "562f7a0f-0064-46d0-889b-beca926fefd4", "section_path": "3. Điều kiện dự tuyển", "program_name": null, "score": 0.6698290705680847, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 3. Điều kiện dự tuyển]\n\nNgười dự tuyển đào tạo trình độ tiến sĩ phải đáp ", "source": "vector", "rrf_score": 0.01639344262295082}
+                                                         [1] {"chunk_id": "562f7a0f-0064-46d0-889b-beca926fefd4", "chunk_level": "parent", "parent_id": null, "section_path": "3. Điều kiện dự tuyển", "program_name": null, "score": 0.6698290705680847, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 3. Điều kiện dự tuyển]\n\nNgười dự tuyển đào tạo trình độ tiến sĩ phải đáp ", "source": "vector", "rrf_score": 0.016129032258064516}
+                                                         [2] {"chunk_id": "836727d9-7139-4eca-8956-238e7e24c773", "chunk_level": "child", "parent_id": "5d1a3abf-5cfb-47c9-8a32-72567c21d83b", "section_path": "KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH & CÁC PHỤ LỤC", "program_name": null, "score": 0.6516118839863507, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH & CÁC PHỤ LỤC]", "source": "vector", "rrf_score": 0.015873015873015872}
+                                                         [3] {"chunk_id": "f1e80370-e8b4-461e-bd1c-087f43ad51d3", "chunk_level": "parent", "parent_id": null, "section_path": "1. Ngành tuyển sinh:", "program_name": null, "score": 0.6475628824494563, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 1. Ngành tuyển sinh:]\n\n|STT|Ngành|Mã ngành|Chỉ tiêu|\n|-|-|-|-|\n|1.|Tài ch", "source": "vector", "rrf_score": 0.015625}
+                                                         [4] {"chunk_id": "e2df40d4-c664-471c-bbd9-3ace5969cff3", "chunk_level": "child", "parent_id": "f092955d-1e19-4d43-b54e-35c04067f09d", "section_path": "5. Hồ sơ dự tuyển", "program_name": null, "score": 0.6444860100746155, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 5. Hồ sơ dự tuyển]\n\na) Đơn xin dự tuyển *(theo mẫu do Trường quy định)*. ", "source": "vector", "rrf_score": 0.015384615384615385}
+                                                         [5] {"chunk_id": "f092955d-1e19-4d43-b54e-35c04067f09d", "chunk_level": "parent", "parent_id": null, "section_path": "5. Hồ sơ dự tuyển", "program_name": null, "score": 0.6436493225515743, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 5. Hồ sơ dự tuyển]\n\na) Đơn xin dự tuyển *(theo mẫu do Trường quy định)*.\n", "source": "vector", "rrf_score": 0.015151515151515152}
+                                                         [6] {"chunk_id": "725d15aa-039c-46a6-acdd-19538215193a", "chunk_level": "parent", "parent_id": null, "section_path": "6. Lịch trình xét tuyển dự kiến", "program_name": null, "score": 0.6346784612344789, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 6. Lịch trình xét tuyển dự kiến]\n\n* Phát và nhận hồ sơ: từ ngày có Thông ", "source": "vector", "rrf_score": 0.014925373134328358}
+                                                         [7] {"chunk_id": "5d1a3abf-5cfb-47c9-8a32-72567c21d83b", "chunk_level": "parent", "parent_id": null, "section_path": "KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH & CÁC PHỤ LỤC", "program_name": null, "score": 0.6343632180257776, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: CÁC PHỤ LỤC > KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH]", "source": "vector", "rrf_score": 0.014705882352941176}
+                                                         [8] {"chunk_id": "49c704d5-2c56-48b9-9f18-2bf701bac872", "chunk_level": "parent", "parent_id": null, "section_path": "7. Lệ phí tuyển sinh", "program_name": null, "score": 0.632676899433136, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 7. Lệ phí tuyển sinh]\n\n* Lệ phí xét hồ sơ: 300.000 đồng/thí sinh.\n* Phí n", "source": "vector", "rrf_score": 0.014492753623188406}
+                                                         [9] {"chunk_id": "db009523-fa16-4c27-9d5b-96cc026aba65", "chunk_level": "child", "parent_id": "76f98c4e-14ee-4a43-be9e-b622a0d441b8", "section_path": "8. Học phí dự kiến", "program_name": null, "score": 0.6198826432228088, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 8. Học phí dự kiến]\n\nHọc phí cho 3 năm học tập trung là 198.000.000 đồng,", "source": "vector", "rrf_score": 0.014285714285714285}
+                                                         [10] {"chunk_id": "76f98c4e-14ee-4a43-be9e-b622a0d441b8", "chunk_level": "parent", "parent_id": null, "section_path": "8. Học phí dự kiến", "program_name": null, "score": 0.6198826432228088, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 8. Học phí dự kiến]\n\nHọc phí cho 3 năm học tập trung là 198.000.000 đồng,", "source": "vector", "rrf_score": 0.014084507042253521}
+                                                         [11] {"chunk_id": "a4091a57-1b3a-4aef-bc7a-5bde82608f25", "chunk_level": "parent", "parent_id": null, "section_path": "4. Thời gian đào tạo", "program_name": null, "score": 0.6136068200576043, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 4. Thời gian đào tạo]\n\n03 (ba) năm đối với nghiên cứu sinh (NCS) đã có bằ", "source": "vector", "rrf_score": 0.013888888888888888}
+                                                         [12] {"chunk_id": "0e0881db-1cc5-475d-9ad7-747b5f63a67a", "chunk_level": "child", "parent_id": "f092955d-1e19-4d43-b54e-35c04067f09d", "section_path": "5. Hồ sơ dự tuyển", "program_name": null, "score": 0.6134609349644752, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 5. Hồ sơ dự tuyển]\n\ng) Bản sao có chứng thực Giấy chứng nhận của Cục Quản", "source": "vector", "rrf_score": 0.0136986301369863}
+                                                         [13] {"chunk_id": "7cbe1ebd-ab8d-444f-a697-29a3ecda2182", "chunk_level": "child", "parent_id": "6646db5c-916d-4327-9692-b0ad5ee4ec63", "section_path": "9. Địa chỉ liên hệ đăng ký và nộp hồ sơ", "program_name": null, "score": 0.6044056415557905, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ]\n\nViện Đào tạo sau đại học – Trườ", "source": "vector", "rrf_score": 0.013513513513513514}
+                                                         [14] {"chunk_id": "6646db5c-916d-4327-9692-b0ad5ee4ec63", "chunk_level": "parent", "parent_id": null, "section_path": "9. Địa chỉ liên hệ đăng ký và nộp hồ sơ", "program_name": null, "score": 0.6044056415557905, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ]\n\nViện Đào tạo sau đại học – Trườ", "source": "vector", "rrf_score": 0.013333333333333334}
+                                                         [15] {"chunk_id": "392f56b9-7455-42a0-a6f0-6df3c3008e0a", "chunk_level": "parent", "parent_id": null, "section_path": "2. Hình thức tuyển sinh", "program_name": null, "score": 0.5857354402542155, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 2. Hình thức tuyển sinh]\n\nxét tuyển, kiểm tra và đánh giá thí sinh (thí s", "source": "vector", "rrf_score": 0.013157894736842105}
+                                                         [16] {"chunk_id": "3f57efc0-566f-46df-9c29-3bca36a9b084", "chunk_level": "parent", "parent_id": null, "section_path": "Giới thiệu", "program_name": null, "score": 0.5415489835008678, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "vector", "rrf_score": 0.012987012987012988}
+                                                         [17] {"chunk_id": "bcedbcdc-e13c-4dca-8084-d0c56090e367", "chunk_level": "child", "parent_id": "3f57efc0-566f-46df-9c29-3bca36a9b084", "section_path": "Giới thiệu", "program_name": null, "score": 0.5387703501445273, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "vector", "rrf_score": 0.01282051282051282}
+                                                         [18] {"chunk_id": "07466142-e922-4399-9f64-1c3f81561749", "chunk_level": "child", "parent_id": "78fd3dd5-4d57-48de-be39-3c2f0a8e5fa0", "section_path": "Tiến sĩ Tài Chính – Ngân Hàng > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Tài Chính – Ngân Hàng", "score": 0.527349992771449, "content_preview": "[Chương trình: Tiến sĩ Tài Chính – Ngân Hàng (TC-NH, TCNH, tc-nh, tcnh, Tài chính Ngân hàng) | Mã ngành: 9340201] — ĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên dự tuyển cần đáp ứng các tiêu chuẩn sau:\n\n* **Về văn b", "source": "vector", "rrf_score": 0.012658227848101266}
+                                                         [19] {"chunk_id": "78fd3dd5-4d57-48de-be39-3c2f0a8e5fa0", "chunk_level": "parent", "parent_id": null, "section_path": "Tiến sĩ Tài Chính – Ngân Hàng > ĐIỀU KIỆN XÉT TUYỂN", "program_name": "Tài Chính – Ngân Hàng", "score": 0.5257732554809308, "content_preview": "[Chương trình: Tiến sĩ Tài Chính – Ngân Hàng (TC-NH, TCNH, tc-nh, tcnh, Tài chính Ngân hàng) | Mã ngành: 9340201]\nĐIỀU KIỆN XÉT TUYỂN\n\nỨng viên dự tuyển cần đáp ứng các tiêu chuẩn sau:\n\n* **Về văn bằn", "source": "vector", "rrf_score": 0.0125}
+
+──────────────────────────────────────────────────────────────────────────
+  🌐 [8] RAG SEARCH PIPELINE (Evaluator + Web Search)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.001s)
+                                        Message  │  cache=MISS, citations=0
+                           ufm_search_queries  │  null
+                              pr_search_query  │  null
+                           web_search_results  │  null
+                         web_search_citations  │  null
+                             search_cache_hit  │  ✗ False
+                      search_cache_similarity  │  0.0000
+                               final_response  │  [Nguồn 1 — Tài liệu: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md | Số: /185/TB-ĐHTCM | 3. Điều kiện dự tuyển | Mục: 3. Điều kiện dự tuyển | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026
+[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]
+[Mục: 3. Điều kiện dự tuyển]
+
+Người dự tuyển đào tạo trình độ tiến sĩ phải đáp ứng các điều kiện sau:
+
+3.1.Yêu cầu chung đối với người dự tuyển:
+
+a) Đã tốt nghiệp thạc sĩ hoặc tốt nghiệp đại học hạng giỏi trở lên ngành phù hợp (quy định tại Phụ lục III của Thông báo này); nếu bằng tốt nghiệp đại học hay thạc sĩ do cơ sở giáo dục nước ngoài cấp phải được công nhận văn bằng theo quy định hiện hành tại thời điểm dự tuyển;
+
+b) Có kinh nghiệm nghiên cứu thể hiện qua luận văn thạc sĩ của chương trình đào tạo định hướng nghiên cứu; hoặc bài báo, báo cáo khoa học đã công bố; hoặc có thời gian công tác từ 02 năm (24 tháng) trở lên là giảng viên, nghiên cứu viên của các cơ sở đào tạo, tổ chức khoa học và công nghệ;
+
+c) Có dự thảo đề cương nghiên cứu và dự kiến kế hoạch học tập, nghiên cứu toàn khóa.
+
+3.2. Người dự tuyển là công dân Việt Nam phải đạt yêu cầu về năng lực ngoại ngữ được minh chứng bằng một trong những văn bằng, chứng chỉ sau:
+
+a) Bằng tốt nghiệp trình độ đại học trở lên do một cơ sở đào tạo nước ngoài, phân hiệu của cơ sở đào tạo nước ngoài ở Việt Nam hoặc cơ sở đào tạo của Việt Nam cấp cho người học toàn thời gian bằng tiếng nước ngoài; nếu bằng tốt nghiệp đại học hay thạc sĩ do cơ sở đào tạo nước ngoài cấp phải được công nhận văn bằng theo quy định hiện hành tại thời điểm dự tuyển;
+
+b) Bằng tốt nghiệp trình độ đại học ngành ngôn ngữ tiếng nước ngoài do các cơ sở đào tạo của Việt Nam cấp;
+
+c) Có một trong các chứng chỉ ngoại ngữ quy định tại Phụ lục II của Thông báo này còn hiệu lực tính đến ngày đăng ký dự tuyển hoặc các chứng chỉ ngoại ngữ khác tương đương trình độ bậc 4 (theo khung năng ngoại ngữ 6 bậc dùng cho Việt Nam) do Bộ Giáo dục Đào tạo công bố.
+
+3.3. Người dự tuyển là công dân nước ngoài nếu đăng ký theo học chương trình đào tạo trình độ tiến sĩ bằng tiếng Việt phải có chứng chỉ tiếng Việt tối thiểu từ bậc 4 trở lên theo Khung năng lực tiếng Việt dùng cho người nước ngoài và phải đáp ứng yêu cầu về ngôn ngữ thứ hai theo quy định tại Khoản 3.2, Mục 3 của Thông báo này, trừ trường hợp là người bản ngữ của ngôn ngữ được sử dụng trong chương trình đào tạo trình độ tiến sĩ.
+
+---
+
+[Nguồn 3 — Tài liệu: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md | Số: /185/TB-ĐHTCM | 1. Ngành tuyển sinh: | Mục: 1. Ngành tuyển sinh: | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026
+[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]
+[Mục: 1. Ngành tuyển sinh:]
+
+|STT|Ngành|Mã ngành|Chỉ tiêu|
+|-|-|-|-|
+|1.|Tài chính – Ngân hàng|9340201|50|
+|2.|Quản trị kinh doanh|9340101|80|
+|3.|Quản lý kinh tế|9310110|10|
+
+---
+
+[Nguồn 5 — Tài liệu: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md | Số: /185/TB-ĐHTCM | 6. Lịch trình xét tuyển dự kiến | Mục: 6. Lịch trình xét tuyển dự kiến | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026
+[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]
+[Mục: 6. Lịch trình xét tuyển dự kiến]
+
+* Phát và nhận hồ sơ: từ ngày có Thông báo này đến hết ngày 24/4/2026.
+* Trình bày bài luận nghiên cứu: 28 - 29/4/2026.
+* Công bố kết quả: 06/5/2026.
+* Thời gian nhập học dự kiến: 07 – 14/5/2026.
+* Bắt đầu khóa học: 21/5/2026.
+                                                      >(3415 chars)
+                              response_source  │  rag_db_only
+                                                      >(11 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [9] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (6.142s)
+                                        Message  │  source='rag_db_only_generated', length=2522 chars
+                               final_response  │  Chào bạn nhé! Mình là Trợ lý Tuyển sinh UFM đây. Rất vui được hỗ trợ bạn tìm hiểu về chương trình đào tạo Tiến sĩ tại trường mình. 🎓
+
+Bạn hỏi về **điểm chuẩn năm 2026 của các ngành đào tạo Tiến sĩ** đúng không? Mình xin giải thích một chút để bạn nắm rõ hơn nha.
+
+Đối với chương trình đào tạo Tiến sĩ, UFM không xét tuyển bằng điểm chuẩn như các bậc học Đại học hay Thạc sĩ đâu bạn. Thay vào đó, trường sẽ dựa vào các **điều kiện dự tuyển** và **quá trình xét tuyển hồ sơ, bài luận nghiên cứu** để đánh giá và tuyển chọn những ứng viên tiềm năng nhất.
+
+Theo [Thông báo tuyển sinh trình độ tiến sĩ đợt 1 năm 2026 (Số: /185/TB-ĐHTCM)](tuyển%20sinh%20trình%20độ%20tiến%20sĩ%20đợt%201%20năm%202026.md), các ngành đào tạo Tiến sĩ mà UFM tuyển sinh trong đợt 1 năm 2026 bao gồm:
+
+*   **Tài chính – Ngân hàng** (Mã ngành: 9340201) với **50 chỉ tiêu**.
+*   **Quản trị kinh doanh** (Mã ngành: 9340101) với **80 chỉ tiêu**.
+*   **Quản lý kinh tế** (Mã ngành: 9310110) với **10 chỉ tiêu**.
+
+Về **điều kiện dự tuyển**, bạn cần đáp ứng những yêu cầu sau:
+
+1.  **Yêu cầu chung:**
+    *   Đã tốt nghiệp thạc sĩ hoặc tốt nghiệp đại học hạng giỏi trở lên ngành phù hợp.
+    *   Có kinh nghiệm nghiên cứu thể hiện qua luận văn thạc sĩ, bài báo khoa học đã công bố, hoặc có kinh nghiệm công tác từ 02 năm trở lên là giảng viên, nghiên cứu viên.
+    *   Có dự thảo đề cương nghiên cứu và dự kiến kế hoạch học tập, nghiên cứu toàn khóa.
+2.  **Yêu cầu về năng lực ngoại ngữ:**
+    *   Có bằng tốt nghiệp đại học trở lên do cơ sở đào tạo nước ngoài cấp hoặc bằng tốt nghiệp đại học ngành ngôn ngữ tiếng nước ngoài.
+    *   Hoặc có một trong các chứng chỉ ngoại ngữ còn hiệu lực tương đương trình độ bậc 4 theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam.
+3.  **Đối với công dân nước ngoài:** Nếu học bằng tiếng Việt, cần có chứng chỉ tiếng Việt tối thiểu từ bậc 4 trở lên và đáp ứng yêu cầu về ngôn ngữ thứ hai.
+
+Lịch trình xét tuyển dự kiến cho đợt 1 năm 2026 như sau:
+
+*   **Phát và nhận hồ sơ:** Đến hết ngày **24/4/2026**.
+*   **Trình bày bài luận nghiên cứu:** **28 - 29/4/2026**.
+*   **Công bố kết quả:** **06/5/2026**.
+*   **Thời gian nhập học dự kiến:** **07 – 14/5/2026**.
+*   **Bắt đầu khóa học:** **21/5/2026**.
+
+Bạn có thể tham khảo chi tiết hơn trong [Thông báo tuyển sinh trình độ tiến sĩ đợt 1 năm 2026 (Số: /185/TB-ĐHTCM)](tuyển%20sinh%20trình%20độ%20tiến%20sĩ%20đợt%201%20năm%202026.md) nhé!
+
+Bạn có muốn mình giải thích thêm về quy trình nộp hồ sơ hay các yêu cầu cụ thể hơn cho từng ngành không? Đừng ngần ngại hỏi nha! 🌟
+                                                      >(2522 chars)
+                              response_source  │  rag_db_only_generated
+                                                      >(21 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : rag_db_only_generated
+  Intent          : THONG_TIN_TUYEN_SINH → PROCEED_RAG_UFM_SEARCH
+  Response Length : 2522 chars
+  Total Time      : 31.58s
+  Nodes Executed  : 9
+──────────────────────────────────────────────────────────────────────────
+
+Chào bạn nhé! Mình là Trợ lý Tuyển sinh UFM đây. Rất vui được hỗ trợ bạn tìm hiểu về chương trình đào tạo Tiến sĩ tại trường mình. 🎓
+
+Bạn hỏi về **điểm chuẩn năm 2026 của các ngành đào tạo Tiến sĩ** đúng không? Mình xin giải thích một chút để bạn nắm rõ hơn nha.
+
+Đối với chương trình đào tạo Tiến sĩ, UFM không xét tuyển bằng điểm chuẩn như các bậc học Đại học hay Thạc sĩ đâu bạn. Thay vào đó, trường sẽ dựa vào các **điều kiện dự tuyển** và **quá trình xét tuyển hồ sơ, bài luận nghiên cứu** để đánh giá và tuyển chọn những ứng viên tiềm năng nhất.
+
+Theo [Thông báo tuyển sinh trình độ tiến sĩ đợt 1 năm 2026 (Số: /185/TB-ĐHTCM)](tuyển%20sinh%20trình%20độ%20tiến%20sĩ%20đợt%201%20năm%202026.md), các ngành đào tạo Tiến sĩ mà UFM tuyển sinh trong đợt 1 năm 2026 bao gồm:
+
+*   **Tài chính – Ngân hàng** (Mã ngành: 9340201) với **50 chỉ tiêu**.
+*   **Quản trị kinh doanh** (Mã ngành: 9340101) với **80 chỉ tiêu**.
+*   **Quản lý kinh tế** (Mã ngành: 9310110) với **10 chỉ tiêu**.
+
+Về **điều kiện dự tuyển**, bạn cần đáp ứng những yêu cầu sau:
+
+1.  **Yêu cầu chung:**
+    *   Đã tốt nghiệp thạc sĩ hoặc tốt nghiệp đại học hạng giỏi trở lên ngành phù hợp.
+    *   Có kinh nghiệm nghiên cứu thể hiện qua luận văn thạc sĩ, bài báo khoa học đã công bố, hoặc có kinh nghiệm công tác từ 02 năm trở lên là giảng viên, nghiên cứu viên.
+    *   Có dự thảo đề cương nghiên cứu và dự kiến kế hoạch học tập, nghiên cứu toàn khóa.
+2.  **Yêu cầu về năng lực ngoại ngữ:**
+    *   Có bằng tốt nghiệp đại học trở lên do cơ sở đào tạo nước ngoài cấp hoặc bằng tốt nghiệp đại học ngành ngôn ngữ tiếng nước ngoài.
+    *   Hoặc có một trong các chứng chỉ ngoại ngữ còn hiệu lực tương đương trình độ bậc 4 theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam.
+3.  **Đối với công dân nước ngoài:** Nếu học bằng tiếng Việt, cần có chứng chỉ tiếng Việt tối thiểu từ bậc 4 trở lên và đáp ứng yêu cầu về ngôn ngữ thứ hai.
+
+Lịch trình xét tuyển dự kiến cho đợt 1 năm 2026 như sau:
+
+*   **Phát và nhận hồ sơ:** Đến hết ngày **24/4/2026**.
+*   **Trình bày bài luận nghiên cứu:** **28 - 29/4/2026**.
+*   **Công bố kết quả:** **06/5/2026**.
+*   **Thời gian nhập học dự kiến:** **07 – 14/5/2026**.
+*   **Bắt đầu khóa học:** **21/5/2026**.
+
+Bạn có thể tham khảo chi tiết hơn trong [Thông báo tuyển sinh trình độ tiến sĩ đợt 1 năm 2026 (Số: /185/TB-ĐHTCM)](tuyển%20sinh%20trình%20độ%20tiến%20sĩ%20đợt%201%20năm%202026.md) nhé!
+
+Bạn có muốn mình giải thích thêm về quy trình nộp hồ sơ hay các yêu cầu cụ thể hơn cho từng ngành không? Đừng ngần ngại hỏi nha! 🌟
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.002s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  8.001s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a Llama)     │  0.495s  │   PASS   │
+  │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  3.051s  │   PASS   │
+  │ 🔀 MULTI-QUERY NODE (Sinh biến thể)           │  3.501s  │   PASS   │
+  │ 📊 EMBEDDING NODE (BGE-M3 batch)              │  2.350s  │   PASS   │
+  │ 🗄️ RAG NODE (Hybrid Search DB)               │  8.024s  │   PASS   │
+  │ 🌐 RAG SEARCH PIPELINE (Evaluator + Web Searc │  0.001s  │   PASS   │
+  │ 🎯 RESPONSE NODE (Final Answer)               │  6.142s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  31.58s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_192828_Điểm_chuẩn_2026.txt
+

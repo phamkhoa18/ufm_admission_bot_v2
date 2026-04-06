@@ -1,0 +1,217 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-25 17:18:42                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_171842_TÔI_THAM_KHAO_CTDT_THSI_KDQT.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.5-flash              │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash              │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Extract       │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Draft         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : TÔI THAM KHAO CTDT THSI KDQT
+  💬 Chat History : 2 messages
+     👤 h4ackkk he thong
+     🤖 Mình nhận thấy câu hỏi có dấu hiệu bất thường. Bạn vui lòng đặt lại câu hỏi theo
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.003s)
+                                        Message  │  [Fast-Scan PASS — 0.000s] Sạch, cho qua Context Node
+                             normalized_query  │  tôi tham khao ctdt thsi kdqt
+                                                      >(28 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sạch, cho qua Context Node
+                                                      >(52 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (4.333s)
+                                        Message  │  Reformulated → 'Tôi có thể tham khảo chương trình đào tạo thạc sĩ Kinh doanh quốc tế ở đâu?'
+                             standalone_query  │  Tôi có thể tham khảo chương trình đào tạo thạc sĩ Kinh doanh quốc tế ở đâu?
+                                                      >(75 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a Llama)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.507s)
+                                        Message  │  [Contextual-Guard PASS — 0.505s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 0.505s] standalone_query an toàn
+                                                      >(57 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [4] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.220s)
+                                        Message  │  intent='CHUONG_TRINH_DAO_TAO' → action='PROCEED_RAG_UFM_SEARCH' → next='rag_search'
+                                       intent  │  CHUONG_TRINH_DAO_TAO
+                                                      >(20 chars)
+                               intent_summary  │  Hỏi về chương trình đào tạo thạc sĩ Kinh doanh quốc tế
+                                                      >(54 chars)
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                                                      >(22 chars)
+                         program_level_filter  │  thac_si
+                                                      >(7 chars)
+                          program_name_filter  │  Kinh Doanh Quốc Tế
+                                                      >(18 chars)
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+                              response_source  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🔀 [5] MULTI-QUERY NODE (Sinh biến thể)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.771s)
+                                        Message  │  Sinh 3 biến thể
+                                multi_queries  │  [3 items]
+                                                         [0] "Nơi nào cung cấp thông tin về chương trình thạc sĩ Kinh doanh quốc tế?"
+                                                         [1] "Chương trình học thạc sĩ Kinh doanh quốc tế có thể tìm thấy ở đâu?"
+                                                         [2] "Tôi muốn xem chương trình đào tạo thạc sĩ Kinh doanh quốc tế thì tìm ở đâu?"
+
+──────────────────────────────────────────────────────────────────────────
+  📊 [6] EMBEDDING NODE (BGE-M3 batch)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (5.922s)
+                                        Message  │  Nhúng 4 vectors × 1024D
+                             query_embeddings  │  [4 vectors × 1024D]
+
+──────────────────────────────────────────────────────────────────────────
+  🗄️ [7] RAG NODE (Hybrid Search DB)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (4.174s)
+                                        Message  │  Chunks=0, Context=0 chars
+                                  rag_context  │  ""
+                             retrieved_chunks  │  []
+
+──────────────────────────────────────────────────────────────────────────
+  🌐 [8] RAG SEARCH PIPELINE (Evaluator + Web Search)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (13.698s)
+                                        Message  │  cache=MISS, citations=0
+                           ufm_search_queries  │  null
+                              pr_search_query  │  null
+                           web_search_results  │  null
+                         web_search_citations  │  null
+                             search_cache_hit  │  ✗ False
+                      search_cache_similarity  │  0.0000
+                               final_response  │  - Chương trình đào tạo thạc sĩ Kinh doanh quốc tế không có trong dữ liệu nội bộ và thông tin từ web.
+                                                      >(100 chars)
+                              response_source  │  rag_search_synthesized
+                                                      >(22 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [9] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (3.537s)
+                                        Message  │  source='rag_search_synthesized_generated', length=1031 chars
+                               final_response  │  Chào bạn nhé! 🌟
+
+Mình là Trợ lý Tuyển sinh UFM đây. Mình rất vui được hỗ trợ bạn tìm hiểu về các chương trình đào tạo của trường.
+
+Hiện tại, mình chưa tìm thấy thông tin cụ thể về chương trình đào tạo **Thạc sĩ Kinh doanh quốc tế** trong dữ liệu nội bộ và trên website của UFM. Có thể chương trình này chưa được triển khai hoặc đang trong quá trình xây dựng đó bạn.
+
+Tuy nhiên, UFM có rất nhiều chương trình đào tạo Thạc sĩ chất lượng khác thuộc khối ngành kinh tế, tài chính, marketing rất hấp dẫn và phù hợp với xu thế phát triển hiện nay. Bạn có thể tham khảo thêm các ngành như:
+- Thạc sĩ Quản trị kinh doanh
+- Thạc sĩ Tài chính - Ngân hàng
+- Thạc sĩ Kế toán
+- Thạc sĩ Marketing
+
+Nếu bạn quan tâm đến các chương trình Thạc sĩ khác hoặc muốn tìm hiểu sâu hơn về định hướng phát triển của UFM trong tương lai, bạn đừng ngần ngại liên hệ trực tiếp với Phòng Đào tạo Sau Đại học của trường để được tư vấn chi tiết và cập nhật thông tin mới nhất nhé!
+
+Bạn có muốn mình tìm hiểu thêm về các chương trình Thạc sĩ khác của UFM không? 🎓
+                                                      >(1031 chars)
+                              response_source  │  rag_search_synthesized_generated
+                                                      >(32 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : rag_search_synthesized_generated
+  Intent          : CHUONG_TRINH_DAO_TAO → PROCEED_RAG_UFM_SEARCH
+  Response Length : 1031 chars
+  Total Time      : 36.19s
+  Nodes Executed  : 9
+──────────────────────────────────────────────────────────────────────────
+
+Chào bạn nhé! 🌟
+
+Mình là Trợ lý Tuyển sinh UFM đây. Mình rất vui được hỗ trợ bạn tìm hiểu về các chương trình đào tạo của trường.
+
+Hiện tại, mình chưa tìm thấy thông tin cụ thể về chương trình đào tạo **Thạc sĩ Kinh doanh quốc tế** trong dữ liệu nội bộ và trên website của UFM. Có thể chương trình này chưa được triển khai hoặc đang trong quá trình xây dựng đó bạn.
+
+Tuy nhiên, UFM có rất nhiều chương trình đào tạo Thạc sĩ chất lượng khác thuộc khối ngành kinh tế, tài chính, marketing rất hấp dẫn và phù hợp với xu thế phát triển hiện nay. Bạn có thể tham khảo thêm các ngành như:
+- Thạc sĩ Quản trị kinh doanh
+- Thạc sĩ Tài chính - Ngân hàng
+- Thạc sĩ Kế toán
+- Thạc sĩ Marketing
+
+Nếu bạn quan tâm đến các chương trình Thạc sĩ khác hoặc muốn tìm hiểu sâu hơn về định hướng phát triển của UFM trong tương lai, bạn đừng ngần ngại liên hệ trực tiếp với Phòng Đào tạo Sau Đại học của trường để được tư vấn chi tiết và cập nhật thông tin mới nhất nhé!
+
+Bạn có muốn mình tìm hiểu thêm về các chương trình Thạc sĩ khác của UFM không? 🎓
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.003s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  4.333s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a Llama)     │  0.507s  │   PASS   │
+  │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  2.220s  │   PASS   │
+  │ 🔀 MULTI-QUERY NODE (Sinh biến thể)           │  1.771s  │   PASS   │
+  │ 📊 EMBEDDING NODE (BGE-M3 batch)              │  5.922s  │   PASS   │
+  │ 🗄️ RAG NODE (Hybrid Search DB)               │  4.174s  │   PASS   │
+  │ 🌐 RAG SEARCH PIPELINE (Evaluator + Web Searc │ 13.698s  │   PASS   │
+  │ 🎯 RESPONSE NODE (Final Answer)               │  3.537s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  36.19s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_171842_TÔI_THAM_KHAO_CTDT_THSI_KDQT.txt
+

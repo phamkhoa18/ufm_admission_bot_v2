@@ -1,0 +1,257 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test Runner                        ║
+║    2026-03-23 10:45:44                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260323_104544_TOI_MUON_THAM_KHAO_CHUONG_TRINH_DAO_TAO.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❷ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❹ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❺ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❻ Guard (Deep)       │ openrouter/qwen/qwen3.5-flash-02-23             │
+  │ ❼ Multi-Query        │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❽ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❾a Vector Router     │ openrouter/baai/bge-m3                          │
+  │ ❾b Semantic Rtr      │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫c Web Search        │ openrouter/openai/gpt-4o-mini-search-preview    │
+  │ ⓫d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Care               │ openrouter/qwen/qwen3.5-flash-02-23             │
+  │ ⓭ Form Extract       │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓭ Form Draft         │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓮ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  📝 Input Query  : TOI MUON THAM KHAO CHUONG TRINH DAO TAO THAC SI KDQT
+  💬 Chat History : Trống (lượt đầu tiên)
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.001s)
+                                        Message  │  [Fast-Scan PASS — 0.001s] Sạch, cho qua Context Node
+                             normalized_query  │  toi muon tham khao chuong trinh dao tao thac si kdqt
+                                                       (52 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.001s] Sạch, cho qua Context Node
+                                                       (52 chars)
+                                    next_node  │  context
+                                                       (7 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.000s)
+                                        Message  │  Giữ nguyên (no history hoặc skip)
+                             standalone_query  │  TOI MUON THAM KHAO CHUONG TRINH DAO TAO THAC SI KDQT
+                                                       (52 chars)
+                                    next_node  │  contextual_guard
+                                                       (16 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a+2b)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (3.444s)
+                                        Message  │  [Contextual-Guard PASS — 3.444s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 3.444s] standalone_query an toàn
+                                                       (57 chars)
+                                    next_node  │  multi_query
+                                                       (11 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔀 [4] MULTI-QUERY NODE (Sinh biến thể)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.494s)
+                                multi_queries  │  [3 items]
+                                                         [0] "Tôi muốn xem chương trình đào tạo thạc sĩ Kinh doanh quốc tế"
+                                                         [1] "Xin thông tin về chương trình học thạc sĩ Quản trị kinh doanh quốc tế"
+                                                         [2] "Cho tôi tham khảo đề cương đào tạo thạc sĩ ngành Kinh doanh quốc tế"
+                                    next_node  │  embedding
+                                                       (9 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  📊 [5] EMBEDDING NODE (BGE-M3 batch)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.049s)
+                                        Message  │  Nhúng 4 vectors × 1024D thành công
+                             query_embeddings  │  [4 vectors × 1024D]
+                                    next_node  │  cache
+                                                       (5 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🗄️ [6] RAG NODE (Hybrid Search DB)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (4.177s)
+                                        Message  │  Chunks=0, Top1Cosine=0.0000, Context=0 chars
+                                  rag_context  │  ""
+                             retrieved_chunks  │  []
+                        rag_confidence_failed  │  ✗ False
+                            top1_cosine_score  │  0.0000
+                                    next_node  │  intent
+                                                       (6 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [7] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.125s)
+                                        Message  │  intent='CHUONG_TRINH_DAO_TAO' → action='PROCEED_RAG_UFM_SEARCH' | summary='Chương trình đào tạo Thạc sĩ Kinh doanh quốc tế'
+                                       intent  │  CHUONG_TRINH_DAO_TAO
+                                                       (20 chars)
+                               intent_summary  │  Chương trình đào tạo Thạc sĩ Kinh doanh quốc tế
+                                                       (47 chars)
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                                                       (22 chars)
+                         program_level_filter  │  thac_si
+                                                       (7 chars)
+                          program_name_filter  │  Kinh Doanh Quốc Tế
+                                                       (18 chars)
+                                    next_node  │  rag_search
+                                                       (10 chars)
+                              response_source  │  ""
+
+  🚦 Routing Decision: next_node='rag_search' | intent_action='PROCEED_RAG_UFM_SEARCH'
+
+──────────────────────────────────────────────────────────────────────────
+  🌐 [8] RAG SEARCH PIPELINE (Evaluator + Web Search)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (7.447s)
+                                        Message  │  source='rag_search_context', cache=MISS, citations=2
+                           ufm_search_queries  │  [2 items]
+                                                         [0] "Chương trình đào tạo Thạc sĩ Kinh doanh quốc tế"
+                                                         [1] "Thông báo tuyển sinh Thạc sĩ Kinh doanh quốc tế"
+                              pr_search_query  │  null
+                           web_search_results  │  Trường Đại học Tài chính – Marketing (UFM) đã mở ngành đào tạo Thạc sĩ ngành Kinh doanh quốc tế từ năm 2025. Chương trình đào tạo này được thiết kế nhằm cung cấp cho người học các kiến thức nâng cao về Kinh doanh quốc tế, kỹ năng chuyên môn nghề nghiệp và sự tự chủ, tinh thần trách nhiệm và đạo đức nghề nghiệp, đáp ứng yêu cầu của nhà tuyển dụng và tạo cơ hội phát triển nghề nghiệp trong lĩnh vực này. ([eng.ufm.edu.vn](https://eng.ufm.edu.vn/Resources/Images/SubDomain/HomePage/files/deanmonganh/KDQT_CH/2.%20De%20an%20mo%20nganh%20Ths%20KDQT.pdf?utm_source=openai))
+
+Để biết thêm chi tiết về chương trình đào tạo Thạc sĩ ngành Kinh doanh quốc tế, bạn có thể liên hệ với Viện Đào tạo Sau Đại học của UFM qua địa chỉ:
+
+- **Địa chỉ**: Phòng D.006, Số 778 Nguyễn Kiệm, Phường Đức Nhuận, TP.HCM
+- **Điện thoại**: 0283 997 4641
+- **Email**: daotaosdh@ufm.edu.vn
+
+([daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn/?utm_source=openai))
+                                                       (935 chars)
+                         web_search_citations  │  [2 items]
+                                                         [0] {"text": "eng.ufm.edu.vn", "url": "https://eng.ufm.edu.vn/Resources/Images/SubDomain/HomePage/files/deanmonganh/KDQT_CH/2.%20De%20an%20mo%20nganh%20Ths%20KDQT.pdf?utm_source=openai"}
+                                                         [1] {"text": "daotaosdh.ufm.edu.vn", "url": "https://daotaosdh.ufm.edu.vn/?utm_source=openai"}
+                             search_cache_hit  │  ✗ False
+                      search_cache_similarity  │  0.0000
+                               final_response  │  [DỮ LIỆU TỪ WEB]
+Trường Đại học Tài chính – Marketing (UFM) đã mở ngành đào tạo Thạc sĩ ngành Kinh doanh quốc tế từ năm 2025. Chương trình đào tạo này được thiết kế nhằm cung cấp cho người học các kiến thức nâng cao về Kinh doanh quốc tế, kỹ năng chuyên môn nghề nghiệp và sự tự chủ, tinh thần trách nhiệm và đạo đức nghề nghiệp, đáp ứng yêu cầu của nhà tuyển dụng và tạo cơ hội phát triển nghề nghiệp trong lĩnh vực này. ([eng.ufm.edu.vn](https://eng.ufm.edu.vn/Resources/Images/SubDomain/HomePage/files/deanmonganh/KDQT_CH/2.%20De%20an%20mo%20nganh%20Ths%20KDQT.pdf?utm_source=openai))
+
+Để biết thêm chi tiết về chương trình đào tạo Thạc sĩ ngành Kinh doanh quốc tế, bạn có thể liên hệ với Viện Đào tạo Sau Đại học của UFM qua địa chỉ:
+
+- **Địa chỉ**: Phòng D.006, Số 778 Nguyễn Kiệm, Phường Đức Nhuận, TP.HCM
+- **Điện thoại**: 0283 997 4641
+- **Email**: daotaosdh@ufm.edu.vn
+
+([daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn/?utm_source=openai))
+
+[NGUỒN TRÍCH DẪN]
+- [eng.ufm.edu.vn](https://eng.ufm.edu.vn/Resources/Images/SubDomain/HomePage/files/deanmonganh/KDQT_CH/2.%20De%20an%20mo%20nganh%20Ths%20KDQT.pdf?utm_source=openai)
+- [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn/?utm_source=openai)
+                                                       (1211 chars)
+                              response_source  │  rag_search_context
+                                                       (18 chars)
+                                    next_node  │  response
+                                                       (8 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [9] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.962s)
+                                        Message  │  source='rag_search_context_generated', length=1165 chars
+                               final_response  │  Chào bạn!
+
+Bạn đang muốn tham khảo chương trình đào tạo **Thạc sĩ ngành Kinh doanh quốc tế** tại UFM đúng không? Đây là một lựa chọn rất tốt đấy.
+
+Chương trình đào tạo Thạc sĩ ngành Kinh doanh quốc tế của UFM đã được mở từ năm **2025**. Chương trình này được thiết kế để:
+
+- Cung cấp cho người học các kiến thức nâng cao về Kinh doanh quốc tế.
+- Phát triển kỹ năng chuyên môn nghề nghiệp.
+- Rèn luyện sự tự chủ, tinh thần trách nhiệm và đạo đức nghề nghiệp.
+- Đáp ứng yêu cầu của nhà tuyển dụng và tạo cơ hội phát triển nghề nghiệp trong lĩnh vực này.
+
+(Nguồn: [eng.ufm.edu.vn](https://eng.ufm.edu.vn/Resources/Images/SubDomain/HomePage/files/deanmonganh/KDQT_CH/2.%20De%20an%20mo%20nganh%20Ths%20KDQT.pdf?utm_source=openai))
+
+Để biết thêm thông tin chi tiết về chương trình đào tạo này, bạn có thể liên hệ trực tiếp với Viện Đào tạo Sau Đại học của UFM qua các kênh sau:
+
+- **Địa chỉ**: Phòng D.006, Số 778 Nguyễn Kiệm, Phường Đức Nhuận, TP.HCM
+- **Điện thoại**: **0283 997 4641**
+- **Email**: daotaosdh@ufm.edu.vn
+
+(Nguồn: [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn/?utm_source=openai))
+
+Bạn còn muốn tìm hiểu thêm điều gì khác về chương trình này không?
+                                                       (1165 chars)
+                              response_source  │  rag_search_context_generated
+                                                       (28 chars)
+                                    next_node  │  end
+                                                       (3 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : rag_search_context_generated
+  Intent          : CHUONG_TRINH_DAO_TAO → PROCEED_RAG_UFM_SEARCH
+  Response Length : 1165 chars
+  Total Time      : 23.72s
+  Nodes Executed  : 9
+──────────────────────────────────────────────────────────────────────────
+
+Chào bạn!
+
+Bạn đang muốn tham khảo chương trình đào tạo **Thạc sĩ ngành Kinh doanh quốc tế** tại UFM đúng không? Đây là một lựa chọn rất tốt đấy.
+
+Chương trình đào tạo Thạc sĩ ngành Kinh doanh quốc tế của UFM đã được mở từ năm **2025**. Chương trình này được thiết kế để:
+
+- Cung cấp cho người học các kiến thức nâng cao về Kinh doanh quốc tế.
+- Phát triển kỹ năng chuyên môn nghề nghiệp.
+- Rèn luyện sự tự chủ, tinh thần trách nhiệm và đạo đức nghề nghiệp.
+- Đáp ứng yêu cầu của nhà tuyển dụng và tạo cơ hội phát triển nghề nghiệp trong lĩnh vực này.
+
+(Nguồn: [eng.ufm.edu.vn](https://eng.ufm.edu.vn/Resources/Images/SubDomain/HomePage/files/deanmonganh/KDQT_CH/2.%20De%20an%20mo%20nganh%20Ths%20KDQT.pdf?utm_source=openai))
+
+Để biết thêm thông tin chi tiết về chương trình đào tạo này, bạn có thể liên hệ trực tiếp với Viện Đào tạo Sau Đại học của UFM qua các kênh sau:
+
+- **Địa chỉ**: Phòng D.006, Số 778 Nguyễn Kiệm, Phường Đức Nhuận, TP.HCM
+- **Điện thoại**: **0283 997 4641**
+- **Email**: daotaosdh@ufm.edu.vn
+
+(Nguồn: [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn/?utm_source=openai))
+
+Bạn còn muốn tìm hiểu thêm điều gì khác về chương trình này không?
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ FAST SCAN NODE (Guard Layer 0-1)             │  0.001s  │   PASS   │
+  │ CONTEXT NODE (Query Reformulation)           │  0.000s  │   PASS   │
+  │ CONTEXTUAL GUARD NODE (Layer 2a+2b)          │  3.444s  │   PASS   │
+  │ MULTI-QUERY NODE (Sinh biến thể)             │  1.494s  │   PASS   │
+  │ EMBEDDING NODE (BGE-M3 batch)                │  2.049s  │   PASS   │
+  │ RAG NODE (Hybrid Search DB)                  │  4.177s  │   PASS   │
+  │ INTENT NODE (Router Phân Loại Ý Định)        │  2.125s  │   PASS   │
+  │ RAG SEARCH PIPELINE (Evaluator + Web Search) │  7.447s  │   PASS   │
+  │ RESPONSE NODE (Final Answer)                 │  2.962s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  23.72s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260323_104544_TOI_MUON_THAM_KHAO_CHUONG_TRINH_DAO_TAO.txt
+

@@ -1,0 +1,163 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-25 10:44:10                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_104410_em_buồn_quá_đi.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.5-flash              │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash              │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Extract       │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Draft         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : em buồn quá đi
+  💬 Chat History : Trống (lượt đầu tiên)
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.010s)
+                                        Message  │  [Fast-Scan PASS — 0.003s] Sạch, cho qua Context Node
+                             normalized_query  │  em buồn quá đi
+                                                      >(14 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.003s] Sạch, cho qua Context Node
+                                                      >(52 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.002s)
+                                        Message  │  Reformulated → 'em buồn quá đi'
+                             standalone_query  │  em buồn quá đi
+                                                      >(14 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a+2b)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.880s)
+                                        Message  │  [Contextual-Guard PASS — 1.879s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.879s] standalone_query an toàn
+                                                      >(57 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [4] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.827s)
+                                        Message  │  intent='HO_TRO_SINH_VIEN' → action='PROCEED_CARE' → next='care'
+                                       intent  │  HO_TRO_SINH_VIEN
+                                                      >(16 chars)
+                               intent_summary  │  Em buồn quá
+                                                      >(11 chars)
+                                intent_action  │  PROCEED_CARE
+                                                      >(12 chars)
+                         program_level_filter  │  null
+                          program_name_filter  │  null
+                                    next_node  │  care
+                                                      >(4 chars)
+                              response_source  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  💚 [5] CARE NODE (Chăm sóc Sinh viên)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.237s)
+                                        Message  │  Response=587 chars
+                               final_response  │  Chào bạn, mình hiểu rằng bạn đang có những cảm xúc không vui. Đừng lo lắng nhé, UFM luôn có những người bạn đồng hành sẵn sàng lắng nghe và hỗ trợ bạn.
+
+Nếu bạn cần một nơi để chia sẻ, hãy liên hệ với Phòng Công tác Sinh viên qua hotline (028) 3997 2078 hoặc email ctsv@ufm.edu.vn. Ngoài ra, UFM còn có Trung tâm Tư vấn Tâm lý hỗ trợ miễn phí cho sinh viên nữa đó. Bạn có thể đến Lầu 3, Tòa nhà A, 778 Nguyễn Kiệm, Q. Phú Nhuận, TP.HCM vào giờ hành chính (Thứ 2 - Thứ 6, 7h30 - 16h30) để được tư vấn trực tiếp nhé.
+
+Mọi chuyện rồi sẽ ổn thôi, mình tin bạn sẽ vượt qua được giai đoạn này.
+                                                      >(587 chars)
+                              response_source  │  care_template
+                                                      >(13 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [6] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.001s)
+                                        Message  │  source='care_template', length=587 chars
+                               final_response  │  Chào bạn, mình hiểu rằng bạn đang có những cảm xúc không vui. Đừng lo lắng nhé, UFM luôn có những người bạn đồng hành sẵn sàng lắng nghe và hỗ trợ bạn.
+
+Nếu bạn cần một nơi để chia sẻ, hãy liên hệ với Phòng Công tác Sinh viên qua hotline (028) 3997 2078 hoặc email ctsv@ufm.edu.vn. Ngoài ra, UFM còn có Trung tâm Tư vấn Tâm lý hỗ trợ miễn phí cho sinh viên nữa đó. Bạn có thể đến Lầu 3, Tòa nhà A, 778 Nguyễn Kiệm, Q. Phú Nhuận, TP.HCM vào giờ hành chính (Thứ 2 - Thứ 6, 7h30 - 16h30) để được tư vấn trực tiếp nhé.
+
+Mọi chuyện rồi sẽ ổn thôi, mình tin bạn sẽ vượt qua được giai đoạn này.
+                                                      >(587 chars)
+                              response_source  │  care_template
+                                                      >(13 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : care_template
+  Intent          : HO_TRO_SINH_VIEN → PROCEED_CARE
+  Response Length : 587 chars
+  Total Time      : 5.96s
+  Nodes Executed  : 6
+──────────────────────────────────────────────────────────────────────────
+
+Chào bạn, mình hiểu rằng bạn đang có những cảm xúc không vui. Đừng lo lắng nhé, UFM luôn có những người bạn đồng hành sẵn sàng lắng nghe và hỗ trợ bạn.
+
+Nếu bạn cần một nơi để chia sẻ, hãy liên hệ với Phòng Công tác Sinh viên qua hotline (028) 3997 2078 hoặc email ctsv@ufm.edu.vn. Ngoài ra, UFM còn có Trung tâm Tư vấn Tâm lý hỗ trợ miễn phí cho sinh viên nữa đó. Bạn có thể đến Lầu 3, Tòa nhà A, 778 Nguyễn Kiệm, Q. Phú Nhuận, TP.HCM vào giờ hành chính (Thứ 2 - Thứ 6, 7h30 - 16h30) để được tư vấn trực tiếp nhé.
+
+Mọi chuyện rồi sẽ ổn thôi, mình tin bạn sẽ vượt qua được giai đoạn này.
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.010s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  0.002s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a+2b)        │  1.880s  │   PASS   │
+  │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  1.827s  │   PASS   │
+  │ 💚 CARE NODE (Chăm sóc Sinh viên)             │  2.237s  │   PASS   │
+  │ 🎯 RESPONSE NODE (Final Answer)               │  0.001s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │   5.96s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_104410_em_buồn_quá_đi.txt
+

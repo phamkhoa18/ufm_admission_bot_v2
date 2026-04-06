@@ -1,0 +1,357 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-25 19:26:54                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_192654_CHO_TÔI_CTRINH_ĐÀO_TẠO_TIẾN_SĨ_BẠN_ĐANG.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.5-flash              │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash              │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Extract       │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Draft         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : CHO TÔI CTRINH ĐÀO TẠO TIẾN SĨ BẠN ĐANG CÓ
+  💬 Chat History : 2 messages
+     👤 cụ thể về tcnh
+     🤖 Cảm ơn bạn đã đặt câu hỏi, mình chưa hiểu muốn hỏi cụ thể về ngành nào hay chủ đ
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.003s)
+                                        Message  │  [Fast-Scan PASS — 0.000s] Sạch, cho qua Context Node
+                             normalized_query  │  cho tôi ctrinh đào tạo tiến sĩ bạn đang có
+                                                      >(42 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sạch, cho qua Context Node
+                                                      >(52 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (3.095s)
+                                        Message  │  Reformulated → 'Cho tôi chương trình đào tạo tiến sĩ mà UFM đang có'
+                             standalone_query  │  Cho tôi chương trình đào tạo tiến sĩ mà UFM đang có
+                                                      >(51 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a Llama)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.410s)
+                                        Message  │  [Contextual-Guard PASS — 0.410s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 0.410s] standalone_query an toàn
+                                                      >(57 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [4] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.195s)
+                                        Message  │  intent='CHUONG_TRINH_DAO_TAO' → action='PROCEED_RAG_UFM_SEARCH' → next='rag_search'
+                                       intent  │  CHUONG_TRINH_DAO_TAO
+                                                      >(20 chars)
+                               intent_summary  │  hỏi về chương trình đào tạo tiến sĩ của UFM
+                                                      >(43 chars)
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                                                      >(22 chars)
+                         program_level_filter  │  tien_si
+                                                      >(7 chars)
+                          program_name_filter  │  null
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+                              response_source  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🔀 [5] MULTI-QUERY NODE (Sinh biến thể)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.565s)
+                                        Message  │  Sinh 3 biến thể
+                                multi_queries  │  [3 items]
+                                                         [0] "UFM hiện có những chương trình tiến sĩ nào?"
+                                                         [1] "Các ngành đào tạo trình độ tiến sĩ tại Đại học Tài chính Marketing"
+                                                         [2] "Danh sách các chương trình tiến sĩ đang được UFM cung cấp"
+
+──────────────────────────────────────────────────────────────────────────
+  📊 [6] EMBEDDING NODE (BGE-M3 batch)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.323s)
+                                        Message  │  Nhúng 4 vectors × 1024D
+                             query_embeddings  │  [4 vectors × 1024D]
+
+──────────────────────────────────────────────────────────────────────────
+  🗄️ [7] RAG NODE (Hybrid Search DB)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (6.307s)
+                                        Message  │  Chunks=20, Context=3919 chars
+                                  rag_context  │  [Nguồn 1 — Tài liệu: NCS QTKD gop y.txt | Tiến sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH | Mục: CHƯƠNG TRƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH | Ngành: Quản Trị Kinh Doanh | Mã ngành: 9340101 | Năm: 2026]
+[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101]
+CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH
+
+Chương trình đào tạo Tiến sĩ ngành Quản trị kinh doanh tại Trường Đại học Tài chính – Marketing được thiết kế nhằm đào tạo những nhà khoa học, chuyên gia cấp cao có trình độ và năng lực ứng dụng thực tiễn. Chương trình bám sát triết lý giáo dục “Thực chất, đổi mới sáng tạo và hội nhập”, hướng đến việc nâng cao năng lực nghiên cứu độc lập, sáng tạo tri thức mới và giải quyết các thách thức trong môi trường kinh doanh toàn cầu.
+
+Thời gian đào tạo chuẩn là **03 năm** (đối với người có bằng Thạc sĩ) hoặc **04 năm** (đối với người có bằng Đại học loại Giỏi trở lên ngành phù hợp).
+
+---
+
+[Nguồn 2 — Tài liệu: NCS QLKT.txt | Tiến sĩ Quản Lý Kinh Tế > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN LÝ KINH TẾ | Mục: CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN LÝ KINH TẾ | Ngành: Quản Lý Kinh Tế | Mã ngành: 9310110 | Năm: 2026]
+[Chương trình: Tiến sĩ Quản Lý Kinh Tế (QLKT, qlkt, Quản lý KT) | Mã ngành: 9310110]
+CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN LÝ KINH TẾ
+
+Chương trình đào tạo Tiến sĩ ngành Quản lý kinh tế tại Trường Đại học Tài chính – Marketing được xây dựng nhằm đào tạo những nhà nghiên cứu, chuyên gia cao cấp có trình độ lý thuyết và năng lực ứng dụng chuyên sâu. Chương trình bám sát triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập", hướng đến việc rèn luyện năng lực nghiên cứu độc lập, sáng tạo tri thức mới và giải quyết các vấn đề quản lý phức tạp trong bối cảnh toàn cầu hóa.
+
+Thời gian đào tạo chuẩn là **03 năm** (đối với người có bằng Thạc sĩ) hoặc **04 năm** (đối với người có bằng Đại học loại Giỏi).
+
+---
+
+[Nguồn 3 — Tài liệu: NCS TC-NH.txt | Tiến sĩ Tài Chính – Ngân Hàng > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH TÀI CHÍNH – NGÂN HÀNG | Mục: CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH TÀI CHÍNH – NGÂN HÀNG | Ngành: Tài Chính – Ngân Hàng | Mã ngành: 9340201 | Năm: 2026]
+[Chương trình: Tiến sĩ Tài Chính – Ngân Hàng (TC-NH, TCNH, tc-nh, tcnh, Tài chính Ngân hàng) | Mã ngành: 9340201]
+CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH TÀI CHÍNH – NGÂN HÀNG
+
+Chương trình đào tạo Tiến sĩ ngành Tài chính – Ngân hàng tại Trường Đại học Tài chính – Marketing được thiết kế nhằm đào tạo những chuyên gia cao cấp, nhà khoa học có trình độ lý thuyết sâu sắc và năng lực ứng dụng thực tiễn vượt trội. Chương trình bám sát triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập", hướng đến việc rèn luyện năng lực nghiên cứu độc lập, giải quyết các vấn đề phức tạp trong lĩnh vực tài chính, ngân hàng và thuế trong bối cảnh kinh tế toàn cầu.
+
+Thời gian đào tạo chuẩn là **03 năm** (đối với người có bằng Thạc sĩ) hoặc **04 năm** (đối với người có bằng Đại học loại Giỏi).
+
+---
+
+[Nguồn 5 — Tài liệu: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md | Số: /185/TB-ĐHTCM | 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ | Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026
+[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]
+[Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ]
+
+Viện Đào tạo sau đại học – Trường Đại học Tài chính - Marketing
+Phòng D.006, số 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.
+Tư vấn tuyển sinh:
+Ngành Tài chính – Ngân hàng: 0967.657.532 - tvtuan@ufm.edu.vn (Thầy Tuấn)
+Ngành Quản trị kinh doanh: 0909.581.135 - mydieu@ufm.edu.vn (Cô Diệu)
+Ngành Quản lý kinh tế: 0343.843.868 – hs.nam@ufm.edu.vn (Thầy Nam)
+Website: http://daotaosdh.ufm.edu.vn/
+Email: tuyensinhsaudaihoc@ufm.edu.vn.
+Các thông tin chi tiết khác, vui lòng tham khảo từ trang chủ Viện Đào tạo sau đại học, hoặc liên hệ trực tiếp để được tư vấn và giải đáp.
+                                                      >(3919 chars)
+                             retrieved_chunks  │  [20 items]
+                                                         [0] {"chunk_id": "87e26df1-d52e-4cb8-9d35-4b4ca546f016", "chunk_level": "parent", "parent_id": null, "section_path": "Tiến sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.6746326684951782, "content_preview": "[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101]\nCHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nChương trình đào tạo Tiến sĩ ngành Quản trị kinh doanh", "source": "vector", "rrf_score": 0.01639344262295082}
+                                                         [1] {"chunk_id": "d322e119-fc71-438f-832b-d1b336f82dd7", "chunk_level": "child", "parent_id": "87e26df1-d52e-4cb8-9d35-4b4ca546f016", "section_path": "Tiến sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.6729685859102865, "content_preview": "[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101] — CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nChương trình đào tạo Tiến sĩ ngành Quản trị kinh doa", "source": "vector", "rrf_score": 0.016129032258064516}
+                                                         [2] {"chunk_id": "aacbf25a-3306-4835-bff4-ab304485b1fb", "chunk_level": "parent", "parent_id": null, "section_path": "Tiến sĩ Quản Lý Kinh Tế > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN LÝ KINH TẾ", "program_name": "Quản Lý Kinh Tế", "score": 0.6639243364334106, "content_preview": "[Chương trình: Tiến sĩ Quản Lý Kinh Tế (QLKT, qlkt, Quản lý KT) | Mã ngành: 9310110]\nCHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN LÝ KINH TẾ\n\nChương trình đào tạo Tiến sĩ ngành Quản lý kinh tế tại Trường Đ", "source": "vector", "rrf_score": 0.015873015873015872}
+                                                         [3] {"chunk_id": "05138bdf-626b-4230-a310-544a56958005", "chunk_level": "parent", "parent_id": null, "section_path": "Tiến sĩ Tài Chính – Ngân Hàng > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH TÀI CHÍNH – NGÂN HÀNG", "program_name": "Tài Chính – Ngân Hàng", "score": 0.6618369020126416, "content_preview": "[Chương trình: Tiến sĩ Tài Chính – Ngân Hàng (TC-NH, TCNH, tc-nh, tcnh, Tài chính Ngân hàng) | Mã ngành: 9340201]\nCHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH TÀI CHÍNH – NGÂN HÀNG\n\nChương trình đào tạo Tiến sĩ", "source": "vector", "rrf_score": 0.015625}
+                                                         [4] {"chunk_id": "021b1608-405d-4af4-9a29-033ca74c4c1d", "chunk_level": "child", "parent_id": "aacbf25a-3306-4835-bff4-ab304485b1fb", "section_path": "Tiến sĩ Quản Lý Kinh Tế > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN LÝ KINH TẾ", "program_name": "Quản Lý Kinh Tế", "score": 0.6592122709281618, "content_preview": "[Chương trình: Tiến sĩ Quản Lý Kinh Tế (QLKT, qlkt, Quản lý KT) | Mã ngành: 9310110] — CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN LÝ KINH TẾ\n\nChương trình đào tạo Tiến sĩ ngành Quản lý kinh tế tại Trường", "source": "vector", "rrf_score": 0.015384615384615385}
+                                                         [5] {"chunk_id": "02bd89fd-72b2-4dbe-aa0a-45b9aca70365", "chunk_level": "child", "parent_id": "05138bdf-626b-4230-a310-544a56958005", "section_path": "Tiến sĩ Tài Chính – Ngân Hàng > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH TÀI CHÍNH – NGÂN HÀNG", "program_name": "Tài Chính – Ngân Hàng", "score": 0.6559842824935913, "content_preview": "[Chương trình: Tiến sĩ Tài Chính – Ngân Hàng (TC-NH, TCNH, tc-nh, tcnh, Tài chính Ngân hàng) | Mã ngành: 9340201] — CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH TÀI CHÍNH – NGÂN HÀNG\n\nChương trình đào tạo Tiến ", "source": "vector", "rrf_score": 0.015151515151515152}
+                                                         [6] {"chunk_id": "4fb7dde6-8a5d-44f1-be90-c1d9aa058015", "chunk_level": "child", "parent_id": "3f57efc0-566f-46df-9c29-3bca36a9b084", "section_path": "Giới thiệu", "program_name": null, "score": 0.6389750242233276, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "vector", "rrf_score": 0.014925373134328358}
+                                                         [7] {"chunk_id": "7cbe1ebd-ab8d-444f-a697-29a3ecda2182", "chunk_level": "child", "parent_id": "6646db5c-916d-4327-9692-b0ad5ee4ec63", "section_path": "9. Địa chỉ liên hệ đăng ký và nộp hồ sơ", "program_name": null, "score": 0.6353875777356384, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ]\n\nViện Đào tạo sau đại học – Trườ", "source": "vector", "rrf_score": 0.014705882352941176}
+                                                         [8] {"chunk_id": "6646db5c-916d-4327-9692-b0ad5ee4ec63", "chunk_level": "parent", "parent_id": null, "section_path": "9. Địa chỉ liên hệ đăng ký và nộp hồ sơ", "program_name": null, "score": 0.6353875777356384, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ]\n\nViện Đào tạo sau đại học – Trườ", "source": "vector", "rrf_score": 0.014492753623188406}
+                                                         [9] {"chunk_id": "8616756e-8423-4225-94d1-3f840d8afa2f", "chunk_level": "child", "parent_id": "b4797db5-01e1-4f0e-80ea-dd13fddf7315", "section_path": "Tiến sĩ Tài Chính – Ngân Hàng > CƠ HỘI NGHỀ NGHIỆP", "program_name": "Tài Chính – Ngân Hàng", "score": 0.6156655183037818, "content_preview": "[Chương trình: Tiến sĩ Tài Chính – Ngân Hàng (TC-NH, TCNH, tc-nh, tcnh, Tài chính Ngân hàng) | Mã ngành: 9340201] — CƠ HỘI NGHỀ NGHIỆP\n\nSau khi tốt nghiệp, Tiến sĩ ngành Tài chính – Ngân hàng có thể đ", "source": "vector", "rrf_score": 0.014285714285714285}
+                                                         [10] {"chunk_id": "b4797db5-01e1-4f0e-80ea-dd13fddf7315", "chunk_level": "parent", "parent_id": null, "section_path": "Tiến sĩ Tài Chính – Ngân Hàng > CƠ HỘI NGHỀ NGHIỆP", "program_name": "Tài Chính – Ngân Hàng", "score": 0.6147735714912415, "content_preview": "[Chương trình: Tiến sĩ Tài Chính – Ngân Hàng (TC-NH, TCNH, tc-nh, tcnh, Tài chính Ngân hàng) | Mã ngành: 9340201]\nCƠ HỘI NGHỀ NGHIỆP\n\nSau khi tốt nghiệp, Tiến sĩ ngành Tài chính – Ngân hàng có thể đảm", "source": "vector", "rrf_score": 0.014084507042253521}
+                                                         [11] {"chunk_id": "033f39cc-7b10-40e8-b1a4-f9c72401a03e", "chunk_level": "parent", "parent_id": null, "section_path": "Tiến sĩ Quản Trị Kinh Doanh > CƠ HỘI NGHỀ NGHIỆP", "program_name": "Quản Trị Kinh Doanh", "score": 0.6052663326263428, "content_preview": "[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101]\nCƠ HỘI NGHỀ NGHIỆP\n\nSau khi tốt nghiệp, Tiến sĩ ngành Quản trị kinh doanh có thể đảm nhiệm các vị trí lãnh đạo", "source": "vector", "rrf_score": 0.013888888888888888}
+                                                         [12] {"chunk_id": "308ab7f5-dcb3-4852-b5e4-7c586775a38d", "chunk_level": "child", "parent_id": "033f39cc-7b10-40e8-b1a4-f9c72401a03e", "section_path": "Tiến sĩ Quản Trị Kinh Doanh > CƠ HỘI NGHỀ NGHIỆP", "program_name": "Quản Trị Kinh Doanh", "score": 0.6038986624449095, "content_preview": "[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101] — CƠ HỘI NGHỀ NGHIỆP\n\nSau khi tốt nghiệp, Tiến sĩ ngành Quản trị kinh doanh có thể đảm nhiệm các vị trí lãnh đ", "source": "vector", "rrf_score": 0.0136986301369863}
+                                                         [13] {"chunk_id": "b3ad2640-6d74-4949-a02d-a2b37f6214c4", "chunk_level": "child", "parent_id": "90afc9c1-eccf-4fcd-b6b8-eaa2eb164054", "section_path": "Giới thiệu > **Điều 4 . Văn bằng, chứng chỉ ngoại ngữ đủ điều kiện xét tốt nghiệp thạc sĩ**", "program_name": null, "score": 0.6017963469563828, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "vector", "rrf_score": 0.013513513513513514}
+                                                         [14] {"chunk_id": "90afc9c1-eccf-4fcd-b6b8-eaa2eb164054", "chunk_level": "parent", "parent_id": null, "section_path": "Giới thiệu > **Điều 4 . Văn bằng, chứng chỉ ngoại ngữ đủ điều kiện xét tốt nghiệp thạc sĩ**", "program_name": null, "score": 0.6017963469563828, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "vector", "rrf_score": 0.013333333333333334}
+                                                         [15] {"chunk_id": "e4a96bc1-aba3-4620-9f82-487a76f91e62", "chunk_level": "parent", "parent_id": null, "section_path": "Giới thiệu > **Điều 6. Điều khoản thi hành**", "program_name": null, "score": 0.6004432439804077, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "vector", "rrf_score": 0.013157894736842105}
+                                                         [16] {"chunk_id": "47f2322e-013c-4547-b754-b87ccb3ef974", "chunk_level": "child", "parent_id": "e4a96bc1-aba3-4620-9f82-487a76f91e62", "section_path": "Giới thiệu > **Điều 6. Điều khoản thi hành**", "program_name": null, "score": 0.6004432439804077, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "vector", "rrf_score": 0.012987012987012988}
+                                                         [17] {"chunk_id": "873bfa63-63a0-4e2a-98cf-7568a3bcbbf9", "chunk_level": "parent", "parent_id": null, "section_path": "Tiến sĩ Quản Lý Kinh Tế > CƠ HỘI NGHỀ NGHIỆP", "program_name": "Quản Lý Kinh Tế", "score": 0.583507239818573, "content_preview": "[Chương trình: Tiến sĩ Quản Lý Kinh Tế (QLKT, qlkt, Quản lý KT) | Mã ngành: 9310110]\nCƠ HỘI NGHỀ NGHIỆP\n\nSau khi tốt nghiệp, Tiến sĩ ngành Quản lý kinh tế có thể đảm nhiệm các vị trí lãnh đạo và chuyê", "source": "vector", "rrf_score": 0.01282051282051282}
+                                                         [18] {"chunk_id": "a3510efa-9142-4d48-ba56-5e6e16d8f691", "chunk_level": "child", "parent_id": "873bfa63-63a0-4e2a-98cf-7568a3bcbbf9", "section_path": "Tiến sĩ Quản Lý Kinh Tế > CƠ HỘI NGHỀ NGHIỆP", "program_name": "Quản Lý Kinh Tế", "score": 0.5826448549416585, "content_preview": "[Chương trình: Tiến sĩ Quản Lý Kinh Tế (QLKT, qlkt, Quản lý KT) | Mã ngành: 9310110] — CƠ HỘI NGHỀ NGHIỆP\n\nSau khi tốt nghiệp, Tiến sĩ ngành Quản lý kinh tế có thể đảm nhiệm các vị trí lãnh đạo và chu", "source": "vector", "rrf_score": 0.012658227848101266}
+                                                         [19] {"chunk_id": "bcedbcdc-e13c-4dca-8084-d0c56090e367", "chunk_level": "child", "parent_id": "3f57efc0-566f-46df-9c29-3bca36a9b084", "section_path": "Giới thiệu", "program_name": null, "score": 0.5789488303034811, "content_preview": "**Văn bản hướng dẫn thực hiện điều kiện ngoại ngữ xét tuyển sinh thạc sĩ, tiến sĩ và tốt nghiệp đối với học viên cao học tại Trường Đại học Tài chính – Marketing**\n*(Ban hành kèm theo Quyết định số 53", "source": "vector", "rrf_score": 0.0125}
+
+──────────────────────────────────────────────────────────────────────────
+  🌐 [8] RAG SEARCH PIPELINE (Evaluator + Web Search)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.002s)
+                                        Message  │  cache=MISS, citations=0
+                           ufm_search_queries  │  null
+                              pr_search_query  │  null
+                           web_search_results  │  null
+                         web_search_citations  │  null
+                             search_cache_hit  │  ✗ False
+                      search_cache_similarity  │  0.0000
+                               final_response  │  [Nguồn 1 — Tài liệu: NCS QTKD gop y.txt | Tiến sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH | Mục: CHƯƠNG TRƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH | Ngành: Quản Trị Kinh Doanh | Mã ngành: 9340101 | Năm: 2026]
+[Chương trình: Tiến sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 9340101]
+CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN TRỊ KINH DOANH
+
+Chương trình đào tạo Tiến sĩ ngành Quản trị kinh doanh tại Trường Đại học Tài chính – Marketing được thiết kế nhằm đào tạo những nhà khoa học, chuyên gia cấp cao có trình độ và năng lực ứng dụng thực tiễn. Chương trình bám sát triết lý giáo dục “Thực chất, đổi mới sáng tạo và hội nhập”, hướng đến việc nâng cao năng lực nghiên cứu độc lập, sáng tạo tri thức mới và giải quyết các thách thức trong môi trường kinh doanh toàn cầu.
+
+Thời gian đào tạo chuẩn là **03 năm** (đối với người có bằng Thạc sĩ) hoặc **04 năm** (đối với người có bằng Đại học loại Giỏi trở lên ngành phù hợp).
+
+---
+
+[Nguồn 2 — Tài liệu: NCS QLKT.txt | Tiến sĩ Quản Lý Kinh Tế > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN LÝ KINH TẾ | Mục: CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN LÝ KINH TẾ | Ngành: Quản Lý Kinh Tế | Mã ngành: 9310110 | Năm: 2026]
+[Chương trình: Tiến sĩ Quản Lý Kinh Tế (QLKT, qlkt, Quản lý KT) | Mã ngành: 9310110]
+CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH QUẢN LÝ KINH TẾ
+
+Chương trình đào tạo Tiến sĩ ngành Quản lý kinh tế tại Trường Đại học Tài chính – Marketing được xây dựng nhằm đào tạo những nhà nghiên cứu, chuyên gia cao cấp có trình độ lý thuyết và năng lực ứng dụng chuyên sâu. Chương trình bám sát triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập", hướng đến việc rèn luyện năng lực nghiên cứu độc lập, sáng tạo tri thức mới và giải quyết các vấn đề quản lý phức tạp trong bối cảnh toàn cầu hóa.
+
+Thời gian đào tạo chuẩn là **03 năm** (đối với người có bằng Thạc sĩ) hoặc **04 năm** (đối với người có bằng Đại học loại Giỏi).
+
+---
+
+[Nguồn 3 — Tài liệu: NCS TC-NH.txt | Tiến sĩ Tài Chính – Ngân Hàng > CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH TÀI CHÍNH – NGÂN HÀNG | Mục: CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH TÀI CHÍNH – NGÂN HÀNG | Ngành: Tài Chính – Ngân Hàng | Mã ngành: 9340201 | Năm: 2026]
+[Chương trình: Tiến sĩ Tài Chính – Ngân Hàng (TC-NH, TCNH, tc-nh, tcnh, Tài chính Ngân hàng) | Mã ngành: 9340201]
+CHƯƠNG TRÌNH ĐÀO TẠO TIẾN SĨ NGÀNH TÀI CHÍNH – NGÂN HÀNG
+
+Chương trình đào tạo Tiến sĩ ngành Tài chính – Ngân hàng tại Trường Đại học Tài chính – Marketing được thiết kế nhằm đào tạo những chuyên gia cao cấp, nhà khoa học có trình độ lý thuyết sâu sắc và năng lực ứng dụng thực tiễn vượt trội. Chương trình bám sát triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập", hướng đến việc rèn luyện năng lực nghiên cứu độc lập, giải quyết các vấn đề phức tạp trong lĩnh vực tài chính, ngân hàng và thuế trong bối cảnh kinh tế toàn cầu.
+
+Thời gian đào tạo chuẩn là **03 năm** (đối với người có bằng Thạc sĩ) hoặc **04 năm** (đối với người có bằng Đại học loại Giỏi).
+
+---
+
+[Nguồn 5 — Tài liệu: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md | Số: /185/TB-ĐHTCM | 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ | Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ | Năm: 2026]
+# THÔNG BÁO
+## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026
+[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]
+[Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ]
+
+Viện Đào tạo sau đại học – Trường Đại học Tài chính - Marketing
+Phòng D.006, số 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.
+Tư vấn tuyển sinh:
+Ngành Tài chính – Ngân hàng: 0967.657.532 - tvtuan@ufm.edu.vn (Thầy Tuấn)
+Ngành Quản trị kinh doanh: 0909.581.135 - mydieu@ufm.edu.vn (Cô Diệu)
+Ngành Quản lý kinh tế: 0343.843.868 – hs.nam@ufm.edu.vn (Thầy Nam)
+Website: http://daotaosdh.ufm.edu.vn/
+Email: tuyensinhsaudaihoc@ufm.edu.vn.
+Các thông tin chi tiết khác, vui lòng tham khảo từ trang chủ Viện Đào tạo sau đại học, hoặc liên hệ trực tiếp để được tư vấn và giải đáp.
+                                                      >(3919 chars)
+                              response_source  │  rag_db_only
+                                                      >(11 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [9] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (5.122s)
+                                        Message  │  source='rag_db_only_generated', length=2743 chars
+                               final_response  │  Chào bạn nhé! Mình là Trợ lý Tuyển sinh UFM đây. Bạn đang quan tâm đến chương trình đào tạo Tiến sĩ tại UFM đúng không? Đây là một lựa chọn tuyệt vời để nâng tầm kiến thức và sự nghiệp đó! 🎓
+
+Hiện tại, UFM đang có các chương trình đào tạo Tiến sĩ với triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập", hướng đến việc đào tạo những nhà khoa học, chuyên gia cấp cao có năng lực nghiên cứu độc lập và giải quyết các thách thức trong môi trường kinh doanh toàn cầu.
+
+Cụ thể, UFM đang đào tạo 3 ngành Tiến sĩ sau:
+
+*   **1. Tiến sĩ Quản trị Kinh doanh (Mã ngành: 9340101)**
+    *   Chương trình này được thiết kế để đào tạo những nhà khoa học, chuyên gia cấp cao có trình độ và năng lực ứng dụng thực tiễn.
+    *   Thời gian đào tạo chuẩn là **03 năm** (đối với người có bằng Thạc sĩ) hoặc **04 năm** (đối với người có bằng Đại học loại Giỏi trở lên ngành phù hợp).
+    *   Để biết thêm chi tiết, bạn có thể tham khảo [NCS QTKD gop y.txt].
+
+*   **2. Tiến sĩ Quản lý Kinh tế (Mã ngành: 9310110)**
+    *   Chương trình này nhằm đào tạo những nhà nghiên cứu, chuyên gia cao cấp có trình độ lý thuyết và năng lực ứng dụng chuyên sâu, giải quyết các vấn đề quản lý phức tạp trong bối cảnh toàn cầu hóa.
+    *   Thời gian đào tạo chuẩn là **03 năm** (đối với người có bằng Thạc sĩ) hoặc **04 năm** (đối với người có bằng Đại học loại Giỏi).
+    *   Thông tin chi tiết có trong [NCS QLKT.txt].
+
+*   **3. Tiến sĩ Tài chính – Ngân hàng (Mã ngành: 9340201)**
+    *   Chương trình này được thiết kế để đào tạo những chuyên gia cao cấp, nhà khoa học có trình độ lý thuyết sâu sắc và năng lực ứng dụng thực tiễn vượt trội trong lĩnh vực tài chính, ngân hàng và thuế.
+    *   Thời gian đào tạo chuẩn là **03 năm** (đối với người có bằng Thạc sĩ) hoặc **04 năm** (đối với người có bằng Đại học loại Giỏi).
+    *   Bạn có thể xem thêm chi tiết tại [NCS TC-NH.txt].
+
+Nếu bạn muốn tìm hiểu kỹ hơn về từng ngành hoặc có bất kỳ thắc mắc nào khác, bạn có thể liên hệ trực tiếp với Viện Đào tạo sau đại học – Trường Đại học Tài chính - Marketing tại Phòng D.006, số 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.
+
+Hoặc bạn có thể liên hệ các số điện thoại và email dưới đây để được tư vấn cụ thể hơn nhé:
+*   Ngành Tài chính – Ngân hàng: **0967.657.532** - tvtuan@ufm.edu.vn (Thầy Tuấn)
+*   Ngành Quản trị kinh doanh: **0909.581.135** - mydieu@ufm.edu.vn (Cô Diệu)
+*   Ngành Quản lý kinh tế: **0343.843.868** – hs.nam@ufm.edu.vn (Thầy Nam)
+
+Bạn cũng có thể truy cập website của Viện Đào tạo sau đại học tại [http://daotaosdh.ufm.edu.vn/](http://daotaosdh.ufm.edu.vn/) hoặc gửi email về tuyensinhsaudaihoc@ufm.edu.vn để biết thêm thông tin chi tiết.
+
+Hy vọng những thông tin này hữu ích cho bạn! Bạn có muốn mình giải thích thêm về ngành nào không? 😊
+                                                      >(2743 chars)
+                              response_source  │  rag_db_only_generated
+                                                      >(21 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : rag_db_only_generated
+  Intent          : CHUONG_TRINH_DAO_TAO → PROCEED_RAG_UFM_SEARCH
+  Response Length : 2743 chars
+  Total Time      : 21.05s
+  Nodes Executed  : 9
+──────────────────────────────────────────────────────────────────────────
+
+Chào bạn nhé! Mình là Trợ lý Tuyển sinh UFM đây. Bạn đang quan tâm đến chương trình đào tạo Tiến sĩ tại UFM đúng không? Đây là một lựa chọn tuyệt vời để nâng tầm kiến thức và sự nghiệp đó! 🎓
+
+Hiện tại, UFM đang có các chương trình đào tạo Tiến sĩ với triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập", hướng đến việc đào tạo những nhà khoa học, chuyên gia cấp cao có năng lực nghiên cứu độc lập và giải quyết các thách thức trong môi trường kinh doanh toàn cầu.
+
+Cụ thể, UFM đang đào tạo 3 ngành Tiến sĩ sau:
+
+*   **1. Tiến sĩ Quản trị Kinh doanh (Mã ngành: 9340101)**
+    *   Chương trình này được thiết kế để đào tạo những nhà khoa học, chuyên gia cấp cao có trình độ và năng lực ứng dụng thực tiễn.
+    *   Thời gian đào tạo chuẩn là **03 năm** (đối với người có bằng Thạc sĩ) hoặc **04 năm** (đối với người có bằng Đại học loại Giỏi trở lên ngành phù hợp).
+    *   Để biết thêm chi tiết, bạn có thể tham khảo [NCS QTKD gop y.txt].
+
+*   **2. Tiến sĩ Quản lý Kinh tế (Mã ngành: 9310110)**
+    *   Chương trình này nhằm đào tạo những nhà nghiên cứu, chuyên gia cao cấp có trình độ lý thuyết và năng lực ứng dụng chuyên sâu, giải quyết các vấn đề quản lý phức tạp trong bối cảnh toàn cầu hóa.
+    *   Thời gian đào tạo chuẩn là **03 năm** (đối với người có bằng Thạc sĩ) hoặc **04 năm** (đối với người có bằng Đại học loại Giỏi).
+    *   Thông tin chi tiết có trong [NCS QLKT.txt].
+
+*   **3. Tiến sĩ Tài chính – Ngân hàng (Mã ngành: 9340201)**
+    *   Chương trình này được thiết kế để đào tạo những chuyên gia cao cấp, nhà khoa học có trình độ lý thuyết sâu sắc và năng lực ứng dụng thực tiễn vượt trội trong lĩnh vực tài chính, ngân hàng và thuế.
+    *   Thời gian đào tạo chuẩn là **03 năm** (đối với người có bằng Thạc sĩ) hoặc **04 năm** (đối với người có bằng Đại học loại Giỏi).
+    *   Bạn có thể xem thêm chi tiết tại [NCS TC-NH.txt].
+
+Nếu bạn muốn tìm hiểu kỹ hơn về từng ngành hoặc có bất kỳ thắc mắc nào khác, bạn có thể liên hệ trực tiếp với Viện Đào tạo sau đại học – Trường Đại học Tài chính - Marketing tại Phòng D.006, số 778 Nguyễn Kiệm, phường Đức Nhuận, Thành phố Hồ Chí Minh.
+
+Hoặc bạn có thể liên hệ các số điện thoại và email dưới đây để được tư vấn cụ thể hơn nhé:
+*   Ngành Tài chính – Ngân hàng: **0967.657.532** - tvtuan@ufm.edu.vn (Thầy Tuấn)
+*   Ngành Quản trị kinh doanh: **0909.581.135** - mydieu@ufm.edu.vn (Cô Diệu)
+*   Ngành Quản lý kinh tế: **0343.843.868** – hs.nam@ufm.edu.vn (Thầy Nam)
+
+Bạn cũng có thể truy cập website của Viện Đào tạo sau đại học tại [http://daotaosdh.ufm.edu.vn/](http://daotaosdh.ufm.edu.vn/) hoặc gửi email về tuyensinhsaudaihoc@ufm.edu.vn để biết thêm thông tin chi tiết.
+
+Hy vọng những thông tin này hữu ích cho bạn! Bạn có muốn mình giải thích thêm về ngành nào không? 😊
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.003s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  3.095s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a Llama)     │  0.410s  │   PASS   │
+  │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  2.195s  │   PASS   │
+  │ 🔀 MULTI-QUERY NODE (Sinh biến thể)           │  1.565s  │   PASS   │
+  │ 📊 EMBEDDING NODE (BGE-M3 batch)              │  2.323s  │   PASS   │
+  │ 🗄️ RAG NODE (Hybrid Search DB)               │  6.307s  │   PASS   │
+  │ 🌐 RAG SEARCH PIPELINE (Evaluator + Web Searc │  0.002s  │   PASS   │
+  │ 🎯 RESPONSE NODE (Final Answer)               │  5.122s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  21.05s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_192654_CHO_TÔI_CTRINH_ĐÀO_TẠO_TIẾN_SĨ_BẠN_ĐANG.txt
+

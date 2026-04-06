@@ -1,0 +1,269 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-25 09:20:25                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_092025_Cho_mình_xin_mẫu_đơn_hủy_học_phần_nhé.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.5-flash              │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash              │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Extract       │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Draft         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : "Cho mình xin mẫu đơn hủy học phần nhé. Mình đăng ký nhầm môn Kế toán đại cương."
+  💬 Chat History : Trống (lượt đầu tiên)
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.017s)
+                                        Message  │  [Fast-Scan PASS — 0.005s] Sạch, cho qua Context Node
+                             normalized_query  │  "cho mình xin mẫu đơn hủy học phần nhé. mình đăng ký nhầm môn kế toán đại cương."
+                                                      >(81 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.005s] Sạch, cho qua Context Node
+                                                      >(52 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.001s)
+                                        Message  │  Reformulated → '"Cho mình xin mẫu đơn hủy học phần nhé. Mình đăng ký nhầm môn Kế toán đại cương....'
+                             standalone_query  │  "Cho mình xin mẫu đơn hủy học phần nhé. Mình đăng ký nhầm môn Kế toán đại cương."
+                                                      >(81 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a+2b)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.312s)
+                                        Message  │  [Contextual-Guard PASS — 2.311s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 2.311s] standalone_query an toàn
+                                                      >(57 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [4] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.085s)
+                                        Message  │  intent='TAO_MAU_DON' → action='PROCEED_FORM' → next='form'
+                                       intent  │  TAO_MAU_DON
+                                                      >(11 chars)
+                               intent_summary  │  Mẫu đơn hủy học phần Kế toán đại cương
+                                                      >(38 chars)
+                                intent_action  │  PROCEED_FORM
+                                                      >(12 chars)
+                         program_level_filter  │  null
+                          program_name_filter  │  Kế Toán
+                                                      >(7 chars)
+                                    next_node  │  form
+                                                      >(4 chars)
+                              response_source  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  📝 [5] FORM NODE (Agent Mẫu đơn)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (6.446s)
+                                        Message  │  Response=2274 chars
+                               final_response  │  CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM
+Độc lập – Tự do – Hạnh phúc
+---------------------------------
+
+**ĐƠN HÀNH CHÍNH CHUNG**
+
+Kính gửi: Ban Giám hiệu Trường Đại học Tài chính – Marketing
+
+Tôi tên là: _________________________________________________________________
+Ngày sinh: _________________________________________________________________
+Nơi sinh: _________________________________________________________________
+Giới tính: _________________________________________________________________
+Số CCCD/CMND: ____________________ Ngày cấp: _____________ Nơi cấp: _________
+Địa chỉ thường trú: _________________________________________________________
+_________________________________________________________________________
+Địa chỉ liên lạc: ___________________________________________________________
+_________________________________________________________________________
+Điện thoại: _________________________ Email: ________________________________
+Là sinh viên/cán bộ/giảng viên (chọn một): ______________________________________
+Mã số sinh viên/cán bộ/giảng viên: ___________________________________________
+Khoa/Phòng/Ban: _________________________________________________________
+Lớp/Chức vụ: ____________________________________________________________
+
+Nội dung đề nghị:
+Tôi viết đơn này kính đề nghị Ban Giám hiệu Trường Đại học Tài chính – Marketing xem xét và giải quyết cho tôi về việc [Nội dung tham khảo: xin xác nhận thông tin sinh viên để hoàn thiện hồ sơ vay vốn tín dụng sinh viên].
+
+Lý do:
+[Nội dung tham khảo: Tôi hiện đang là sinh viên năm thứ ba của Trường, mã số sinh viên _______________. Gia đình tôi gặp khó khăn về tài chính, nên tôi mong muốn được vay vốn tín dụng sinh viên để trang trải học phí và chi phí sinh hoạt trong quá trình học tập tại Trường. Để hoàn thiện hồ sơ vay vốn, tôi cần có giấy xác nhận của Nhà trường về việc tôi đang theo học tại Trường.]
+
+Kính mong Ban Giám hiệu và các Phòng/Ban liên quan xem xét, giải quyết yêu cầu của tôi trong thời gian sớm nhất.
+
+Tôi xin cam đoan những thông tin trên là hoàn toàn đúng sự thật và chịu trách nhiệm trước pháp luật về những thông tin đã cung cấp.
+
+Xin trân trọng cảm ơn!
+
+*_________, ngày ____ tháng ____ năm ____*
+**Người làm đơn**
+(Ký và ghi rõ họ tên)
+
+_________________________
+                                                      >(2274 chars)
+                              response_source  │  form_template
+                                                      >(13 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [6] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.000s)
+                                        Message  │  source='form_template', length=2274 chars
+                               final_response  │  CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM
+Độc lập – Tự do – Hạnh phúc
+---------------------------------
+
+**ĐƠN HÀNH CHÍNH CHUNG**
+
+Kính gửi: Ban Giám hiệu Trường Đại học Tài chính – Marketing
+
+Tôi tên là: _________________________________________________________________
+Ngày sinh: _________________________________________________________________
+Nơi sinh: _________________________________________________________________
+Giới tính: _________________________________________________________________
+Số CCCD/CMND: ____________________ Ngày cấp: _____________ Nơi cấp: _________
+Địa chỉ thường trú: _________________________________________________________
+_________________________________________________________________________
+Địa chỉ liên lạc: ___________________________________________________________
+_________________________________________________________________________
+Điện thoại: _________________________ Email: ________________________________
+Là sinh viên/cán bộ/giảng viên (chọn một): ______________________________________
+Mã số sinh viên/cán bộ/giảng viên: ___________________________________________
+Khoa/Phòng/Ban: _________________________________________________________
+Lớp/Chức vụ: ____________________________________________________________
+
+Nội dung đề nghị:
+Tôi viết đơn này kính đề nghị Ban Giám hiệu Trường Đại học Tài chính – Marketing xem xét và giải quyết cho tôi về việc [Nội dung tham khảo: xin xác nhận thông tin sinh viên để hoàn thiện hồ sơ vay vốn tín dụng sinh viên].
+
+Lý do:
+[Nội dung tham khảo: Tôi hiện đang là sinh viên năm thứ ba của Trường, mã số sinh viên _______________. Gia đình tôi gặp khó khăn về tài chính, nên tôi mong muốn được vay vốn tín dụng sinh viên để trang trải học phí và chi phí sinh hoạt trong quá trình học tập tại Trường. Để hoàn thiện hồ sơ vay vốn, tôi cần có giấy xác nhận của Nhà trường về việc tôi đang theo học tại Trường.]
+
+Kính mong Ban Giám hiệu và các Phòng/Ban liên quan xem xét, giải quyết yêu cầu của tôi trong thời gian sớm nhất.
+
+Tôi xin cam đoan những thông tin trên là hoàn toàn đúng sự thật và chịu trách nhiệm trước pháp luật về những thông tin đã cung cấp.
+
+Xin trân trọng cảm ơn!
+
+*_________, ngày ____ tháng ____ năm ____*
+**Người làm đơn**
+(Ký và ghi rõ họ tên)
+
+_________________________
+                                                      >(2274 chars)
+                              response_source  │  form_template
+                                                      >(13 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : form_template
+  Intent          : TAO_MAU_DON → PROCEED_FORM
+  Response Length : 2274 chars
+  Total Time      : 10.87s
+  Nodes Executed  : 6
+──────────────────────────────────────────────────────────────────────────
+
+CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM
+Độc lập – Tự do – Hạnh phúc
+---------------------------------
+
+**ĐƠN HÀNH CHÍNH CHUNG**
+
+Kính gửi: Ban Giám hiệu Trường Đại học Tài chính – Marketing
+
+Tôi tên là: _________________________________________________________________
+Ngày sinh: _________________________________________________________________
+Nơi sinh: _________________________________________________________________
+Giới tính: _________________________________________________________________
+Số CCCD/CMND: ____________________ Ngày cấp: _____________ Nơi cấp: _________
+Địa chỉ thường trú: _________________________________________________________
+_________________________________________________________________________
+Địa chỉ liên lạc: ___________________________________________________________
+_________________________________________________________________________
+Điện thoại: _________________________ Email: ________________________________
+Là sinh viên/cán bộ/giảng viên (chọn một): ______________________________________
+Mã số sinh viên/cán bộ/giảng viên: ___________________________________________
+Khoa/Phòng/Ban: _________________________________________________________
+Lớp/Chức vụ: ____________________________________________________________
+
+Nội dung đề nghị:
+Tôi viết đơn này kính đề nghị Ban Giám hiệu Trường Đại học Tài chính – Marketing xem xét và giải quyết cho tôi về việc [Nội dung tham khảo: xin xác nhận thông tin sinh viên để hoàn thiện hồ sơ vay vốn tín dụng sinh viên].
+
+Lý do:
+[Nội dung tham khảo: Tôi hiện đang là sinh viên năm thứ ba của Trường, mã số sinh viên _______________. Gia đình tôi gặp khó khăn về tài chính, nên tôi mong muốn được vay vốn tín dụng sinh viên để trang trải học phí và chi phí sinh hoạt trong quá trình học tập tại Trường. Để hoàn thiện hồ sơ vay vốn, tôi cần có giấy xác nhận của Nhà trường về việc tôi đang theo học tại Trường.]
+
+Kính mong Ban Giám hiệu và các Phòng/Ban liên quan xem xét, giải quyết yêu cầu của tôi trong thời gian sớm nhất.
+
+Tôi xin cam đoan những thông tin trên là hoàn toàn đúng sự thật và chịu trách nhiệm trước pháp luật về những thông tin đã cung cấp.
+
+Xin trân trọng cảm ơn!
+
+*_________, ngày ____ tháng ____ năm ____*
+**Người làm đơn**
+(Ký và ghi rõ họ tên)
+
+_________________________
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.017s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  0.001s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a+2b)        │  2.312s  │   PASS   │
+  │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  2.085s  │   PASS   │
+  │ 📝 FORM NODE (Agent Mẫu đơn)                  │  6.446s  │   PASS   │
+  │ 🎯 RESPONSE NODE (Final Answer)               │  0.000s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  10.87s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_092025_Cho_mình_xin_mẫu_đơn_hủy_học_phần_nhé.txt
+

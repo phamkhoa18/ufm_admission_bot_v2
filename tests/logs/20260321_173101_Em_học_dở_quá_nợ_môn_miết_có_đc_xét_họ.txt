@@ -1,0 +1,106 @@
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260321_173101_Em_học_dở_quá_nợ_môn_miết_có_đc_xét_họ.txt
+
+========================================================================
+  UFM ADMISSION BOT — Pipeline E2E Test Runner
+  2026-03-21 17:31:01
+========================================================================
+
+  Input Query: Em học dở quá, nợ môn miết, có đc xét học thạc sĩ ko
+
+
+────────────────────────────────────────────────────────────────────────
+  [1] FAST SCAN NODE
+────────────────────────────────────────────────────────────────────────
+                                  Status  │  ⛔ BLOCKED (0.002s)
+                                 Message  │  [Fast-Scan PASS — 0.002s] Sạch, cho qua Context Node
+                      normalized_query  │  em học dở quá, nợ môn miết, có được xét học thạc sĩ không
+                      fast_scan_passed  │  True
+                     fast_scan_message  │  [Fast-Scan PASS — 0.002s] Sạch, cho qua Context Node
+                             next_node  │  context
+
+────────────────────────────────────────────────────────────────────────
+  [2] CONTEXT NODE (Reformulate)
+────────────────────────────────────────────────────────────────────────
+                                  Status  │  ⛔ BLOCKED (0.000s)
+                                 Message  │  [Fast-Scan PASS — 0.002s] Sạch, cho qua Context Node
+                      standalone_query  │  Em học dở quá, nợ môn miết, có đc xét học thạc sĩ ko
+                             next_node  │  contextual_guard
+
+────────────────────────────────────────────────────────────────────────
+  [3] CONTEXTUAL GUARD NODE
+────────────────────────────────────────────────────────────────────────
+                                  Status  │  ✅ PASS (3.333s)
+                                 Message  │  [Fast-Scan PASS — 0.002s] Sạch, cho qua Context Node
+               contextual_guard_passed  │  True
+              contextual_guard_message  │  [Contextual-Guard PASS — 3.333s] standalone_query an toàn
+                             next_node  │  multi_query
+
+────────────────────────────────────────────────────────────────────────
+  [4] MULTI-QUERY NODE
+────────────────────────────────────────────────────────────────────────
+                                  Status  │  ✅ PASS (1.553s)
+                                 Message  │  [Fast-Scan PASS — 0.002s] Sạch, cho qua Context Node
+                         multi_queries  │  ['Học lực yếu, còn nợ môn có đủ điều kiện học lên cao học không?', 'Trường hợp học kém, chưa trả hết môn thì có được đăng ký xét tuyển thạc sĩ?', 'Nợ nhiều môn, kết quả học tập không tốt nghiệp có cơ hội học thạc sĩ không?']
+                             next_node  │  embedding
+
+────────────────────────────────────────────────────────────────────────
+  [5] EMBEDDING NODE
+────────────────────────────────────────────────────────────────────────
+                                  Status  │  ✅ PASS (2.417s)
+                                 Message  │  [Fast-Scan PASS — 0.002s] Sạch, cho qua Context Node
+                      query_embeddings  │  [4 vectors, dim=1024]
+                             next_node  │  cache
+
+────────────────────────────────────────────────────────────────────────
+  [6] RAG NODE (Hybrid Search)
+────────────────────────────────────────────────────────────────────────
+                                  Status  │  ✅ PASS (4.174s)
+                                 Message  │  [Fast-Scan PASS — 0.002s] Sạch, cho qua Context Node
+                           rag_context  │  
+                      retrieved_chunks  │  [0 vectors, dim=0]
+                 rag_confidence_failed  │  False
+                     top1_cosine_score  │  0.0
+                             next_node  │  intent
+
+────────────────────────────────────────────────────────────────────────
+  [7] INTENT NODE (Router)
+────────────────────────────────────────────────────────────────────────
+                                  Status  │  ✅ PASS (1.298s)
+                                 Message  │  [Fast-Scan PASS — 0.002s] Sạch, cho qua Context Node
+                                intent  │  HO_TRO_SINH_VIEN
+                        intent_summary  │  Học lực yếu, nợ môn nhiều có được xét học thạc sĩ không
+                         intent_action  │  PROCEED_CARE
+                             next_node  │  care
+                       response_source  │  
+
+────────────────────────────────────────────────────────────────────────
+  [8] CARE NODE (Chăm sóc SV)
+────────────────────────────────────────────────────────────────────────
+                                  Status  │  ✅ PASS (24.911s)
+                                 Message  │  [Fast-Scan PASS — 0.002s] Sạch, cho qua Context Node
+                        final_response  │  Mình rất thấu hiểu nỗi lo lắng của bạn khi đối mặt với nợ môn, nhưng đừng quá áp lực nhé. Để được tư vấn cụ thể về hồ sơ học thạc sĩ hay cách xử lý học vụ, bạn hãy liên hệ Phòng Công tác Sinh viên qua hotline (028) 3997 2078 hoặc email ctsv@ufm.edu.vn. Bạn có thể đến trực tiếp Lầu 3, Tòa nhà A, 778 ... (512 chars)
+                       response_source  │  care_template
+                             next_node  │  response
+
+────────────────────────────────────────────────────────────────────────
+  [9] RESPONSE NODE (Final)
+────────────────────────────────────────────────────────────────────────
+                                  Status  │  ✅ PASS (0.003s)
+                                 Message  │  [Fast-Scan PASS — 0.002s] Sạch, cho qua Context Node
+                        final_response  │  Mình rất thấu hiểu nỗi lo lắng của bạn khi đối mặt với nợ môn, nhưng đừng quá áp lực nhé. Để được tư vấn cụ thể về hồ sơ học thạc sĩ hay cách xử lý học vụ, bạn hãy liên hệ Phòng Công tác Sinh viên qua hotline (028) 3997 2078 hoặc email ctsv@ufm.edu.vn. Bạn có thể đến trực tiếp Lầu 3, Tòa nhà A, 778 ... (512 chars)
+                       response_source  │  care_template
+                             next_node  │  end
+
+════════════════════════════════════════════════════════════════════════
+  FINAL RESPONSE
+════════════════════════════════════════════════════════════════════════
+  Source: care_template
+  Length: 512 chars
+────────────────────────────────────────────────────────────────────────
+Mình rất thấu hiểu nỗi lo lắng của bạn khi đối mặt với nợ môn, nhưng đừng quá áp lực nhé. Để được tư vấn cụ thể về hồ sơ học thạc sĩ hay cách xử lý học vụ, bạn hãy liên hệ Phòng Công tác Sinh viên qua hotline (028) 3997 2078 hoặc email ctsv@ufm.edu.vn. Bạn có thể đến trực tiếp Lầu 3, Tòa nhà A, 778 Nguyễn Kiệm vào Thứ 2 - Thứ 6, 7h30 - 16h30 để được hỗ trợ tận tình. Ngoài ra, UFM có Trung tâm Tư vấn Tâm lý hỗ trợ miễn phí nếu bạn cần chia sẻ về áp lực hiện tại. Cố lên bạn nhé, mình tin bạn sẽ vượt qua được!
+════════════════════════════════════════════════════════════════════════
+
+  Total Pipeline Time: 37.71s
+  Nodes Executed: 9
+  Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260321_173101_Em_học_dở_quá_nợ_môn_miết_có_đc_xét_họ.txt
+

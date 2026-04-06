@@ -1,0 +1,112 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-25 16:31:32                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_163132_Trong_một_buổi_chiều_lặng_gió_khi_ánh_n.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.5-flash              │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash              │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Extract       │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Draft         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : Trong một buổi chiều lặng gió, khi ánh nắng cuối ngày trải dài trên những mái nhà cũ kỹ của thành phố, Minh ngồi bên cửa sổ, lặng lẽ nhìn dòng người qua lại như một thói quen đã ăn sâu vào cuộc sống của mình suốt nhiều năm. Cậu không nhớ chính xác từ khi nào mình bắt đầu thích quan sát thế giới theo cách này, chỉ biết rằng mỗi con người đi ngang qua đều mang theo một câu chuyện riêng, một cuộc đời riêng, và đôi khi, chỉ cần nhìn thoáng qua ánh mắt của họ, Minh cũng có thể cảm nhận được phần nào niềm vui, nỗi buồn hay những gánh nặng mà họ đang mang theo.Cuộc sống của Minh không có gì quá đặc biệt. Cậu là một sinh viên bình thường, học ngành công nghệ thông tin – một ngành mà người ta thường nói là khô khan, logic và ít cảm xúc. Nhưng trái ngược với những dòng code cứng nhắc mà cậu phải viết mỗi ngày, bên trong Minh lại là một thế giới đầy suy tư và cảm nhận. Cậu thích viết, thích ghi lại những điều nhỏ bé mà người khác thường bỏ qua: một chiếc lá rơi chậm trong gió, một nụ cười thoáng qua của người lạ, hay cảm giác trống rỗng khi màn đêm buông xuống mà không có ai để trò chuyện.Có những ngày, Minh tự hỏi liệu cuộc đời mình có đang trôi qua một cách vô nghĩa hay không. Cậu làm mọi thứ mà một người “bình thường” nên làm: đi học, làm bài tập, thi cử, và thỉnh thoảng tụ tập với bạn bè. Nhưng sâu bên trong, cậu luôn cảm thấy thiếu một điều gì đó – một mục tiêu đủ lớn, một đam mê đủ mạnh, hoặc đơn giản là một lý do khiến cậu thức dậy mỗi sáng với sự háo hức thay vì chỉ là thói quen.Một lần nọ, khi đang lướt mạng một cách vô định, Minh tình cờ đọc được một câu nói: “Con người không sợ thất bại, họ chỉ sợ sống một cuộc đời mà đến cuối cùng, họ nhận ra mình chưa từng thật sự sống.” Câu nói ấy khiến cậu suy nghĩ rất lâu. Nó như một cú đánh nhẹ nhưng đủ mạnh để làm rung chuyển những suy nghĩ vốn đã ổn định trong đầu cậu. Minh bắt đầu tự hỏi: “Mình đã thật sự sống chưa?”Từ hôm đó, cậu bắt đầu thay đổi từng chút một. Không phải là những thay đổi lớn lao kiểu “lột xác”, mà là những điều rất nhỏ: thử nói chuyện với một người lạ, thử viết một đoạn văn dài hơn bình thường, thử học một thứ gì đó ngoài chương trình học. Ban đầu, mọi thứ đều lạ lẫm và có phần khó khăn. Minh vốn không phải là người hướng ngoại, nên việc bắt chuyện với người khác khiến cậu lúng túng. Nhưng chính những khoảnh khắc đó lại mang đến cho cậu cảm giác “sống” rõ rệt hơn bao giờ hết.Một buổi tối, khi đang ngồi trong quán cà phê quen thuộc, Minh gặp Linh – một cô gái với nụ cười ấm áp và ánh mắt luôn ánh lên sự tò mò về thế giới. Họ bắt đầu nói chuyện chỉ từ một câu hỏi rất đơn giản: “Bạn có hay ngồi đây không?” Nhưng từ đó, câu chuyện của họ kéo dài hàng giờ, từ những chủ đề nhỏ nhặt như đồ uống yêu thích cho đến những suy nghĩ sâu xa về cuộc sống, ước mơ và nỗi sợ.Linh khác Minh ở nhiều điểm. Cô năng động hơn, dám thử những điều mới mẻ hơn và không ngại thất bại. Nhưng cũng chính vì vậy mà cô mang đến cho Minh một góc nhìn hoàn toàn khác về cuộc sống. Linh không nghĩ quá nhiều về việc “mình có đang sống đúng hay không”, cô chỉ đơn giản là sống theo cách mà cô cảm thấy ý nghĩa nhất tại thời điểm đó. Và điều đó khiến Minh nhận ra rằng có lẽ, bấy lâu nay cậu đã suy nghĩ quá nhiều mà hành động quá ít.
+  💬 Chat History : Trống (lượt đầu tiên)
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ⛔ BLOCKED  (0.022s)
+                                        Message  │  [Fast-Scan L0a — 0.000s] Chặn DoS: 3210 chars
+                             normalized_query  │  trong một buổi chiều lặng gió, khi ánh nắng cuối ngày trải dài trên những mái nhà cũ kỹ của thành phố, minh ngồi bên cửa sổ, lặng lẽ nhìn dòng người qua lại như một thói quen đã ăn sâu vào cuộc sống c
+                                                      >(200 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✗ False
+                      fast_scan_blocked_layer  │  0
+                            fast_scan_message  │  [Fast-Scan L0a — 0.000s] Chặn DoS: 3210 chars
+                                                      >(45 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : fast_scan
+  Intent          :  → 
+  Response Length : 1384 chars
+  Total Time      : 0.03s
+  Nodes Executed  : 1
+──────────────────────────────────────────────────────────────────────────
+
+Kính chào bạn\n Cảm ơn bạn đã đặt câu hỏi. Tuy nhiên, nội dung câu hỏi hiện tại khá dài (vượt quá 3000 ký tự), nên có thể gây khó khăn trong việc xử lý và phản hồi một cách chính xác nhất. Bạn vui lòng tóm tắt lại những ý chính hoặc câu hỏi trọng tâm để mình có thể hỗ trợ bạn nhanh chóng và hiệu quả hơn nhé.
+
+
+🌟 **Kênh Hỗ trợ Tư vấn Tuyển sinh UFM**
+
+🔹 **Tuyển sinh Đại học Chính quy (Cử nhân)**
+📍 *Địa chỉ:* Phòng A.007, 778 Nguyễn Kiệm, Phường 4, Quận Phú Nhuận, TP.HCM
+📞 *Hotline:* (028) 3772 0406 | (028) 3772 0407
+📧 *Email:* [tuyensinh@ufm.edu.vn](mailto:tuyensinh@ufm.edu.vn)
+🌐 *Website:* [tuyensinh.ufm.edu.vn](https://tuyensinh.ufm.edu.vn)
+💬 *Zalo:* [zalo.me/ufmhcm](https://zalo.me/ufmhcm) | *Fanpage:* [tuyensinhufm](https://www.facebook.com/tuyensinhufm)
+
+🔹 **Tuyển sinh Sau đại học (Thạc sĩ, Tiến sĩ)**
+📍 *Địa chỉ:* Viện Đào tạo Sau đại học (Phòng D.006)
+📞 *Hotline:* 0967 657 532 (Thầy Tuấn) | 0966 286 386 (Thầy Thành)
+📧 *Email:* [daotaosdh@ufm.edu.vn](mailto:daotaosdh@ufm.edu.vn)
+🌐 *Website:* [daotaosdh.ufm.edu.vn](https://daotaosdh.ufm.edu.vn)
+
+🔹 **Các hệ đào tạo khác**
+💻 **Từ xa (E-Learning):** 0394 494 931 (Cô Ngân) | 🌐 [ufm-elearning.edu.vn](https://ufm-elearning.edu.vn)
+🏢 **Vừa làm vừa học:** Hotline: 0986 08 42 42 | 🌐 [ice.ufm.edu.vn](http://ice.ufm.edu.vn)
+🌍 **Liên kết Quốc tế ISFM:** Hotline: 0983 373 450 | 🌐 [isfm.ufm.edu.vn](https://isfm.ufm.edu.vn)
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.022s  │ BLOCKED  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │   0.03s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_163132_Trong_một_buổi_chiều_lặng_gió_khi_ánh_n.txt
+

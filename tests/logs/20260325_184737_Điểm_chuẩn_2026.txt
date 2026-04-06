@@ -1,0 +1,224 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-25 18:47:37                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_184737_Điểm_chuẩn_2026.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.5-flash              │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash              │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Extract       │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫ Form Draft         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : Điểm chuẩn 2026?
+  💬 Chat History : Trống (lượt đầu tiên)
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.010s)
+                                        Message  │  [Fast-Scan PASS — 0.001s] Sạch, cho qua Context Node
+                             normalized_query  │  điểm chuẩn 2026?
+                                                      >(16 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.001s] Sạch, cho qua Context Node
+                                                      >(52 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.001s)
+                                        Message  │  Reformulated → 'Điểm chuẩn 2026?'
+                             standalone_query  │  Điểm chuẩn 2026?
+                                                      >(16 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a Llama)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.445s)
+                                        Message  │  [Contextual-Guard PASS — 0.442s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 0.442s] standalone_query an toàn
+                                                      >(57 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [4] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.486s)
+                                        Message  │  intent='THONG_TIN_TUYEN_SINH' → action='PROCEED_RAG_UFM_SEARCH' → next='rag_search'
+                                       intent  │  THONG_TIN_TUYEN_SINH
+                                                      >(20 chars)
+                               intent_summary  │  Hỏi về điểm chuẩn năm 2026
+                                                      >(26 chars)
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                                                      >(22 chars)
+                         program_level_filter  │  null
+                          program_name_filter  │  null
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+                              response_source  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🔀 [5] MULTI-QUERY NODE (Sinh biến thể)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.475s)
+                                        Message  │  Sinh 3 biến thể
+                                multi_queries  │  [3 items]
+                                                         [0] "Điểm trúng tuyển dự kiến năm 2026 của UFM là bao nhiêu?"
+                                                         [1] "Mức điểm chuẩn vào UFM cho năm học 2026 là bao nhiêu?"
+                                                         [2] "Ngưỡng điểm xét tuyển của trường UFM cho năm 2026 là gì?"
+
+──────────────────────────────────────────────────────────────────────────
+  📊 [6] EMBEDDING NODE (BGE-M3 batch)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.819s)
+                                        Message  │  Nhúng 4 vectors × 1024D
+                             query_embeddings  │  [4 vectors × 1024D]
+
+──────────────────────────────────────────────────────────────────────────
+  🗄️ [7] RAG NODE (Hybrid Search DB)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.223s)
+                                        Message  │  Chunks=20, Context=0 chars
+                                  rag_context  │  ""
+                             retrieved_chunks  │  [20 items]
+                                                         [0] {"chunk_id": "9d82c16f-09c5-41ee-8b33-7fee6962db49", "chunk_level": "parent", "parent_id": null, "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 7. **ĐIỀU KIỆN DỰ TUYỂN; HỒ SƠ DỰ TUYỂN (Xem chi tiết Phụ lục 1)**", "program_name": null, "score": 0.5668466945381953, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 7.", "source": "vector", "rrf_score": 0.01639344262295082}
+                                                         [1] {"chunk_id": "836727d9-7139-4eca-8956-238e7e24c773", "chunk_level": "child", "parent_id": "5d1a3abf-5cfb-47c9-8a32-72567c21d83b", "section_path": "KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH & CÁC PHỤ LỤC", "program_name": null, "score": 0.5662016013980866, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH & CÁC PHỤ LỤC]", "source": "vector", "rrf_score": 0.016129032258064516}
+                                                         [2] {"chunk_id": "562f7a0f-0064-46d0-889b-beca926fefd4", "chunk_level": "parent", "parent_id": null, "section_path": "3. Điều kiện dự tuyển", "program_name": null, "score": 0.5615434813959447, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 3. Điều kiện dự tuyển]\n\nNgười dự tuyển đào tạo trình độ tiến sĩ phải đáp ", "source": "vector", "rrf_score": 0.015873015873015872}
+                                                         [3] {"chunk_id": "59999003-81ef-4644-9b1d-29f6f0e5bdfa", "chunk_level": "child", "parent_id": "562f7a0f-0064-46d0-889b-beca926fefd4", "section_path": "3. Điều kiện dự tuyển", "program_name": null, "score": 0.5615434813959447, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 3. Điều kiện dự tuyển]\n\nNgười dự tuyển đào tạo trình độ tiến sĩ phải đáp ", "source": "vector", "rrf_score": 0.015625}
+                                                         [4] {"chunk_id": "4fc9dfef-86e0-4d22-86a9-2028bc338a26", "chunk_level": "child", "parent_id": "9908aae3-d0d3-4459-8d53-f1223f37d41d", "section_path": "1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.1. Yêu cầu đối với người dự tuyển:", "program_name": null, "score": 0.5514947607667837, "content_preview": "# PHỤ LỤC 1\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc1.md]\n[Mục: 1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.1. Yêu cầu đối với người ", "source": "vector", "rrf_score": 0.015384615384615385}
+                                                         [5] {"chunk_id": "9908aae3-d0d3-4459-8d53-f1223f37d41d", "chunk_level": "parent", "parent_id": null, "section_path": "1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.1. Yêu cầu đối với người dự tuyển:", "program_name": null, "score": 0.5514947607667837, "content_preview": "# PHỤ LỤC 1\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc1.md]\n[Mục: 1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.1. Yêu cầu đối với người ", "source": "vector", "rrf_score": 0.015151515151515152}
+                                                         [6] {"chunk_id": "5d1a3abf-5cfb-47c9-8a32-72567c21d83b", "chunk_level": "parent", "parent_id": null, "section_path": "KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH & CÁC PHỤ LỤC", "program_name": null, "score": 0.5478507117077518, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: CÁC PHỤ LỤC > KẾ HOẠCH HỌC TẬP, NGHIÊN CỨU TOÀN KHÓA CỦA NGHIÊN CỨU SINH]", "source": "vector", "rrf_score": 0.014925373134328358}
+                                                         [7] {"chunk_id": "e2df40d4-c664-471c-bbd9-3ace5969cff3", "chunk_level": "child", "parent_id": "f092955d-1e19-4d43-b54e-35c04067f09d", "section_path": "5. Hồ sơ dự tuyển", "program_name": null, "score": 0.5436467690362566, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 5. Hồ sơ dự tuyển]\n\na) Đơn xin dự tuyển *(theo mẫu do Trường quy định)*. ", "source": "vector", "rrf_score": 0.014705882352941176}
+                                                         [8] {"chunk_id": "f092955d-1e19-4d43-b54e-35c04067f09d", "chunk_level": "parent", "parent_id": null, "section_path": "5. Hồ sơ dự tuyển", "program_name": null, "score": 0.5406130068946237, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 5. Hồ sơ dự tuyển]\n\na) Đơn xin dự tuyển *(theo mẫu do Trường quy định)*.\n", "source": "vector", "rrf_score": 0.014492753623188406}
+                                                         [9] {"chunk_id": "6646db5c-916d-4327-9692-b0ad5ee4ec63", "chunk_level": "parent", "parent_id": null, "section_path": "9. Địa chỉ liên hệ đăng ký và nộp hồ sơ", "program_name": null, "score": 0.5404932498931924, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ]\n\nViện Đào tạo sau đại học – Trườ", "source": "vector", "rrf_score": 0.014285714285714285}
+                                                         [10] {"chunk_id": "7cbe1ebd-ab8d-444f-a697-29a3ecda2182", "chunk_level": "child", "parent_id": "6646db5c-916d-4327-9692-b0ad5ee4ec63", "section_path": "9. Địa chỉ liên hệ đăng ký và nộp hồ sơ", "program_name": null, "score": 0.5404932498931924, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 9. Địa chỉ liên hệ đăng ký và nộp hồ sơ]\n\nViện Đào tạo sau đại học – Trườ", "source": "vector", "rrf_score": 0.014084507042253521}
+                                                         [11] {"chunk_id": "6f22d527-e5d1-48ee-b670-50f352a64d03", "chunk_level": "child", "parent_id": "4dabbc7e-579f-4550-9c7a-2a6db9dc8eaf", "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.1. Phương thức tuyển sinh: xét tuyển đối với trình độ đại học và văn bằng, chứng chỉ ngoại ngữ đạt trình độ tương đương Bậc 3/6 trở lên. & 2.2. Các môn xét tuyển bao gồm:", "program_name": null, "score": 0.5391489153339492, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.1. Phương thức tuyển sinh: xét tuy", "source": "vector", "rrf_score": 0.013888888888888888}
+                                                         [12] {"chunk_id": "4dabbc7e-579f-4550-9c7a-2a6db9dc8eaf", "chunk_level": "parent", "parent_id": null, "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.1. Phương thức tuyển sinh: xét tuyển đối với trình độ đại học và văn bằng, chứng chỉ ngoại ngữ đạt trình độ tương đương Bậc 3/6 trở lên. & 2.2. Các môn xét tuyển bao gồm:", "program_name": null, "score": 0.5391489153339492, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.1. Phương thức tuyển sinh: xét tuy", "source": "vector", "rrf_score": 0.0136986301369863}
+                                                         [13] {"chunk_id": "0fb4062a-765a-4f7b-a341-7c5e3c39261b", "chunk_level": "child", "parent_id": "f02de27d-1e68-4c15-a796-baf4c62d7b7e", "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ", "program_name": null, "score": 0.5285663885732667, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9.", "source": "vector", "rrf_score": 0.013513513513513514}
+                                                         [14] {"chunk_id": "f02de27d-1e68-4c15-a796-baf4c62d7b7e", "chunk_level": "parent", "parent_id": null, "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ", "program_name": null, "score": 0.5285663885732667, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9.", "source": "vector", "rrf_score": 0.013333333333333334}
+                                                         [15] {"chunk_id": "725d15aa-039c-46a6-acdd-19538215193a", "chunk_level": "parent", "parent_id": null, "section_path": "6. Lịch trình xét tuyển dự kiến", "program_name": null, "score": 0.5284214492220984, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 6. Lịch trình xét tuyển dự kiến]\n\n* Phát và nhận hồ sơ: từ ngày có Thông ", "source": "vector", "rrf_score": 0.013157894736842105}
+                                                         [16] {"chunk_id": "0e0881db-1cc5-475d-9ad7-747b5f63a67a", "chunk_level": "child", "parent_id": "f092955d-1e19-4d43-b54e-35c04067f09d", "section_path": "5. Hồ sơ dự tuyển", "program_name": null, "score": 0.5279060478126452, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 5. Hồ sơ dự tuyển]\n\ng) Bản sao có chứng thực Giấy chứng nhận của Cục Quản", "source": "vector", "rrf_score": 0.012987012987012988}
+                                                         [17] {"chunk_id": "f1e80370-e8b4-461e-bd1c-087f43ad51d3", "chunk_level": "parent", "parent_id": null, "section_path": "1. Ngành tuyển sinh:", "program_name": null, "score": 0.5262761272870342, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ tiến sĩ đợt 1 năm 2026\n[Nguồn: tuyển sinh trình độ tiến sĩ đợt 1 năm 2026.md]\n[Mục: 1. Ngành tuyển sinh:]\n\n|STT|Ngành|Mã ngành|Chỉ tiêu|\n|-|-|-|-|\n|1.|Tài ch", "source": "vector", "rrf_score": 0.01282051282051282}
+                                                         [18] {"chunk_id": "5788cef2-4004-41ed-815f-8536937468b2", "chunk_level": "child", "parent_id": "cb879016-3d5b-4cb9-a7b3-83a5ef93c92c", "section_path": "1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.2. Thí sinh tốt nghiệp đại học thuộc ngành gần (cùng lĩnh vực kinh doanh và quản lý), ngành khác (khác lĩnh vực nhưng có liên quan trực tiếp đến lĩnh vực quản trị, quản lý) với ngành dự tuyển cần học Bổ sung kiến thức. Danh mục ngành đúng, ngành gần, ngành khác và môn học Bổ sung kiến thức được nêu ở Phụ lục 2. & 1.3. Các văn bằng, chứng chỉ chứng minh năng lực ngoại ngữ từ Bậc 3 trở lên:", "program_name": null, "score": 0.5242064155401713, "content_preview": "# PHỤ LỤC 1\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc1.md]\n[Mục: 1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.2. Thí sinh tốt nghiệp đạ", "source": "vector", "rrf_score": 0.012658227848101266}
+                                                         [19] {"chunk_id": "cb879016-3d5b-4cb9-a7b3-83a5ef93c92c", "chunk_level": "parent", "parent_id": null, "section_path": "1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.2. Thí sinh tốt nghiệp đại học thuộc ngành gần (cùng lĩnh vực kinh doanh và quản lý), ngành khác (khác lĩnh vực nhưng có liên quan trực tiếp đến lĩnh vực quản trị, quản lý) với ngành dự tuyển cần học Bổ sung kiến thức. Danh mục ngành đúng, ngành gần, ngành khác và môn học Bổ sung kiến thức được nêu ở Phụ lục 2. & 1.3. Các văn bằng, chứng chỉ chứng minh năng lực ngoại ngữ từ Bậc 3 trở lên:", "program_name": null, "score": 0.5211774862163512, "content_preview": "# PHỤ LỤC 1\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc1.md]\n[Mục: 1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.2. Thí sinh tốt nghiệp đạ", "source": "vector", "rrf_score": 0.0125}
+
+──────────────────────────────────────────────────────────────────────────
+  🌐 [8] RAG SEARCH PIPELINE (Evaluator + Web Search)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.002s)
+                                        Message  │  cache=MISS, citations=0
+                           ufm_search_queries  │  null
+                              pr_search_query  │  null
+                           web_search_results  │  null
+                         web_search_citations  │  null
+                             search_cache_hit  │  ✗ False
+                      search_cache_similarity  │  0.0000
+                               final_response  │  ""
+                              response_source  │  rag_db_only
+                                                      >(11 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [9] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (4.289s)
+                                        Message  │  source='rag_db_only_generated', length=1268 chars
+                               final_response  │  Chào bạn nhé! Mình là Trợ lý Tuyển sinh UFM đây! 🎓
+
+Mình hiểu là bạn đang rất quan tâm đến điểm chuẩn để chuẩn bị tốt nhất cho kỳ thi sắp tới. Tuy nhiên, hiện tại thì **điểm chuẩn năm 2026** chưa được công bố đâu bạn ạ, vì đây là thông tin sẽ được cập nhật sau khi kỳ thi THPT Quốc gia năm đó diễn ra và Bộ Giáo dục & Đào tạo cùng các trường đại học công bố ngưỡng đảm bảo chất lượng đầu vào.
+
+Để bạn có cái nhìn tổng quan và định hướng tốt hơn, mình có thể chia sẻ một số thông tin về **điểm chuẩn của các năm gần nhất** tại UFM để bạn tham khảo nhé. Thông thường, điểm chuẩn các ngành sẽ có sự dao động nhất định qua từng năm nhưng cũng sẽ có xu hướng ổn định trong một khoảng nhất định.
+
+Bạn có thể tham khảo điểm chuẩn của các năm trước tại website chính thức của trường để có cái nhìn cụ thể hơn về mức điểm của từng ngành mà bạn quan tâm.
+
+💡 Lời khuyên của mình là bạn hãy tập trung ôn luyện thật tốt để đạt kết quả cao nhất có thể trong kỳ thi sắp tới. Khi có kết quả, bạn sẽ dễ dàng hơn trong việc lựa chọn ngành học và trường phù hợp với năng lực của mình.
+
+Bạn có muốn mình chia sẻ thêm về các ngành học hot của UFM hay phương thức tuyển sinh của trường không? Hoặc bạn đang quan tâm đến ngành cụ thể nào để mình có thể cung cấp thông tin chi tiết hơn nhé! 😊
+                                                      >(1268 chars)
+                              response_source  │  rag_db_only_generated
+                                                      >(21 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : rag_db_only_generated
+  Intent          : THONG_TIN_TUYEN_SINH → PROCEED_RAG_UFM_SEARCH
+  Response Length : 1268 chars
+  Total Time      : 11.78s
+  Nodes Executed  : 9
+──────────────────────────────────────────────────────────────────────────
+
+Chào bạn nhé! Mình là Trợ lý Tuyển sinh UFM đây! 🎓
+
+Mình hiểu là bạn đang rất quan tâm đến điểm chuẩn để chuẩn bị tốt nhất cho kỳ thi sắp tới. Tuy nhiên, hiện tại thì **điểm chuẩn năm 2026** chưa được công bố đâu bạn ạ, vì đây là thông tin sẽ được cập nhật sau khi kỳ thi THPT Quốc gia năm đó diễn ra và Bộ Giáo dục & Đào tạo cùng các trường đại học công bố ngưỡng đảm bảo chất lượng đầu vào.
+
+Để bạn có cái nhìn tổng quan và định hướng tốt hơn, mình có thể chia sẻ một số thông tin về **điểm chuẩn của các năm gần nhất** tại UFM để bạn tham khảo nhé. Thông thường, điểm chuẩn các ngành sẽ có sự dao động nhất định qua từng năm nhưng cũng sẽ có xu hướng ổn định trong một khoảng nhất định.
+
+Bạn có thể tham khảo điểm chuẩn của các năm trước tại website chính thức của trường để có cái nhìn cụ thể hơn về mức điểm của từng ngành mà bạn quan tâm.
+
+💡 Lời khuyên của mình là bạn hãy tập trung ôn luyện thật tốt để đạt kết quả cao nhất có thể trong kỳ thi sắp tới. Khi có kết quả, bạn sẽ dễ dàng hơn trong việc lựa chọn ngành học và trường phù hợp với năng lực của mình.
+
+Bạn có muốn mình chia sẻ thêm về các ngành học hot của UFM hay phương thức tuyển sinh của trường không? Hoặc bạn đang quan tâm đến ngành cụ thể nào để mình có thể cung cấp thông tin chi tiết hơn nhé! 😊
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.010s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  0.001s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a Llama)     │  0.445s  │   PASS   │
+  │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  1.486s  │   PASS   │
+  │ 🔀 MULTI-QUERY NODE (Sinh biến thể)           │  1.475s  │   PASS   │
+  │ 📊 EMBEDDING NODE (BGE-M3 batch)              │  2.819s  │   PASS   │
+  │ 🗄️ RAG NODE (Hybrid Search DB)               │  1.223s  │   PASS   │
+  │ 🌐 RAG SEARCH PIPELINE (Evaluator + Web Searc │  0.002s  │   PASS   │
+  │ 🎯 RESPONSE NODE (Final Answer)               │  4.289s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  11.78s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_184737_Điểm_chuẩn_2026.txt
+

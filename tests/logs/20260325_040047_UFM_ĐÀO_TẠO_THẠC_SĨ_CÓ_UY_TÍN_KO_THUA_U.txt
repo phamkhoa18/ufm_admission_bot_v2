@@ -1,0 +1,371 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test (LangGraph .stream())         ║
+║    2026-03-25 04:00:47                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_040047_UFM_ĐÀO_TẠO_THẠC_SĨ_CÓ_UY_TÍN_KO_THUA_U.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❶ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❷ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❸ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❹ Guard (Deep)       │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❺ Intent Router      │ openrouter/google/gemini-2.5-flash              │
+  │ ❻ Multi-Query        │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❼ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❽ Vector Router      │ openrouter/baai/bge-m3                          │
+  │ ❾a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾c Web Search        │ google/gemini-2.5-flash                     │
+  │ ❾d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ❾e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ❾f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ❾g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓾ Care               │ openrouter/qwen/qwen3.5-flash-02-23             │
+  │ ⓫ Form Extract       │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓫ Form Draft         │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓬ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │              LANGGRAPH TOPOLOGY (Tối ưu chi phí)               │
+  ├─────────────────────────────────────────────────────────────────┤
+  │ fast_scan ─┬─ BLOCKED → END                                    │
+  │            └─ context → guard ─┬─ BLOCKED → END                │
+  │                                └─ intent (ROUTER TRUNG TÂM)    │
+  │                                     │                          │
+  │                   GREET/CLARIFY/BLOCK → response → END ($0!)   │
+  │                   PROCEED_FORM → form → response → END  ($0!) │
+  │                   PROCEED_CARE → care → response → END  ($0!) │
+  │                   PROCEED_RAG* → multi_query → embedding → rag │
+  │                                   ├─ PROCEED_RAG → response    │
+  │                                   └─ *_SEARCH → rag_search     │
+  └─────────────────────────────────────────────────────────────────┘
+
+  📝 Input Query  : UFM ĐÀO TẠO THẠC SĨ CÓ UY TÍN KO? THUA UEH HAY HƠN
+  💬 Chat History : Trống (lượt đầu tiên)
+
+  🚀 BẮT ĐẦU CHẠY LangGraph chat_graph.stream(stream_mode='updates')
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.010s)
+                                        Message  │  [Fast-Scan PASS — 0.002s] Sạch, cho qua Context Node
+                             normalized_query  │  ufm đào tạo thạc sĩ có uy tín không? thua ueh hay hơn
+                                                      >(53 chars)
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.002s] Sạch, cho qua Context Node
+                                                      >(52 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.002s)
+                                        Message  │  Reformulated → 'UFM ĐÀO TẠO THẠC SĨ CÓ UY TÍN KO? THUA UEH HAY HƠN'
+                             standalone_query  │  UFM ĐÀO TẠO THẠC SĨ CÓ UY TÍN KO? THUA UEH HAY HƠN
+                                                      >(50 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a+2b)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.335s)
+                                        Message  │  [Contextual-Guard PASS — 1.332s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 1.332s] standalone_query an toàn
+                                                      >(57 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [4] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (5.480s)
+                                        Message  │  intent='SO_SANH_TRUONG' → action='PROCEED_RAG_PR_SEARCH' → next='rag_search'
+                                       intent  │  SO_SANH_TRUONG
+                                                      >(14 chars)
+                               intent_summary  │  UFM đào tạo thạc sĩ có uy tín không, so với UEH thì sao
+                                                      >(55 chars)
+                                intent_action  │  PROCEED_RAG_PR_SEARCH
+                                                      >(21 chars)
+                         program_level_filter  │  thac_si
+                                                      >(7 chars)
+                          program_name_filter  │  null
+                                    next_node  │  rag_search
+                                                      >(10 chars)
+                              response_source  │  ""
+
+──────────────────────────────────────────────────────────────────────────
+  🔀 [5] MULTI-QUERY NODE (Sinh biến thể)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.583s)
+                                        Message  │  Sinh 3 biến thể
+                                multi_queries  │  [3 items]
+                                                         [0] "Chất lượng đào tạo thạc sĩ tại UFM có đáng tin cậy không, so với UEH thì thế nào?"
+                                                         [1] "Chương trình thạc sĩ của UFM có uy tín không, đánh giá ngang hàng hay kém hơn UEH?"
+                                                         [2] "UFM có chương trình thạc sĩ chất lượng không, có thể so sánh với UEH không?"
+
+──────────────────────────────────────────────────────────────────────────
+  📊 [6] EMBEDDING NODE (BGE-M3 batch)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.925s)
+                                        Message  │  Nhúng 4 vectors × 1024D
+                             query_embeddings  │  [4 vectors × 1024D]
+
+──────────────────────────────────────────────────────────────────────────
+  🗄️ [7] RAG NODE (Hybrid Search DB)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (7.354s)
+                                        Message  │  Chunks=20, Context=2896 chars
+                                  rag_context  │  [Nguồn 2 — Tài liệu: ThS Kinh te hoc.txt | Thạc sĩ Kinh Tế Học > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC | Mục: CHƯƠNG TRÌM ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC | Ngành: Kinh Tế Học | Mã ngành: 8310101 | Năm: 2026]
+[Chương trình: Thạc sĩ Kinh Tế Học (KTH, kth, Kinh tế) | Mã ngành: 8310101]
+CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC
+
+Chương trình đào tạo Thạc sĩ ngành Kinh tế học tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình nhằm đào tạo nguồn nhân lực chất lượng cao, có tư duy chiến lược và khả năng vận dụng các mô hình kinh tế hiện đại để giải quyết các vấn đề thực tiễn phức tạp.
+
+Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt để người học lựa chọn phù hợp với mục tiêu nghề nghiệp:
+
+* Định hướng Nghiên cứu: Tập trung phát triển tư duy hàn lâm, năng lực nghiên cứu độc lập và phân tích chính sách chuyên sâu. Phù hợp với giảng viên, nghiên cứu viên, chuyên gia hoạch định chính sách hoặc người muốn học lên Tiến sĩ.
+* Định hướng Ứng dụng: Tập trung phát triển kỹ năng thực hành, năng lực quản trị và giải quyết các vấn đề kinh tế thực tiễn tại địa phương và doanh nghiệp. Phù hợp với nhà quản lý, chuyên gia tư vấn, lãnh đạo doanh nghiệp.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=pdtYJjIO1EfhKibzkDlcAw>
+
+---
+
+[Nguồn 5 — Tài liệu: ThS Luat kinh te.txt | Thạc sĩ Luật Kinh Tế > GIỚI THIỆU CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH LUẬT KINH TẾ | Mục: GIỚI THIỆU CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH LUẬT KINH TẾ | Ngành: Luật Kinh Tế | Mã ngành: 8380107 | Năm: 2026]
+[Chương trình: Thạc sĩ Luật Kinh Tế (LKT, lkt, Luật KT) | Mã ngành: 8380107]
+GIỚI THIỆU CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH LUẬT KINH TẾ
+
+Chương trình đào tạo Thạc sĩ ngành Luật Kinh tế tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế nhằm đáp ứng nhu cầu nhân lực chất lượng cao trong bối cảnh hội nhập quốc tế sâu rộng và sự phát triển của nền kinh tế số.
+
+Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt:
+
+* Định hướng Nghiên cứu: Tập trung cung cấp phương pháp luận khoa học và kiến thức chuyên sâu, giúp người học có khả năng nghiên cứu độc lập, phát hiện và giải quyết các vấn đề pháp lý mới ở tầm học thuật.
+* Định hướng Ứng dụng: Chú trọng rèn luyện kỹ năng thực hành pháp luật, năng lực phân tích và xử lý các tình huống pháp lý phức tạp phát sinh trong quản trị doanh nghiệp, đầu tư và thương mại.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=yDEZuIh1J5DCTQIpdp-xGw>
+                                                      >(2896 chars)
+                             retrieved_chunks  │  [20 items]
+                                                         [0] {"chunk_id": "9d82c16f-09c5-41ee-8b33-7fee6962db49", "chunk_level": "parent", "parent_id": null, "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 7. **ĐIỀU KIỆN DỰ TUYỂN; HỒ SƠ DỰ TUYỂN (Xem chi tiết Phụ lục 1)**", "program_name": null, "score": 0.5694207549095154, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 7.", "source": "vector", "rrf_score": 0.01639344262295082}
+                                                         [1] {"chunk_id": "f3c241fc-7938-456d-a0c5-31caaa8689e1", "chunk_level": "child", "parent_id": "ae0f5c99-2df3-40d5-95f0-cdd5bbff2298", "section_path": "Thạc sĩ Kinh Tế Học > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC", "program_name": "Kinh Tế Học", "score": 0.5665770769119263, "content_preview": "[Chương trình: Thạc sĩ Kinh Tế Học (KTH, kth, Kinh tế) | Mã ngành: 8310101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC\n\nThông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/Chi", "source": "vector", "rrf_score": 0.016129032258064516}
+                                                         [2] {"chunk_id": "f02de27d-1e68-4c15-a796-baf4c62d7b7e", "chunk_level": "parent", "parent_id": null, "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ", "program_name": null, "score": 0.5657153129577637, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9.", "source": "vector", "rrf_score": 0.015873015873015872}
+                                                         [3] {"chunk_id": "0fb4062a-765a-4f7b-a341-7c5e3c39261b", "chunk_level": "child", "parent_id": "f02de27d-1e68-4c15-a796-baf4c62d7b7e", "section_path": "2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9. ĐỊA CHỈ LIÊN HỆ - ĐĂNG KÝ", "program_name": null, "score": 0.5657153129577637, "content_preview": "# THÔNG BÁO\n## Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026\n[Nguồn: tuyensinh-trinhdo-thacsi-dot1-2026.md]\n[Mục: 2. PHƯƠNG THỨC TUYỂN SINH VÀ MÔN XÉT TUYỂN > 2.2. Các môn xét tuyển bao gồm: > 9.", "source": "vector", "rrf_score": 0.015625}
+                                                         [4] {"chunk_id": "1c40c487-b5b6-4bad-b9c0-4d82c99629cf", "chunk_level": "child", "parent_id": "6843190b-1bbe-4b67-a930-bcb9f20063a5", "section_path": "2. HỒ SƠ ĐĂNG KÝ DỰ TUYỂN", "program_name": null, "score": 0.5619276762008667, "content_preview": "# PHỤ LỤC 1\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc1.md]\n[Mục: 2. HỒ SƠ ĐĂNG KÝ DỰ TUYỂN]\n\ng) Đối với các văn bằng tốt nghiệp đ", "source": "vector", "rrf_score": 0.015384615384615385}
+                                                         [5] {"chunk_id": "78ffd34d-d27e-4edb-8550-ce561fd3eca7", "chunk_level": "child", "parent_id": "7f26f8a1-67a8-4118-8ef1-b7716b614a20", "section_path": "Thạc sĩ Luật Kinh Tế > GIỚI THIỆU CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH LUẬT KINH TẾ", "program_name": "Luật Kinh Tế", "score": 0.5460827946662903, "content_preview": "[Chương trình: Thạc sĩ Luật Kinh Tế (LKT, lkt, Luật KT) | Mã ngành: 8380107] — GIỚI THIỆU CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH LUẬT KINH TẾ\n\nThông tin chi tiết chương trình đào tạo: <https://daotaosdh.u", "source": "vector", "rrf_score": 0.015151515151515152}
+                                                         [6] {"chunk_id": "b584cdc9-f669-4aea-b5a8-f20b58ef3458", "chunk_level": "child", "parent_id": "18135cd9-fda7-4ddf-92a9-689f14b9bd1e", "section_path": "Thạc sĩ Tài Chính – Ngân Hàng > GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH TÀI CHÍNH – NGÂN HÀNG", "program_name": "Tài Chính – Ngân Hàng", "score": 0.5347228050231934, "content_preview": "[Chương trình: Thạc sĩ Tài Chính – Ngân Hàng (TC-NH, TCNH, tc-nh, tcnh, Tài chính Ngân hàng) | Mã ngành: 8340201] — GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH TÀI CHÍNH – NGÂN HÀNG\n\nThông tin chi tiết chương trình", "source": "vector", "rrf_score": 0.014925373134328358}
+                                                         [7] {"chunk_id": "dc9e22ec-ee19-47b3-9bea-fd2fa5c8babd", "chunk_level": "child", "parent_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.5337045192718506, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\nThông tin chi tiết chương trình đào tạo: <https://da", "source": "vector", "rrf_score": 0.014705882352941176}
+                                                         [8] {"chunk_id": "b0f10dc0-ac8d-4f09-96f7-624e2338decb", "chunk_level": "child", "parent_id": "ae0f5c99-2df3-40d5-95f0-cdd5bbff2298", "section_path": "Thạc sĩ Kinh Tế Học > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC", "program_name": "Kinh Tế Học", "score": 0.5330022573471069, "content_preview": "[Chương trình: Thạc sĩ Kinh Tế Học (KTH, kth, Kinh tế) | Mã ngành: 8310101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC\n\n* Định hướng Nghiên cứu: Tập trung phát triển tư duy hàn lâm, năng lực ngh", "source": "vector", "rrf_score": 0.014492753623188406}
+                                                         [9] {"chunk_id": "6843190b-1bbe-4b67-a930-bcb9f20063a5", "chunk_level": "parent", "parent_id": null, "section_path": "2. HỒ SƠ ĐĂNG KÝ DỰ TUYỂN", "program_name": null, "score": 0.5326271057128906, "content_preview": "# PHỤ LỤC 1\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc1.md]\n[Mục: 2. HỒ SƠ ĐĂNG KÝ DỰ TUYỂN]\n\na) 01 Phiếu đăng ký dự tuyển (theo m", "source": "vector", "rrf_score": 0.014285714285714285}
+                                                         [10] {"chunk_id": "e80fc88d-710f-4910-9b69-641fac2d0180", "chunk_level": "child", "parent_id": "1e42db23-57b9-42aa-9dff-bada5875089b", "section_path": "Thạc sĩ Marketing > GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING", "program_name": "Marketing", "score": 0.5270952739445949, "content_preview": "[Chương trình: Thạc sĩ Marketing (MKT, mkt, Marketing) | Mã ngành: 8340115] — GIỚI THIỆU CHƯƠNG TRÌNH NGÀNH MARKETING\n\nThông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.as", "source": "vector", "rrf_score": 0.014084507042253521}
+                                                         [11] {"chunk_id": "17e50fac-4a5f-433c-8a87-bbe8927d37e0", "chunk_level": "child", "parent_id": "708e6016-e2b7-417c-b742-ee1aa2318d16", "section_path": "Thạc sĩ Toán Kinh Tế > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH TOÁN KINH TẾ", "program_name": "Toán Kinh Tế", "score": 0.5265272541923977, "content_preview": "[Chương trình: Thạc sĩ Toán Kinh Tế (TKT, tkt, Toán KT) | Mã ngành: 8310108] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH TOÁN KINH TẾ\n\nThông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/C", "source": "vector", "rrf_score": 0.013888888888888888}
+                                                         [12] {"chunk_id": "c16af4c1-5d30-42c4-9412-3de793007683", "chunk_level": "child", "parent_id": "ae0f5c99-2df3-40d5-95f0-cdd5bbff2298", "section_path": "Thạc sĩ Kinh Tế Học > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC", "program_name": "Kinh Tế Học", "score": 0.522126824982574, "content_preview": "[Chương trình: Thạc sĩ Kinh Tế Học (KTH, kth, Kinh tế) | Mã ngành: 8310101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC\n\nChương trình đào tạo Thạc sĩ ngành Kinh tế học tại Trường Đại học Tài chín", "source": "vector", "rrf_score": 0.0136986301369863}
+                                                         [13] {"chunk_id": "4fc9dfef-86e0-4d22-86a9-2028bc338a26", "chunk_level": "child", "parent_id": "9908aae3-d0d3-4459-8d53-f1223f37d41d", "section_path": "1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.1. Yêu cầu đối với người dự tuyển:", "program_name": null, "score": 0.5202499317973902, "content_preview": "# PHỤ LỤC 1\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc1.md]\n[Mục: 1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.1. Yêu cầu đối với người ", "source": "vector", "rrf_score": 0.013513513513513514}
+                                                         [14] {"chunk_id": "9908aae3-d0d3-4459-8d53-f1223f37d41d", "chunk_level": "parent", "parent_id": null, "section_path": "1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.1. Yêu cầu đối với người dự tuyển:", "program_name": null, "score": 0.5202499317973902, "content_preview": "# PHỤ LỤC 1\n*(Kèm theo Thông báo Về việc tuyển sinh trình độ thạc sĩ đợt 1 năm 2026, số 186 /TB-ĐHTCM-ĐTSĐH)*\n[Nguồn: phuluc1.md]\n[Mục: 1. ĐỐI TƯỢNG VÀ ĐIỀU KIỆN DỰ TUYỂN > 1.1. Yêu cầu đối với người ", "source": "vector", "rrf_score": 0.013333333333333334}
+                                                         [15] {"chunk_id": "f15620b6-ef71-44ed-aedd-2f4134b038ba", "chunk_level": "child", "parent_id": "05901593-31b8-47b1-a99d-d9f4cb8877ff", "section_path": "Thạc sĩ Kế Toán > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KẾ TOÁN", "program_name": "Kế Toán", "score": 0.514839768409729, "content_preview": "[Chương trình: Thạc sĩ Kế Toán (KT, kt, Kế toán) | Mã ngành: 8340301] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KẾ TOÁN\n\nThông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?", "source": "vector", "rrf_score": 0.013157894736842105}
+                                                         [16] {"chunk_id": "ca294833-afe9-42ea-b442-54666fc499fb", "chunk_level": "parent", "parent_id": null, "section_path": "**3. Tài liệu tham khảo**", "program_name": null, "score": 0.5140664867123085, "content_preview": "# QUY TRÌNH CHẤT LƯỢNG\n# ĐÁNH GIÁ LUẬN VĂN/ĐỀ ÁN THẠC SĨ\nMã số quy trình: QT/SĐH/06\n[Nguồn: quytrinhdanhgia-luanvan-thacsi.md]\n[Mục: **3. Tài liệu tham khảo**]\n\n- Thông tư số 23/2021/TT-BGDĐT ngày 30 ", "source": "vector", "rrf_score": 0.012987012987012988}
+                                                         [17] {"chunk_id": "ae0f5c99-2df3-40d5-95f0-cdd5bbff2298", "chunk_level": "parent", "parent_id": null, "section_path": "Thạc sĩ Kinh Tế Học > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC", "program_name": "Kinh Tế Học", "score": 0.5130497370079083, "content_preview": "[Chương trình: Thạc sĩ Kinh Tế Học (KTH, kth, Kinh tế) | Mã ngành: 8310101]\nCHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC\n\nChương trình đào tạo Thạc sĩ ngành Kinh tế học tại Trường Đại học Tài chính ", "source": "vector", "rrf_score": 0.01282051282051282}
+                                                         [18] {"chunk_id": "7e6a63e3-bc67-440d-ab96-9d6cca825950", "chunk_level": "child", "parent_id": "7f26f8a1-67a8-4118-8ef1-b7716b614a20", "section_path": "Thạc sĩ Luật Kinh Tế > GIỚI THIỆU CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH LUẬT KINH TẾ", "program_name": "Luật Kinh Tế", "score": 0.5123900771141052, "content_preview": "[Chương trình: Thạc sĩ Luật Kinh Tế (LKT, lkt, Luật KT) | Mã ngành: 8380107] — GIỚI THIỆU CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH LUẬT KINH TẾ\n\n* Định hướng Nghiên cứu: Tập trung cung cấp phương pháp luận ", "source": "vector", "rrf_score": 0.012658227848101266}
+                                                         [19] {"chunk_id": "26fe8ce8-b0f3-4d49-957b-521c7a2db24f", "chunk_level": "child", "parent_id": "a45c6822-93e5-49f0-b930-e6d672a7d0fa", "section_path": "Thạc sĩ Quản Trị Kinh Doanh > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH", "program_name": "Quản Trị Kinh Doanh", "score": 0.5118329234023654, "content_preview": "[Chương trình: Thạc sĩ Quản Trị Kinh Doanh (QTKD, qtkd, Quản trị KD) | Mã ngành: 8340101] — CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH QUẢN TRỊ KINH DOANH\n\n* **Định hướng Nghiên cứu:** Tập trung vào phát triể", "source": "vector", "rrf_score": 0.0125}
+
+──────────────────────────────────────────────────────────────────────────
+  🌐 [8] RAG SEARCH PIPELINE (Evaluator + Web Search)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (12.921s)
+                                        Message  │  cache=MISS, citations=4
+                           ufm_search_queries  │  null
+                              pr_search_query  │  site:ufm.edu.vn UFM "thành tựu" "giải thưởng" "uy tín" "chất lượng
+                                                      >(66 chars)
+                           web_search_results  │  Dưới đây là các bài báo về Trường Đại học Tài chính - Marketing (UFM) liên quan đến "thành tựu", "giải thưởng", "uy tín", "chất lượng" trong năm 2025 và 2026, ưu tiên từ website của trường:
+
+*   **UFM tổ chức bình chọn sự kiện tiêu biểu năm 2025**
+    *   Bài viết này đề cập đến việc UFM đã lập dấu mốc quan trọng trong năm 2025 khi bổ nhiệm 07 Phó Giáo sư, công nhận 19 tân Tiến sĩ, đây là con số cao nhất kể từ khi Trường thành lập năm 1976. Trường cũng đẩy mạnh tuyển dụng viên chức chất lượng cao, thu hút sinh viên thủ khoa, sinh viên xuất sắc, nâng tỷ lệ giảng viên có trình độ tiến sĩ lên gần 50%. Nhiều dự án đầu tư được khởi động, hoàn thành, hoạt động đổi mới sáng tạo được triển khai hiệu quả, tạo tiếng vang và kích thích sự sáng tạo trong sinh viên UFM. Sinh viên UFM cũng ghi dấu ấn mạnh mẽ ở các cuộc thi học thuật, nghệ thuật, văn hóa và các cuộc thi sắc đẹp uy tín.
+
+*   **Năm 2025 là năm của hành động, bứt phá, khẳng định vị thế và bản sắc của UFM**
+    *   Bài báo này nhấn mạnh năm 2025 là một chặng đường ghi dấu nhiều chuyển động tích cực và những thành tựu nổi bật, toàn diện trên các lĩnh vực trọng tâm của UFM. Từ công tác đào tạo, tuyển sinh đến hoạt động nghiên cứu khoa học, hợp tác doanh nghiệp và nâng cao chất lượng quản trị đại học, nhà trường đạt được những kết quả tạo nền tảng vững chắc cho giai đoạn phát triển tiếp theo. UFM có tầm nhìn đến năm 2045 được xếp hạng trong top 500 trường đại học hàng đầu khu vực châu Á và trở thành một trường đại học theo định hướng ứng dụng hàng đầu Việt Nam, đồng thời là một trung tâm nghiên cứu, chuyển giao khoa học và công nghệ có uy tín cao trong lĩnh vực kinh doanh và quản lý của Việt Nam và khu vực ASEAN.
+
+*   **Viện Đổi mới sáng tạo và Chuyển đổi số - UFM**
+    *   Bài viết này đề cập đến cuộc thi UFM Startup 2025 mùa 2, khẳng định vai trò của nhà trường trong việc ươm tạo thế hệ doanh nhân trẻ trong kỷ nguyên số. Cuộc thi không chỉ là sân chơi kết nối mà còn là bệ phóng chiến lược, nơi uy tín học thuật chuyển hóa thành năng lực hành động, thắp lên tinh thần khởi nghiệp của sinh viên UFM nói riêng và sinh viên cả nước nói chung. UFM Startup 2025 ghi dấu ấn với sự tăng trưởng vượt bậc cả về quy mô lẫn chiều sâu chất lượng.
+
+*   **Phê duyệt Chiến lược phát triển Trường Đại học Tài chính - Marketing giai đoạn 2021 – 2030, tầm nhìn đến năm 2045**
+    *   Chiến lược này đặt ra mục tiêu đến năm 2025, UFM sẽ vận hành theo mô hình đại học thông minh, thay đổi căn bản phương thức quản trị nhà trường từ truyền thống sang nền tảng số. Mục tiêu cụ thể bao gồm 100% giảng viên cơ hữu có bài báo đăng trên tạp chí khoa học chuyên ngành trong nước thuộc danh mục tạp chí được tính điểm (là tác giả chính/tác giả đứng đầu) và tối thiểu 5% đề tài NCKH của sinh viên được chuyển thành ý tưởng khởi nghiệp.
+
+Mình chưa tìm thấy các bài báo cụ thể về "thành tựu", "giải thưởng", "uy tín", "chất lượng" của UFM trong năm 2025-2026 trên các trang thanhnien.vn, vnexpress.net, tuoitre.vn.
+                                                      >(2963 chars)
+                         web_search_citations  │  [4 items]
+                                                         [0] {"text": "ufm.edu.vn", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQETESPFMAN7s4xahAGjs39GbDwl0Ik6Hd3YpRRsfBHFMISn200No4L7myWYQCpN3iGVi2LT3PXfL_o9Q9hdXJeU2T9_ZMEXlP7MhDsrJg45TdwdDTxsmALYbW_j2ok2eB4Gc_oqmPVrMHmvPxIdIrahF1dqdBWIhmoEa32TLJmieCskK58Euxhv"}
+                                                         [1] {"text": "giaoduc.net.vn", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF54dXQ_vPVhFWWfv70wq95GqYzB2OgJxB05I1CPxxFrq7KTGCFwXZ4fQ7WFHDjTakOAcD87K5veBUTGHKO9S9b6KkOCSTrRQMwNuS9cUrqQcLeVeNJZjxz60xid8DAE45Q_JyvbdBhZaLrya_t3kD8TzRrRXOC7LY264Qkv1GygOiQqT2G9uC4uKWtuV2m0uTimBJc-myTuMrdGVTsPDtul6dfNkGEznmBVw=="}
+                                                         [2] {"text": "ufm.edu.vn", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG1Y-z7HeW8wJ_E_EK36IsPcq2OtjhwQUXbSi-DjpLDtFVm2argN3vW7lmcLHPTqzpzq9SNEAUcg_0A2EMMCGA1JQqNc3gOHbU2ayOIVz1lGqDLIu2KR2YdI51C0AHF0hg3dcOax4vDK0P0mWHpTZ_lNvlxoaMxWIcoj6C3IVYHBjCFxInipvTLbULvI9UnTw=="}
+                                                         [3] {"text": "ufm.edu.vn", "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH0GzeKCU9SiVdYQr4INLMJj2jZdbdVzsoaC2iGNOS5qA7QBwThQiEP5mUDDgTrVT1e52QwBt95E52huDnkkijuxac8vpoTlUZaXTFVJkilF197HRp78ba6UwBv3h6WRyGvRAukDPf7yvwGE2867qtZLmHBG9v02SrDxs3LXJ-CKWYrMP1P5sLOs-RmDgaeVFyJmf9zIEBwAtuPkw=="}
+                             search_cache_hit  │  ✗ False
+                      search_cache_similarity  │  0.0000
+                               final_response  │  [DỮ LIỆU NỘI BỘ]
+[Nguồn 2 — Tài liệu: ThS Kinh te hoc.txt | Thạc sĩ Kinh Tế Học > CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC | Mục: CHƯƠNG TRÌM ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC | Ngành: Kinh Tế Học | Mã ngành: 8310101 | Năm: 2026]
+[Chương trình: Thạc sĩ Kinh Tế Học (KTH, kth, Kinh tế) | Mã ngành: 8310101]
+CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH TẾ HỌC
+
+Chương trình đào tạo Thạc sĩ ngành Kinh tế học tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình nhằm đào tạo nguồn nhân lực chất lượng cao, có tư duy chiến lược và khả năng vận dụng các mô hình kinh tế hiện đại để giải quyết các vấn đề thực tiễn phức tạp.
+
+Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt để người học lựa chọn phù hợp với mục tiêu nghề nghiệp:
+
+* Định hướng Nghiên cứu: Tập trung phát triển tư duy hàn lâm, năng lực nghiên cứu độc lập và phân tích chính sách chuyên sâu. Phù hợp với giảng viên, nghiên cứu viên, chuyên gia hoạch định chính sách hoặc người muốn học lên Tiến sĩ.
+* Định hướng Ứng dụng: Tập trung phát triển kỹ năng thực hành, năng lực quản trị và giải quyết các vấn đề kinh tế thực tiễn tại địa phương và doanh nghiệp. Phù hợp với nhà quản lý, chuyên gia tư vấn, lãnh đạo doanh nghiệp.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=pdtYJjIO1EfhKibzkDlcAw>
+
+---
+
+[Nguồn 5 — Tài liệu: ThS Luat kinh te.txt | Thạc sĩ Luật Kinh Tế > GIỚI THIỆU CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH LUẬT KINH TẾ | Mục: GIỚI THIỆU CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH LUẬT KINH TẾ | Ngành: Luật Kinh Tế | Mã ngành: 8380107 | Năm: 2026]
+[Chương trình: Thạc sĩ Luật Kinh Tế (LKT, lkt, Luật KT) | Mã ngành: 8380107]
+GIỚI THIỆU CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH LUẬT KINH TẾ
+
+Chương trình đào tạo Thạc sĩ ngành Luật Kinh tế tại Trường Đại học Tài chính – Marketing được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập". Chương trình được thiết kế nhằm đáp ứng nhu cầu nhân lực chất lượng cao trong bối cảnh hội nhập quốc tế sâu rộng và sự phát triển của nền kinh tế số.
+
+Năm 2026, chương trình cung cấp hai định hướng đào tạo chuyên biệt:
+
+* Định hướng Nghiên cứu: Tập trung cung cấp phương pháp luận khoa học và kiến thức chuyên sâu, giúp người học có khả năng nghiên cứu độc lập, phát hiện và giải quyết các vấn đề pháp lý mới ở tầm học thuật.
+* Định hướng Ứng dụng: Chú trọng rèn luyện kỹ năng thực hành pháp luật, năng lực phân tích và xử lý các tình huống pháp lý phức tạp phát sinh trong quản trị doanh nghiệp, đầu tư và thương mại.
+
+Thời gian đào tạo trung bình là 02 năm (tối đa 04 năm) với tổng khối lượng kiến thức toàn khóa là 61 tín chỉ.
+
+Thông tin chi tiết chương trình đào tạo: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=yDEZuIh1J5DCTQIpdp-xGw>
+
+[DỮ LIỆU TỪ WEB]
+Dưới đây là các bài báo về Trường Đại học Tài chính - Marketing (UFM) liên quan đến "thành tựu", "giải thưởng", "uy tín", "chất lượng" trong năm 2025 và 2026, ưu tiên từ website của trường:
+
+*   **UFM tổ chức bình chọn sự kiện tiêu biểu năm 2025**
+    *   Bài viết này đề cập đến việc UFM đã lập dấu mốc quan trọng trong năm 2025 khi bổ nhiệm 07 Phó Giáo sư, công nhận 19 tân Tiến sĩ, đây là con số cao nhất kể từ khi Trường thành lập năm 1976. Trường cũng đẩy mạnh tuyển dụng viên chức chất lượng cao, thu hút sinh viên thủ khoa, sinh viên xuất sắc, nâng tỷ lệ giảng viên có trình độ tiến sĩ lên gần 50%. Nhiều dự án đầu tư được khởi động, hoàn thành, hoạt động đổi mới sáng tạo được triển khai hiệu quả, tạo tiếng vang và kích thích sự sáng tạo trong sinh viên UFM. Sinh viên UFM cũng ghi dấu ấn mạnh mẽ ở các cuộc thi học thuật, nghệ thuật, văn hóa và các cuộc thi sắc đẹp uy tín.
+
+*   **Năm 2025 là năm của hành động, bứt phá, khẳng định vị thế và bản sắc của UFM**
+    *   Bài báo này nhấn mạnh năm 2025 là một chặng đường ghi dấu nhiều chuyển động tích cực và những thành tựu nổi bật, toàn diện trên các lĩnh vực trọng tâm của UFM. Từ công tác đào tạo, tuyển sinh đến hoạt động nghiên cứu khoa học, hợp tác doanh nghiệp và nâng cao chất lượng quản trị đại học, nhà trường đạt được những kết quả tạo nền tảng vững chắc cho giai đoạn phát triển tiếp theo. UFM có tầm nhìn đến năm 2045 được xếp hạng trong top 500 trường đại học hàng đầu khu vực châu Á và trở thành một trường đại học theo định hướng ứng dụng hàng đầu Việt Nam, đồng thời là một trung tâm nghiên cứu, chuyển giao khoa học và công nghệ có uy tín cao trong lĩnh vực kinh doanh và quản lý của Việt Nam và khu vực ASEAN.
+
+*   **Viện Đổi mới sáng tạo và Chuyển đổi số - UFM**
+    *   Bài viết này đề cập đến cuộc thi UFM Startup 2025 mùa 2, khẳng định vai trò của nhà trường trong việc ươm tạo thế hệ doanh nhân trẻ trong kỷ nguyên số. Cuộc thi không chỉ là sân chơi kết nối mà còn là bệ phóng chiến lược, nơi uy tín học thuật chuyển hóa thành năng lực hành động, thắp lên tinh thần khởi nghiệp của sinh viên UFM nói riêng và sinh viên cả nước nói chung. UFM Startup 2025 ghi dấu ấn với sự tăng trưởng vượt bậc cả về quy mô lẫn chiều sâu chất lượng.
+
+*   **Phê duyệt Chiến lược phát triển Trường Đại học Tài chính - Marketing giai đoạn 2021 – 2030, tầm nhìn đến năm 2045**
+    *   Chiến lược này đặt ra mục tiêu đến năm 2025, UFM sẽ vận hành theo mô hình đại học thông minh, thay đổi căn bản phương thức quản trị nhà trường từ truyền thống sang nền tảng số. Mục tiêu cụ thể bao gồm 100% giảng viên cơ hữu có bài báo đăng trên tạp chí khoa học chuyên ngành trong nước thuộc danh mục tạp chí được tính điểm (là tác giả chính/tác giả đứng đầu) và tối thiểu 5% đề tài NCKH của sinh viên được chuyển thành ý tưởng khởi nghiệp.
+
+Mình chưa tìm thấy các bài báo cụ thể về "thành tựu", "giải thưởng", "uy tín", "chất lượng" của UFM trong năm 2025-2026 trên các trang thanhnien.vn, vnexpress.net, tuoitre.vn.
+
+[NGUỒN TRÍCH DẪN]
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQETESPFMAN7s4xahAGjs39GbDwl0Ik6Hd3YpRRsfBHFMISn200No4L7myWYQCpN3iGVi2LT3PXfL_o9Q9hdXJeU2T9_ZMEXlP7MhDsrJg45TdwdDTxsmALYbW_j2ok2eB4Gc_oqmPVrMHmvPxIdIrahF1dqdBWIhmoEa32TLJmieCskK58Euxhv)
+- [giaoduc.net.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF54dXQ_vPVhFWWfv70wq95GqYzB2OgJxB05I1CPxxFrq7KTGCFwXZ4fQ7WFHDjTakOAcD87K5veBUTGHKO9S9b6KkOCSTrRQMwNuS9cUrqQcLeVeNJZjxz60xid8DAE45Q_JyvbdBhZaLrya_t3kD8TzRrRXOC7LY264Qkv1GygOiQqT2G9uC4uKWtuV2m0uTimBJc-myTuMrdGVTsPDtul6dfNkGEznmBVw==)
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG1Y-z7HeW8wJ_E_EK36IsPcq2OtjhwQUXbSi-DjpLDtFVm2argN3vW7lmcLHPTqzpzq9SNEAUcg_0A2EMMCGA1JQqNc3gOHbU2ayOIVz1lGqDLIu2KR2YdI51C0AHF0hg3dcOax4vDK0P0mWHpTZ_lNvlxoaMxWIcoj6C3IVYHBjCFxInipvTLbULvI9UnTw==)
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH0GzeKCU9SiVdYQr4INLMJj2jZdbdVzsoaC2iGNOS5qA7QBwThQiEP5mUDDgTrVT1e52QwBt95E52huDnkkijuxac8vpoTlUZaXTFVJkilF197HRp78ba6UwBv3h6WRyGvRAukDPf7yvwGE2867qtZLmHBG9v02SrDxs3LXJ-CKWYrMP1P5sLOs-RmDgaeVFyJmf9zIEBwAtuPkw==)
+                                                      >(7078 chars)
+                              response_source  │  rag_search_context
+                                                      >(18 chars)
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [9] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (8.925s)
+                                        Message  │  source='rag_search_context_generated', length=4229 chars
+                               final_response  │  Chào bạn nhé! Mình là Trợ lý Tuyển sinh UFM đây, rất vui được giải đáp thắc mắc của bạn về chương trình đào tạo Thạc sĩ tại trường mình.
+
+Về câu hỏi **"UFM đào tạo Thạc sĩ có uy tín không? Thua UEH hay hơn?"**, mình xin chia sẻ thế này nhé:
+
+UFM luôn chú trọng nâng cao chất lượng đào tạo, đặc biệt là ở bậc sau đại học. Trường mình có triết lý giáo dục **"Thực chất, đổi mới sáng tạo và hội nhập"** và luôn nỗ lực đào tạo nguồn nhân lực chất lượng cao, có tư duy chiến lược và khả năng giải quyết các vấn đề thực tiễn (Theo [ThS Kinh te hoc.txt] và [ThS Luat kinh te.txt]).
+
+Năm 2025, UFM đã đạt được nhiều thành tựu đáng kể, khẳng định vị thế và bản sắc của trường:
+- Bổ nhiệm **07 Phó Giáo sư** và công nhận **19 tân Tiến sĩ**, đây là con số cao nhất từ trước đến nay của trường.
+- Tỷ lệ giảng viên có trình độ tiến sĩ đã lên gần **50%**.
+- Nhiều dự án đầu tư được khởi động, hoàn thành, hoạt động đổi mới sáng tạo được triển khai hiệu quả.
+- Sinh viên UFM cũng ghi dấu ấn mạnh mẽ ở các cuộc thi học thuật, nghệ thuật, văn hóa và các cuộc thi sắc đẹp uy tín.
+*(Theo bài viết "UFM tổ chức bình chọn sự kiện tiêu biểu năm 2025" trên ufm.edu.vn)*
+
+Trường mình có tầm nhìn đến năm 2045 là lọt **top 500 trường đại học hàng đầu khu vực châu Á** và trở thành một trường đại học theo định hướng ứng dụng hàng đầu Việt Nam, là trung tâm nghiên cứu, chuyển giao khoa học và công nghệ có uy tín cao trong lĩnh vực kinh doanh và quản lý của Việt Nam và khu vực ASEAN (Theo bài viết "Năm 2025 là năm của hành động, bứt phá, khẳng định vị thế và bản sắc của UFM" trên ufm.edu.vn).
+
+Hiện tại, UFM đang đào tạo các chương trình Thạc sĩ như:
+- **Thạc sĩ Kinh tế học (Mã ngành: 8310101)**: Có hai định hướng Nghiên cứu và Ứng dụng, phù hợp với nhiều mục tiêu nghề nghiệp khác nhau. Thời gian đào tạo trung bình là **02 năm** (tối đa 04 năm) với tổng khối lượng kiến thức **61 tín chỉ**. Bạn có thể xem chi tiết tại đây: [https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=pdtYJjIO1EfhKibzkDlcAw](https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=pdtYJjIO1EfhKibzkDlcAw)
+- **Thạc sĩ Luật Kinh tế (Mã ngành: 8380107)**: Cũng có hai định hướng Nghiên cứu và Ứng dụng, tập trung vào việc giải quyết các vấn đề pháp lý trong quản trị doanh nghiệp, đầu tư và thương mại. Thời gian đào tạo trung bình là **02 năm** (tối đa 04 năm) với tổng khối lượng kiến thức **61 tín chỉ**. Bạn có thể xem chi tiết tại đây: [https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=yDEZuIh1J5DCTQIpdp-xGw](https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=yDEZuIh1J5DCTQIpdp-xGw)
+
+Về việc so sánh với các trường khác như UEH, mỗi trường đều có những thế mạnh và định hướng riêng bạn nhé. UFM tự hào với môi trường học tập năng động, đội ngũ giảng viên chất lượng và chương trình đào tạo luôn được cập nhật để đáp ứng nhu cầu thị trường. Việc lựa chọn trường nào sẽ phụ thuộc vào mục tiêu học tập, định hướng nghề nghiệp và sở thích cá nhân của bạn.
+
+UFM luôn chào đón các bạn có mong muốn nâng cao trình độ và phát triển bản thân! 🎓
+
+Bạn có muốn mình giải thích thêm về chương trình Thạc sĩ cụ thể nào không?
+
+---
+📎 **Nguồn tham khảo:**
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQETESPFMAN7s4xahAGjs39GbDwl0Ik6Hd3YpRRsfBHFMISn200No4L7myWYQCpN3iGVi2LT3PXfL_o9Q9hdXJeU2T9_ZMEXlP7MhDsrJg45TdwdDTjsmALYbW_j2ok2eB4Gc_oqmPVrMHmvPxIdIrahF1dqdBWIhmoEa32TLJmieCskK58Euxhv)
+- [giaoduc.net.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF54dXQ_vPVhFWWfv70wq95GqYzB2OgJxB05I1CPxxFrq7KTGCFwXZ4fQ7WFHDjTakOAcD87K5veBUTGHKO9S9b6KkOCSTrRQMwNuS9cUrqQcLeVeNJZjxz60xid8DAE45Q_JyvbdBhZaLrya_t3kD8TzRrRXOC7LY264Qkv1GygOiQqT2G9uC4uKWtuV2m0uTimBJc-myTuMrdGVTsPDtul6dfNkGEznmBVw==)
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG1Y-z7HeW8wJ_E_EK36IsPcq2OtjhwQUXbSi-DjpLDtFVm2argN3vW7lmcLHPTqzpzq9SNEAUcg_0A2EMMCGA1JQqNc3gOHbU2ayOIVz1lGqDLIu2KR2YdI51C0AHF0hg3dcOax4vDK0mPVrMHmvPxIdIrahF1dqdBWIhmoEa32TLJmieCskK58Euxhv)
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH0GzeKCU9SiVdYQr4INLMJj2jZdbdVzsoaC2iGNOS5qA7QBwThQiEP5mUDDgTrVT1e52QwBt95E52huDnkkijuxac8vpoTlUZaXTFVJkilF197HRp78ba6UwBv3h6WRyGvRAukDPf7yvwGE2867qtZLmHBG9v02SrDxs3LXJ-CKWYrMP1P5sLOs-RmDgaeVFyJmf9zIEBwAtuPkw)
+                                                      >(4229 chars)
+                              response_source  │  rag_search_context_generated
+                                                      >(28 chars)
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : rag_search_context_generated
+  Intent          : SO_SANH_TRUONG → PROCEED_RAG_PR_SEARCH
+  Response Length : 4229 chars
+  Total Time      : 39.56s
+  Nodes Executed  : 9
+──────────────────────────────────────────────────────────────────────────
+
+Chào bạn nhé! Mình là Trợ lý Tuyển sinh UFM đây, rất vui được giải đáp thắc mắc của bạn về chương trình đào tạo Thạc sĩ tại trường mình.
+
+Về câu hỏi **"UFM đào tạo Thạc sĩ có uy tín không? Thua UEH hay hơn?"**, mình xin chia sẻ thế này nhé:
+
+UFM luôn chú trọng nâng cao chất lượng đào tạo, đặc biệt là ở bậc sau đại học. Trường mình có triết lý giáo dục **"Thực chất, đổi mới sáng tạo và hội nhập"** và luôn nỗ lực đào tạo nguồn nhân lực chất lượng cao, có tư duy chiến lược và khả năng giải quyết các vấn đề thực tiễn (Theo [ThS Kinh te hoc.txt] và [ThS Luat kinh te.txt]).
+
+Năm 2025, UFM đã đạt được nhiều thành tựu đáng kể, khẳng định vị thế và bản sắc của trường:
+- Bổ nhiệm **07 Phó Giáo sư** và công nhận **19 tân Tiến sĩ**, đây là con số cao nhất từ trước đến nay của trường.
+- Tỷ lệ giảng viên có trình độ tiến sĩ đã lên gần **50%**.
+- Nhiều dự án đầu tư được khởi động, hoàn thành, hoạt động đổi mới sáng tạo được triển khai hiệu quả.
+- Sinh viên UFM cũng ghi dấu ấn mạnh mẽ ở các cuộc thi học thuật, nghệ thuật, văn hóa và các cuộc thi sắc đẹp uy tín.
+*(Theo bài viết "UFM tổ chức bình chọn sự kiện tiêu biểu năm 2025" trên ufm.edu.vn)*
+
+Trường mình có tầm nhìn đến năm 2045 là lọt **top 500 trường đại học hàng đầu khu vực châu Á** và trở thành một trường đại học theo định hướng ứng dụng hàng đầu Việt Nam, là trung tâm nghiên cứu, chuyển giao khoa học và công nghệ có uy tín cao trong lĩnh vực kinh doanh và quản lý của Việt Nam và khu vực ASEAN (Theo bài viết "Năm 2025 là năm của hành động, bứt phá, khẳng định vị thế và bản sắc của UFM" trên ufm.edu.vn).
+
+Hiện tại, UFM đang đào tạo các chương trình Thạc sĩ như:
+- **Thạc sĩ Kinh tế học (Mã ngành: 8310101)**: Có hai định hướng Nghiên cứu và Ứng dụng, phù hợp với nhiều mục tiêu nghề nghiệp khác nhau. Thời gian đào tạo trung bình là **02 năm** (tối đa 04 năm) với tổng khối lượng kiến thức **61 tín chỉ**. Bạn có thể xem chi tiết tại đây: [https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=pdtYJjIO1EfhKibzkDlcAw](https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=pdtYJjIO1EfhKibzkDlcAw)
+- **Thạc sĩ Luật Kinh tế (Mã ngành: 8380107)**: Cũng có hai định hướng Nghiên cứu và Ứng dụng, tập trung vào việc giải quyết các vấn đề pháp lý trong quản trị doanh nghiệp, đầu tư và thương mại. Thời gian đào tạo trung bình là **02 năm** (tối đa 04 năm) với tổng khối lượng kiến thức **61 tín chỉ**. Bạn có thể xem chi tiết tại đây: [https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=yDEZuIh1J5DCTQIpdp-xGw](https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=yDEZuIh1J5DCTQIpdp-xGw)
+
+Về việc so sánh với các trường khác như UEH, mỗi trường đều có những thế mạnh và định hướng riêng bạn nhé. UFM tự hào với môi trường học tập năng động, đội ngũ giảng viên chất lượng và chương trình đào tạo luôn được cập nhật để đáp ứng nhu cầu thị trường. Việc lựa chọn trường nào sẽ phụ thuộc vào mục tiêu học tập, định hướng nghề nghiệp và sở thích cá nhân của bạn.
+
+UFM luôn chào đón các bạn có mong muốn nâng cao trình độ và phát triển bản thân! 🎓
+
+Bạn có muốn mình giải thích thêm về chương trình Thạc sĩ cụ thể nào không?
+
+---
+📎 **Nguồn tham khảo:**
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQETESPFMAN7s4xahAGjs39GbDwl0Ik6Hd3YpRRsfBHFMISn200No4L7myWYQCpN3iGVi2LT3PXfL_o9Q9hdXJeU2T9_ZMEXlP7MhDsrJg45TdwdDTjsmALYbW_j2ok2eB4Gc_oqmPVrMHmvPxIdIrahF1dqdBWIhmoEa32TLJmieCskK58Euxhv)
+- [giaoduc.net.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF54dXQ_vPVhFWWfv70wq95GqYzB2OgJxB05I1CPxxFrq7KTGCFwXZ4fQ7WFHDjTakOAcD87K5veBUTGHKO9S9b6KkOCSTrRQMwNuS9cUrqQcLeVeNJZjxz60xid8DAE45Q_JyvbdBhZaLrya_t3kD8TzRrRXOC7LY264Qkv1GygOiQqT2G9uC4uKWtuV2m0uTimBJc-myTuMrdGVTsPDtul6dfNkGEznmBVw==)
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQG1Y-z7HeW8wJ_E_EK36IsPcq2OtjhwQUXbSi-DjpLDtFVm2argN3vW7lmcLHPTqzpzq9SNEAUcg_0A2EMMCGA1JQqNc3gOHbU2ayOIVz1lGqDLIu2KR2YdI51C0AHF0hg3dcOax4vDK0mPVrMHmvPxIdIrahF1dqdBWIhmoEa32TLJmieCskK58Euxhv)
+- [ufm.edu.vn](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQH0GzeKCU9SiVdYQr4INLMJj2jZdbdVzsoaC2iGNOS5qA7QBwThQiEP5mUDDgTrVT1e52QwBt95E52huDnkkijuxac8vpoTlUZaXTFVJkilF197HRp78ba6UwBv3h6WRyGvRAukDPf7yvwGE2867qtZLmHBG9v02SrDxs3LXJ-CKWYrMP1P5sLOs-RmDgaeVFyJmf9zIEBwAtuPkw)
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ 🛡️ FAST SCAN NODE (Guard Layer 0-1)          │  0.010s  │   PASS   │
+  │ 🔄 CONTEXT NODE (Query Reformulation)         │  0.002s  │   PASS   │
+  │ 🔐 CONTEXTUAL GUARD NODE (Layer 2a+2b)        │  1.335s  │   PASS   │
+  │ 🧭 INTENT NODE (Router Phân Loại Ý Định)      │  5.480s  │   PASS   │
+  │ 🔀 MULTI-QUERY NODE (Sinh biến thể)           │  1.583s  │   PASS   │
+  │ 📊 EMBEDDING NODE (BGE-M3 batch)              │  1.925s  │   PASS   │
+  │ 🗄️ RAG NODE (Hybrid Search DB)               │  7.354s  │   PASS   │
+  │ 🌐 RAG SEARCH PIPELINE (Evaluator + Web Searc │ 12.921s  │   PASS   │
+  │ 🎯 RESPONSE NODE (Final Answer)               │  8.925s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  39.56s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260325_040047_UFM_ĐÀO_TẠO_THẠC_SĨ_CÓ_UY_TÍN_KO_THUA_U.txt
+

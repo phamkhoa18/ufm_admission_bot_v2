@@ -1,0 +1,100 @@
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260321_174022_EM_HỌC_THẤY_NẢN_QUÁ_VÌ_KHÔNG_BIẾT_TƯƠNG.txt
+
+========================================================================
+  UFM ADMISSION BOT — Pipeline E2E Test Runner
+  2026-03-21 17:40:22
+========================================================================
+
+  Input Query: EM HỌC THẤY NẢN QUÁ VÌ KHÔNG BIẾT TƯƠNG LAI RA SAO, CÓ THỂ BỊ TRẦM CẢM
+  Chat History: 4 messages
+
+
+────────────────────────────────────────────────────────────────────────
+  [1] FAST SCAN NODE
+────────────────────────────────────────────────────────────────────────
+                                  Status  │  ✅ PASS (0.000s)
+                                 Message  │  [Fast-Scan PASS — 0.000s] Sạch, cho qua Context Node
+                      normalized_query  │  em học thấy nản quá vì không biết tương lai ra sao, có thể bị trầm cảm
+                      fast_scan_passed  │  True
+                     fast_scan_message  │  [Fast-Scan PASS — 0.000s] Sạch, cho qua Context Node
+                             next_node  │  context
+
+────────────────────────────────────────────────────────────────────────
+  [2] CONTEXT NODE (Reformulate)
+────────────────────────────────────────────────────────────────────────
+                                  Status  │  ✅ PASS (1.281s)
+                      standalone_query  │  Tôi cảm thấy nản vì học ở UFM không biết tương lai ra sao, có thể bị trầm cảm, vậy tôi nên làm gì?
+                             next_node  │  contextual_guard
+
+────────────────────────────────────────────────────────────────────────
+  [3] CONTEXTUAL GUARD NODE
+────────────────────────────────────────────────────────────────────────
+                                  Status  │  ✅ PASS (1.438s)
+                                 Message  │  [Contextual-Guard PASS — 1.438s] standalone_query an toàn
+               contextual_guard_passed  │  True
+              contextual_guard_message  │  [Contextual-Guard PASS — 1.438s] standalone_query an toàn
+                             next_node  │  multi_query
+
+────────────────────────────────────────────────────────────────────────
+  [4] MULTI-QUERY NODE
+────────────────────────────────────────────────────────────────────────
+                                  Status  │  ✅ PASS (1.790s)
+                         multi_queries  │  ['Tôi đang chán nản việc học tại UFM và lo lắng về tương lai, có nguy cơ bị stress nặng, tôi cần được giúp đỡ như thế nào?', 'Tôi mất động lực học ở trường UFM và hoang mang về sự nghiệp sau này, tinh thần tôi đang rất tệ, tôi nên tìm kiếm sự hỗ trợ ở đâu?', 'Tôi đang gặp khủng hoảng khi học tại Đại học Tài chính - Marketing vì không định hướng được con đường phía trước, tôi có nguy cơ mắc bệnh tâm lý, tôi phải làm sao?']
+                             next_node  │  embedding
+
+────────────────────────────────────────────────────────────────────────
+  [5] EMBEDDING NODE
+────────────────────────────────────────────────────────────────────────
+                                  Status  │  ✅ PASS (2.232s)
+                      query_embeddings  │  [4 vectors, dim=1024]
+                             next_node  │  cache
+
+────────────────────────────────────────────────────────────────────────
+  [6] RAG NODE (Hybrid Search)
+────────────────────────────────────────────────────────────────────────
+                                  Status  │  ✅ PASS (4.117s)
+                           rag_context  │  
+                      retrieved_chunks  │  [0 vectors, dim=0]
+                 rag_confidence_failed  │  False
+                     top1_cosine_score  │  0.0
+                             next_node  │  intent
+
+────────────────────────────────────────────────────────────────────────
+  [7] INTENT NODE (Router)
+────────────────────────────────────────────────────────────────────────
+                                  Status  │  ✅ PASS (1.326s)
+                                intent  │  HO_TRO_SINH_VIEN
+                        intent_summary  │  cảm thấy nản khi học ở UFM, lo lắng về tương lai, có thể bị trầm cảm, cần lời khuyên
+                         intent_action  │  PROCEED_CARE
+                             next_node  │  care
+                       response_source  │  
+
+────────────────────────────────────────────────────────────────────────
+  [8] CARE NODE (Chăm sóc SV)
+────────────────────────────────────────────────────────────────────────
+                                  Status  │  ✅ PASS (18.327s)
+                        final_response  │  Mình rất hiểu lúc này bạn đang cảm thấy chông chênh, nhưng hãy tin rằng cảm xúc này là bình thường và bạn không phải đối mặt một mình đâu. UFM luôn có Trung tâm Tư vấn Tâm lý hỗ trợ miễn phí, hoặc bạn có thể liên hệ Phòng Công tác Sinh viên tại Lầu 3, Tòa nhà A qua hotline (028) 3997 2078 hoặc email... (495 chars)
+                       response_source  │  care_template
+                             next_node  │  response
+
+────────────────────────────────────────────────────────────────────────
+  [9] RESPONSE NODE (Final)
+────────────────────────────────────────────────────────────────────────
+                                  Status  │  ✅ PASS (0.000s)
+                        final_response  │  Mình rất hiểu lúc này bạn đang cảm thấy chông chênh, nhưng hãy tin rằng cảm xúc này là bình thường và bạn không phải đối mặt một mình đâu. UFM luôn có Trung tâm Tư vấn Tâm lý hỗ trợ miễn phí, hoặc bạn có thể liên hệ Phòng Công tác Sinh viên tại Lầu 3, Tòa nhà A qua hotline (028) 3997 2078 hoặc email... (495 chars)
+                       response_source  │  care_template
+                             next_node  │  end
+
+════════════════════════════════════════════════════════════════════════
+  FINAL RESPONSE
+════════════════════════════════════════════════════════════════════════
+  Source: care_template
+  Length: 495 chars
+────────────────────────────────────────────────────────────────────────
+Mình rất hiểu lúc này bạn đang cảm thấy chông chênh, nhưng hãy tin rằng cảm xúc này là bình thường và bạn không phải đối mặt một mình đâu. UFM luôn có Trung tâm Tư vấn Tâm lý hỗ trợ miễn phí, hoặc bạn có thể liên hệ Phòng Công tác Sinh viên tại Lầu 3, Tòa nhà A qua hotline (028) 3997 2078 hoặc email ctsv@ufm.edu.vn để được lắng nghe. Đừng ngần ngại tìm kiếm sự giúp đỡ, vì sức khỏe tinh thần của bạn là quan trọng nhất. Hãy giữ vững niềm tin nhé, mọi chuyện rồi sẽ sáng hơn sau những ngày mưa.
+════════════════════════════════════════════════════════════════════════
+
+  Total Pipeline Time: 30.52s
+  Nodes Executed: 9
+  Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260321_174022_EM_HỌC_THẤY_NẢN_QUÁ_VÌ_KHÔNG_BIẾT_TƯƠNG.txt
+

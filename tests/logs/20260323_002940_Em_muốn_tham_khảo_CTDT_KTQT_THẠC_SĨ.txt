@@ -1,0 +1,212 @@
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║    UFM ADMISSION BOT — Pipeline E2E Test Runner                        ║
+║    2026-03-23 00:29:40                                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+  📁 Log file: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260323_002940_Em_muốn_tham_khảo_CTDT_KTQT_THẠC_SĨ.txt
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    ACTIVE MODELS (from YAML)                    │
+  ├──────────────────────┬──────────────────────────────────────────┤
+  │ ❷ Summarizer         │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❹ Guard (Fast)       │ groq/meta-llama/llama-prompt-guard-2-86m  │
+  │ ❺ Reformulate        │ openrouter/google/gemini-2.0-flash-001          │
+  │ ❻ Guard (Deep)       │ openrouter/qwen/qwen3.5-flash-02-23             │
+  │ ❼ Multi-Query        │ openrouter/google/gemini-2.5-flash-lite         │
+  │ ❽ Embedding          │ openrouter/baai/bge-m3                          │
+  │ ❾a Vector Router     │ openrouter/baai/bge-m3                          │
+  │ ❾b Semantic Rtr      │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫a PR Query          │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫b UFM Query         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫c Web Search        │ openrouter/openai/gpt-4o-mini-search-preview    │
+  │ ⓫d Info Synth        │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫e PR Synth          │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫f Sanitizer         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓫g Evaluator         │ openrouter/google/gemini-2.5-flash              │
+  │ ⓬ Care               │ openrouter/qwen/qwen3.5-flash-02-23             │
+  │ ⓭ Form Extract       │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓭ Form Draft         │ openrouter/qwen/qwen3-30b-a3b                   │
+  │ ⓮ Main Bot           │ openrouter/google/gemini-2.5-flash              │
+  └──────────────────────┴──────────────────────────────────────────┘
+
+  📝 Input Query  : Em muốn tham khảo CTDT KTQT THẠC SĨ
+  💬 Chat History : Trống (lượt đầu tiên)
+
+
+──────────────────────────────────────────────────────────────────────────
+  🛡️ [1] FAST SCAN NODE (Guard Layer 0-1)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.001s)
+                                        Message  │  [Fast-Scan PASS — 0.001s] Sạch, cho qua Context Node
+                             normalized_query  │  em muốn tham khảo ctdt ktqt thạc sĩ
+                               original_query  │  ""
+                         query_was_summarized  │  ✗ False
+                             fast_scan_passed  │  ✓ True
+                      fast_scan_blocked_layer  │  null
+                            fast_scan_message  │  [Fast-Scan PASS — 0.001s] Sạch, cho qua Context Node
+                                    next_node  │  context
+
+──────────────────────────────────────────────────────────────────────────
+  🔄 [2] CONTEXT NODE (Query Reformulation)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.001s)
+                                        Message  │  Giữ nguyên (no history hoặc skip)
+                             standalone_query  │  Em muốn tham khảo CTDT KTQT THẠC SĨ
+                                    next_node  │  contextual_guard
+
+──────────────────────────────────────────────────────────────────────────
+  🔐 [3] CONTEXTUAL GUARD NODE (Layer 2a+2b)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (4.867s)
+                                        Message  │  [Contextual-Guard PASS — 4.867s] standalone_query an toàn
+                      contextual_guard_passed  │  ✓ True
+               contextual_guard_blocked_layer  │  null
+                     contextual_guard_message  │  [Contextual-Guard PASS — 4.867s] standalone_query an toàn
+                                    next_node  │  multi_query
+
+──────────────────────────────────────────────────────────────────────────
+  🔀 [4] MULTI-QUERY NODE (Sinh biến thể)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.308s)
+                                multi_queries  │  ["Cho em xin chương trình đào tạo thạc sĩ Kinh tế Quốc tế", "Tham khảo đề cương chi tiết ngành Kinh tế Quốc tế bậc cao họ", "Cung cấp thông tin về chương trình đào tạo sau đại học ngành"]
+                                    next_node  │  embedding
+
+──────────────────────────────────────────────────────────────────────────
+  📊 [5] EMBEDDING NODE (BGE-M3 batch)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.296s)
+                                        Message  │  Nhúng 4 vectors × 1024D thành công
+                             query_embeddings  │  [4 vectors × 1024D]
+                                    next_node  │  cache
+
+──────────────────────────────────────────────────────────────────────────
+  🗄️ [6] RAG NODE (Hybrid Search DB)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (0.262s)
+                                        Message  │  Chunks=20, Top1Cosine=0.7593, Context=5369 chars ⚠️ CONFIDENCE FAILED
+                                  rag_context  │  [Nguồn 1 — Thạc sĩ Kinh Doanh Quốc Tế, CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ | CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ | Ngành: Kinh Doanh Quốc Tế]
+[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120]
+CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH... (5369 chars)
+                             retrieved_chunks  │  [20 items]
+                        rag_confidence_failed  │  ✓ True
+                            top1_cosine_score  │  0.7593
+                                    next_node  │  intent
+
+──────────────────────────────────────────────────────────────────────────
+  🧭 [7] INTENT NODE (Router Phân Loại Ý Định)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (1.320s)
+                                        Message  │  intent='CHUONG_TRINH_DAO_TAO' → action='PROCEED_RAG_UFM_SEARCH' | summary='Chương trình đào tạo Thạc sĩ Kế toán quốc tế'
+                                       intent  │  CHUONG_TRINH_DAO_TAO
+                               intent_summary  │  Chương trình đào tạo Thạc sĩ Kế toán quốc tế
+                                intent_action  │  PROCEED_RAG_UFM_SEARCH
+                         program_level_filter  │  thac_si
+                          program_name_filter  │  Kinh Tế Quốc Tế
+                                    next_node  │  rag_search
+                              response_source  │  ""
+
+  🚦 Routing Decision: next_node='rag_search' | intent_action='PROCEED_RAG_UFM_SEARCH'
+
+──────────────────────────────────────────────────────────────────────────
+  🌐 [8] RAG SEARCH PIPELINE (Evaluator + Web Search)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (2.355s)
+                                        Message  │  source='rag_db_only', cache=MISS, citations=0
+                           ufm_search_queries  │  null
+                              pr_search_query  │  null
+                           web_search_results  │  null
+                         web_search_citations  │  null
+                             search_cache_hit  │  ✗ False
+                      search_cache_similarity  │  0.0000
+                               final_response  │  [Nguồn 1 — Thạc sĩ Kinh Doanh Quốc Tế, CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ | CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH KINH DOANH QUỐC TẾ | Ngành: Kinh Doanh Quốc Tế]
+[Chương trình: Thạc sĩ Kinh Doanh Quốc Tế (KDQT, kdqt, KD Quốc tế) | Mã ngành: 8340120]
+CHƯƠNG TRÌNH ĐÀO TẠO THẠC SĨ NGÀNH... (5369 chars)
+                              response_source  │  rag_db_only
+                                    next_node  │  response
+
+──────────────────────────────────────────────────────────────────────────
+  🎯 [9] RESPONSE NODE (Final Answer)
+──────────────────────────────────────────────────────────────────────────
+                                         Status  │  ✅ PASS  (4.158s)
+                                        Message  │  source='rag_db_only_generated', length=3101 chars
+                               final_response  │  Chào bạn! Mình là Trợ lý Tư vấn Tuyển sinh của UFM. Bạn muốn tham khảo về **Chương trình đào tạo Thạc sĩ ngành Kinh doanh quốc tế (Mã ngành: 8340120)** phải không? Dưới đây là thông tin chi tiết về chương trình này:
+
+**1. Triết lý và Mục tiêu đào tạo:**
+Chương trình được xây dựng dựa trên triết lý g... (3101 chars)
+                              response_source  │  rag_db_only_generated
+                                    next_node  │  end
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║                         FINAL RESPONSE                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+  Response Source : rag_db_only_generated
+  Intent          : CHUONG_TRINH_DAO_TAO → PROCEED_RAG_UFM_SEARCH
+  Response Length : 3101 chars
+  Total Time      : 16.58s
+  Nodes Executed  : 9
+──────────────────────────────────────────────────────────────────────────
+
+Chào bạn! Mình là Trợ lý Tư vấn Tuyển sinh của UFM. Bạn muốn tham khảo về **Chương trình đào tạo Thạc sĩ ngành Kinh doanh quốc tế (Mã ngành: 8340120)** phải không? Dưới đây là thông tin chi tiết về chương trình này:
+
+**1. Triết lý và Mục tiêu đào tạo:**
+Chương trình được xây dựng dựa trên triết lý giáo dục "Thực chất, đổi mới sáng tạo và hội nhập", nhằm đáp ứng nhu cầu nhân lực chất lượng cao trong bối cảnh toàn cầu hóa.
+
+**2. Định hướng đào tạo:**
+Năm 2026, chương trình cung cấp hai định hướng chuyên biệt để bạn lựa chọn:
+- **Định hướng Nghiên cứu:** Tập trung phát triển tư duy hàn lâm, năng lực nghiên cứu chuyên sâu về các vấn đề kinh doanh, thương mại và đầu tư quốc tế. Phù hợp với giảng viên, nghiên cứu viên hoặc người muốn học lên Tiến sĩ.
+- **Định hướng Ứng dụng:** Tập trung phát triển kỹ năng thực hành, năng lực quản trị và giải quyết các tình huống kinh doanh phức tạp trong môi trường quốc tế. Phù hợp với các nhà quản lý, doanh nhân, chuyên gia xuất nhập khẩu.
+
+**3. Thời gian đào tạo:**
+- Thời gian đào tạo trung bình là **02 năm** (tối đa 04 năm).
+- Tổng khối lượng kiến thức toàn khóa là **61 tín chỉ**.
+
+**4. Điều kiện xét tuyển:**
+Bạn cần đáp ứng các tiêu chuẩn sau:
+- **Về văn bằng:** Đã tốt nghiệp đại học ngành Kinh doanh quốc tế hoặc các ngành phù hợp/ngành gần/ngành khác (có bổ sung kiến thức).
+- **Phương thức tuyển sinh:** Xét tuyển dựa trên hồ sơ văn bằng, kết quả học tập đại học và năng lực ngoại ngữ.
+- **Môn xét tuyển:** Đánh giá năng lực qua hai môn cơ sở ngành là **Kinh tế học** và **Kinh doanh quốc tế**.
+- **Trình độ ngoại ngữ:** Đạt năng lực ngoại ngữ từ Bậc 3/6 trở lên theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam hoặc sở hữu các văn bằng, chứng chỉ tương đương.
+
+**5. Bổ sung kiến thức (nếu tốt nghiệp không đúng chuyên ngành):**
+- **Ngành gần:** Bổ sung **02 môn (5 tín chỉ)**, gồm: Kinh tế học (3 TC) và Kinh doanh quốc tế (2 TC).
+- **Ngành khác:** Bổ sung **04 môn (9 tín chỉ)**, gồm: Kinh tế học (3 TC), Kinh doanh quốc tế (2 TC), Marketing căn bản (2 TC) và Kinh tế phát triển (2 TC).
+
+**6. Chính sách ưu đãi học phí:**
+- Giảm **10%** học phí đối với học viên là cựu sinh viên của Trường.
+- Giảm **5%** học phí đối với học viên có người thân đã và đang học cao học tại Trường.
+
+**7. Cơ hội nghề nghiệp sau tốt nghiệp:**
+- **Nhóm Quản lý & Thực hành (Định hướng Ứng dụng):**
+  - Giám đốc kinh doanh quốc tế, Giám đốc xuất nhập khẩu tại các tập đoàn đa quốc gia.
+  - Chuyên gia tư vấn đầu tư quốc tế, xúc tiến thương mại, quản trị chuỗi cung ứng toàn cầu.
+  - Chuyên viên cao cấp tại các cơ quan quản lý nhà nước về kinh tế đối ngoại (Hải quan, Bộ Công thương...).
+- **Nhóm Nghiên cứu & Giảng dạy (Định hướng Nghiên cứu):**
+  - Giảng viên giảng dạy ngành Kinh doanh quốc tế tại các trường Đại học, Cao đẳng.
+  - Nhà nghiên cứu về thương mại và đầu tư quốc tế tại các Viện nghiên cứu.
+  - Tiếp tục nghiên cứu ở bậc học cao hơn (Tiến sĩ) trong và ngoài nước.
+
+Bạn có thể tham khảo thông tin chi tiết chương trình đào tạo tại đây: <https://daotaosdh.ufm.edu.vn/ChiTiet.aspx?id=vgYI12ybsQ9CjAUJSvAStg>
+
+Bạn còn muốn tìm hiểu thêm điều gì không?
+
+══════════════════════════════════════════════════════════════════════════
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │ Node                                         │   Time   │  Status  │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ FAST SCAN NODE (Guard Layer 0-1)             │  0.001s  │   PASS   │
+  │ CONTEXT NODE (Query Reformulation)           │  0.001s  │   PASS   │
+  │ CONTEXTUAL GUARD NODE (Layer 2a+2b)          │  4.867s  │   PASS   │
+  │ MULTI-QUERY NODE (Sinh biến thể)             │  1.308s  │   PASS   │
+  │ EMBEDDING NODE (BGE-M3 batch)                │  2.296s  │   PASS   │
+  │ RAG NODE (Hybrid Search DB)                  │  0.262s  │   PASS   │
+  │ INTENT NODE (Router Phân Loại Ý Định)        │  1.320s  │   PASS   │
+  │ RAG SEARCH PIPELINE (Evaluator + Web Search) │  2.355s  │   PASS   │
+  │ RESPONSE NODE (Final Answer)                 │  4.158s  │   PASS   │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │                                        TOTAL │  16.58s  │          │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  📁 Log saved: E:\UFM - THƯƠNG MẠI\ufm_admission_bot\tests\logs\20260323_002940_Em_muốn_tham_khảo_CTDT_KTQT_THẠC_SĨ.txt
+

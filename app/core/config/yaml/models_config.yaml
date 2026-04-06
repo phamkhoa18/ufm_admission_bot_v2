@@ -51,7 +51,7 @@ query_reformulation:
   model: "google/gemini-2.5-flash-lite"
   temperature: 0.2
   max_tokens: 250
-  timeout_seconds: 3
+  timeout_seconds: 10
   skip_if_no_history: true
   fallbacks:
     - provider: "openrouter"
@@ -62,7 +62,7 @@ auto_summarize:
   temperature: 0.1
   model: "google/gemini-2.5-flash"
   max_tokens: 170
-  timeout_seconds: 3
+  timeout_seconds: 10
 
 
 # ══════════════════════════════════════════════════════════════

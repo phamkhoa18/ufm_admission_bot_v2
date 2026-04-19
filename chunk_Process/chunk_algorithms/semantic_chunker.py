@@ -282,6 +282,9 @@ class SemanticChunkerBGE:
 
                 # Parse embeddings (API trả về sorted by index)
                 if "data" not in result:
+                    if attempt < max_retries:
+                        time.sleep(base_wait * (2 ** (attempt - 1)))
+                        continue
                     error_msg = result.get("error", result)
                     raise RuntimeError(f"Embedding API trả về kết quả không hợp lệ (Không có key 'data'). Phản hồi từ Server: {error_msg}")
 

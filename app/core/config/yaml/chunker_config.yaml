@@ -68,8 +68,8 @@ semantic_chunker:
   max_chunk_tokens: 800
 
   # ── API TUNING ──────────────────────────────────────────
-  max_tokens_per_api_call: 6500     # BGE-M3 input limit là 8192, giữ buffer
-  api_batch_size: 40                # 50 → 40 để giảm risk timeout
+  max_tokens_per_api_call: 4000     # DeepInfra tổng token payload của cả batch không nên vượt 8192 
+  api_batch_size: 8                 # Giảm Batch Size xuống 8 để an toàn vượt qua giới hạn payload của OpenRouter (DeepInfra)
   api_timeout: 45                   # 30s → 45s phòng network Việt Nam chậm
   api_max_retries: 7                # 7 lần retry đủ cường độ cho các đợt sập nguồn của OpenRouter
   api_retry_base_wait: 2            # Exponential: 2s → 4s → 8s -> 16s...

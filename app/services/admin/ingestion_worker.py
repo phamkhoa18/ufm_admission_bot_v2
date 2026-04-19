@@ -82,6 +82,9 @@ def _generate_embeddings_batch(texts: list[str]) -> list[list[float]]:
             try:
                 with urllib.request.urlopen(req, timeout=60) as resp:
                     result = json.loads(resp.read().decode("utf-8"))
+                if "data" not in result:
+                    error_msg = result.get("error", result)
+                    raise RuntimeError(f"Embedding API trả về kết quả không hợp lệ (Không có key 'data'). Phản hồi từ Server: {error_msg}")
                 raw_data = sorted(result["data"], key=lambda x: x["index"])
                 return [item["embedding"] for item in raw_data]
             except urllib.error.HTTPError as e:

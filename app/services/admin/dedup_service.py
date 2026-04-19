@@ -63,11 +63,19 @@ class DedupService:
             row = cur.fetchone()
 
             if row:
-                return {
-                    "action": "skip",
-                    "reason": f"File trùng 100% với '{row[0]}' (nạp lúc {row[2]})",
-                    "existing_hash": file_hash,
-                }
+                status = row[1]
+                if status == "completed":
+                    return {
+                        "action": "skip",
+                        "reason": f"File trùng 100% với '{row[0]}' (nạp lúc {row[2]})",
+                        "existing_hash": file_hash,
+                    }
+                else:
+                    return {
+                        "action": "update",
+                        "reason": f"File '{row[0]}' từng bị lỗi nạp ('{status}'), tiến hành nạp lại",
+                        "existing_hash": file_hash,
+                    }
 
             # Check cùng tên nhưng nội dung khác
             cur.execute(

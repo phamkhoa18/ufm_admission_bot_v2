@@ -200,25 +200,57 @@ async def compose_content(req: ComposeRequest, background_tasks: BackgroundTasks
     from app.core.config import query_flow_config
 
     sys_prompt = "Bạn là một công cụ chuyển đổi HTML sang Markdown chuyên nghiệp. Hãy chuyển nội dung tôi cung cấp sang Markdown chuẩn. Trả về kết quả dưới dạng Markdown thuần (không bọc trong thẻ ```markdown), KHÔNG bình luận thêm."
-    user_prompt = f"Tiêu đề: {req.title}\n\nNội dung HTML:\n{req.html_content}"
-    
+    # --- Chunking HTML for large content ---
+    # Vì nội dung HTML có thể cực lớn vượt quá giới hạn output token của Gemini (8192), 
+    # ta chia nhỏ HTML thành các đoạn khoảng 20000 ký tự (theo dòng) để xử lý tuần tự.
+    html_lines = req.html_content.split('\n')
+    html_chunks = []
+    current_chunk_lines = []
+    current_len = 0
+    max_chunk_chars = 20000
+
+    for line in html_lines:
+        line_len = len(line)
+        if current_len + line_len > max_chunk_chars and current_chunk_lines:
+            html_chunks.append("\n".join(current_chunk_lines))
+            current_chunk_lines = []
+            current_len = 0
+        current_chunk_lines.append(line)
+        current_len += line_len
+    if current_chunk_lines:
+        html_chunks.append("\n".join(current_chunk_lines))
+
+    import re
+    markdown_body_parts = []
     try:
-        # Sử dụng config của query_reformulation (Gemini Flash)
-        markdown_body = _call_gemini_api_with_fallback(
-            system_prompt=sys_prompt,
-            user_content=user_prompt,
-            config_section=query_flow_config.query_reformulation,
-        )
+        for idx, chunk_html in enumerate(html_chunks):
+            logger.info("Compose - Đang xử lý chunk %d/%d (chiều dài: %d ký tự)", idx+1, len(html_chunks), len(chunk_html))
+            user_prompt = f"Tiêu đề: {req.title} (Phần {idx+1}/{len(html_chunks)})\n\nNội dung HTML phần này:\n{chunk_html}"
+            
+            # Sử dụng config của main_bot (Gemini Flash) vì max_tokens=9000 đủ để chứa bài nội dung dài
+            part_md = _call_gemini_api_with_fallback(
+                system_prompt=sys_prompt,
+                user_content=user_prompt,
+                config_section=query_flow_config.main_bot,
+            )
+            
+            # Xóa dư thừa markdown code block markers trên mỗi phần bằng regex
+            part_md = part_md.strip()
+            part_md = re.sub(r'^```[a-zA-Z]*\n', '', part_md, flags=re.IGNORECASE)
+            part_md = re.sub(r'\n```$', '', part_md)
+            part_md = part_md.strip()
+            
+            markdown_body_parts.append(part_md)
+
+        markdown_body = "\n\n".join(markdown_body_parts)
     except Exception as e:
         logger.error(f"Lỗi AI chuyển đổi: {e}")
         raise HTTPException(status_code=500, detail=f"Lỗi AI chuyển đổi HTML sang Markdown: {str(e)}")
 
-    # Xóa dư thừa markdown code block markers
+    # Xóa toàn bộ markdown delimiters còn sót
     markdown_body = markdown_body.strip()
-    if markdown_body.startswith("```markdown"):
-        markdown_body = markdown_body[11:]
-        if markdown_body.endswith("```"):
-            markdown_body = markdown_body[:-3]
+    markdown_body = re.sub(r'^```[a-zA-Z]*\n', '', markdown_body, flags=re.IGNORECASE)
+    markdown_body = re.sub(r'\n```$', '', markdown_body)
     markdown_body = markdown_body.strip()
     
     # Tạo metadata frontmatter để ingestion parser đọc được

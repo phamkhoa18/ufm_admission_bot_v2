@@ -14,6 +14,7 @@ chat:
       - "http://localhost:5173"              # Vite dev
       - "http://localhost:8000"              # Same-origin
       - "http://52.221.45.223:1111"          # EC2 Next.js
+      - "http://52.221.45.223:5426"          # EC2 Next.js (port 5426)
 
     # Validate header Origin/Referer (chặn request từ domain lạ)
     enforce_origin: true

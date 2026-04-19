@@ -71,8 +71,8 @@ semantic_chunker:
   max_tokens_per_api_call: 6500     # BGE-M3 input limit là 8192, giữ buffer
   api_batch_size: 40                # 50 → 40 để giảm risk timeout
   api_timeout: 45                   # 30s → 45s phòng network Việt Nam chậm
-  api_max_retries: 3                # 3 lần retry đủ cho transient errors
-  api_retry_base_wait: 2            # Exponential: 2s → 4s → 8s
+  api_max_retries: 7                # 7 lần retry đủ cường độ cho các đợt sập nguồn của OpenRouter
+  api_retry_base_wait: 2            # Exponential: 2s → 4s → 8s -> 16s...
 
 # ----------------------------------------------------------
 # Cấu hình dự phòng cho Groq (uncomment để dùng)

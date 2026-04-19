@@ -72,7 +72,7 @@ def _generate_embeddings_batch(texts: list[str]) -> list[list[float]]:
             "dimensions": _ing_cfg.embedding_dimensions,
         }
 
-        for attempt in range(1, 4):
+        for attempt in range(1, 8):
             req = urllib.request.Request(
                 url,
                 data=json.dumps(data).encode("utf-8"),
@@ -84,16 +84,16 @@ def _generate_embeddings_batch(texts: list[str]) -> list[list[float]]:
                     result = json.loads(resp.read().decode("utf-8"))
                 if "data" not in result:
                     error_msg = result.get("error", result)
-                    if attempt < 3:
+                    if attempt < 7:
                         import time
-                        logger.warning("Embedding API trả về lỗi nhưng được phép thử lại: %s", error_msg)
+                        logger.warning("Embedding API trả về lỗi (Thử lại %d/7): %s", attempt, error_msg)
                         time.sleep(2 ** attempt)
                         continue
                     raise RuntimeError(f"Embedding API trả về kết quả không hợp lệ (Không có key 'data'). Phản hồi từ Server: {error_msg}")
                 raw_data = sorted(result["data"], key=lambda x: x["index"])
                 return [item["embedding"] for item in raw_data]
             except urllib.error.HTTPError as e:
-                if e.code in {429, 500, 502, 503} and attempt < 3:
+                if e.code in {429, 500, 502, 503} and attempt < 7:
                     time.sleep(2 ** attempt)
                     continue
                 error_body = ""
@@ -103,7 +103,7 @@ def _generate_embeddings_batch(texts: list[str]) -> list[list[float]]:
                     pass
                 raise RuntimeError(f"Embedding API Error {e.code}: {error_body}")
             except (urllib.error.URLError, OSError) as e:
-                if attempt < 3:
+                if attempt < 7:
                     time.sleep(2 ** attempt)
                     continue
                 raise RuntimeError(f"Network Error: {e}")

@@ -207,7 +207,6 @@ class SemanticChunkerBGE:
                 current_batch_tokens = 0
                 
                 # Delay tránh Rate Limit (RPS/RPM) của API provider
-                import time
                 time.sleep(0.5)
 
             # Text đơn lẻ vượt limit → cắt bớt (cực hiếm với base_block ~100 tokens)
@@ -284,7 +283,6 @@ class SemanticChunkerBGE:
                 if "data" not in result:
                     error_msg = result.get("error", result)
                     if attempt < max_retries:
-                        import time
                         wait_t = base_wait * (2 ** (attempt - 1))
                         print(f"Embedding API trả về lỗi no-data. Thử lại {attempt}/{max_retries} sau {wait_t}s...")
                         time.sleep(wait_t)

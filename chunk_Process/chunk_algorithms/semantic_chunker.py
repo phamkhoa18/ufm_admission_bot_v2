@@ -45,8 +45,8 @@ _FALLBACK_CONFIG = {
     "max_chunk_tokens": 800,
     "max_tokens_per_api_call": 6500,
     "api_batch_size": 40,
-    "api_timeout": 45,
-    "api_max_retries": 3,
+    "api_timeout": 60,
+    "api_max_retries": 7,
     "api_retry_base_wait": 2,
 }
 
@@ -251,8 +251,8 @@ class SemanticChunkerBGE:
         max_retries = self.cfg["api_max_retries"]
         base_wait = self.cfg["api_retry_base_wait"]
 
-        # Mã lỗi HTTP cho phép retry (lỗi tạm thời do server)
-        RETRYABLE_STATUS_CODES = {429, 500, 502, 503}
+        # Mã lỗi HTTP cho phép retry (lỗi tạm thời do server hoặc lỗi OpenRouter gateway)
+        RETRYABLE_STATUS_CODES = {404, 408, 429, 500, 502, 503, 504, 522, 524}
 
         last_error = None
 
@@ -285,7 +285,9 @@ class SemanticChunkerBGE:
                     error_msg = result.get("error", result)
                     if attempt < max_retries:
                         import time
-                        time.sleep(base_wait * (2 ** (attempt - 1)))
+                        wait_t = base_wait * (2 ** (attempt - 1))
+                        print(f"Embedding API trả về lỗi no-data. Thử lại {attempt}/{max_retries} sau {wait_t}s...")
+                        time.sleep(wait_t)
                         continue
                     raise RuntimeError(f"Embedding API trả về kết quả không hợp lệ (Không có key 'data'). Phản hồi từ Server: {error_msg}")
 
@@ -305,9 +307,10 @@ class SemanticChunkerBGE:
 
                 last_error = e
 
-                # Chỉ retry với lỗi tạm thời (429, 500, 502, 503)
+                # Chỉ retry với lỗi tạm thời (404 OpenRouter, 429, 500, 502, 503, vv)
                 if e.code in RETRYABLE_STATUS_CODES and attempt < max_retries:
                     wait_time = base_wait * (2 ** (attempt - 1))  # 2s, 4s, 8s
+                    print(f"Embedding API bị HTTPError {e.code}. Thử lại {attempt}/{max_retries} sau {wait_time}s...")
                     time.sleep(wait_time)
                     continue
 
@@ -514,7 +517,12 @@ class SemanticChunkerBGE:
             final_content = context_prefix + blocks[0] if not blocks[0].startswith(context_prefix) else blocks[0]
             return [ProcessedChunk(content=final_content, metadata=meta)]
 
-        embeddings = self._call_embedding_api(blocks)
+        try:
+            embeddings = self._call_embedding_api(blocks)
+        except RuntimeError as e:
+            import logging
+            logging.getLogger(__name__).error("SemanticChunker embedding API thất bại, chuyển sang chunk_fallback. Lỗi: %s", str(e))
+            return self.chunk_fallback(text, source, metadata_extra)
 
         # 4. Tìm ranh giới cắt chunk (Cosine Similarity < 60%)
         boundaries = self._find_chunk_boundaries(embeddings)

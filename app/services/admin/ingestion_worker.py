@@ -93,7 +93,9 @@ def _generate_embeddings_batch(texts: list[str]) -> list[list[float]]:
                 raw_data = sorted(result["data"], key=lambda x: x["index"])
                 return [item["embedding"] for item in raw_data]
             except urllib.error.HTTPError as e:
-                if e.code in {429, 500, 502, 503} and attempt < 7:
+                # OpenRouter sometimes returns 404 or 524 for temporary gateway/provider errors
+                if e.code in {404, 408, 429, 500, 502, 503, 504, 522, 524} and attempt < 7:
+                    logger.warning("Embedding API bị HTTPError %s (Thử lại %d/7)...", e.code, attempt)
                     time.sleep(2 ** attempt)
                     continue
                 error_body = ""
